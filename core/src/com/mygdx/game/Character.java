@@ -28,7 +28,7 @@ public class Character {
     }
 
     public void walk(int xInput, int yInput) {
-        if (xInput != 0 || yInput != 0)
+        if (xInput != 0 || yInput != 0) {
             if (xInput != 0 && yInput != 0) {
                 //diagonals
                 x += xInput * Math.sin(Math.PI / 4);
@@ -49,18 +49,20 @@ public class Character {
                     direction = Input.DOWN;
                 }
             }
-        walkCycle += MyGdxGame.STEP;
-        walkCycle %= 1;
+            walkCycle += MyGdxGame.STEP;
+            walkCycle %= 1;
+        } else {
+            walkCycle = 0.1f;
+        }
         updateSprite();
     }
 
 
     private void updateSprite() {
         int xSprite = 0;
-        int ySprite = 0;
-        ySprite = Y_SCALE * direction;
+        int ySprite = Y_SCALE * direction;
         if (walkCycle > 0.25 && walkCycle < 0.5) {
-            xSprite = X_SCALE * 1;
+            xSprite = X_SCALE;      //assuming the spritesheet is 3x4 sprites
         } else if (walkCycle > 0.75) {
             xSprite = X_SCALE * 2;
         }
