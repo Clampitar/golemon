@@ -9,13 +9,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector3;
 
 public class MyGdxGame extends ApplicationAdapter {
 
     public static final String TITLE = "get a title";
-    public static final int V_WIDTH = 512;
-    public static final int V_HEIGHT = 288;
+    public static final int V_WIDTH = 400;
+    public static final int V_HEIGHT = 225;
     public static final int SCALE = 2;
 
     public static final float STEP = 1 / 60f;
@@ -26,21 +25,25 @@ public class MyGdxGame extends ApplicationAdapter {
     private TiledMap map;
     private OrthogonalTiledMapRenderer tmr;
     private OrthographicCamera cam;
+    private Menu menu;
 
     private Player player;
 
+    private boolean paused;
 
     @Override
     public void create() {
         Gdx.input.setInputProcessor(new Input());
         batch = new SpriteBatch();
-        img = new Texture("hiprechaun.png");
+        img = new Texture("characters/hiprechaun.png");
         player = new Player(img);
-        img = new Texture("badlogic.jpg");
         cam = new OrthographicCamera(V_WIDTH, V_HEIGHT);
         // load tiled map
         map = new TmxMapLoader().load("tiles/firstTileMap.tmx");
-        tmr = new OrthogonalTiledMapRenderer(map);
+        tmr = new OrthogonalTiledMapRenderer(map, batch);
+        //setting the menu
+        menu = new Menu(new Texture("menu/menu.png"), batch, cam);
+        paused = false;
     }
 
     //render() runs once per frame
@@ -53,44 +56,54 @@ public class MyGdxGame extends ApplicationAdapter {
         }
     }
 
+
+    /**
+     * A frame that happens when the game is in the overWorld state.
+     */
     public void frame() {
-        handleInput();
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        //draw the map BEFORE begining the batch
-        tmr.setView(cam);
-        tmr.render();
-        batch.setProjectionMatrix(cam.combined);
-        batch.begin();
-
-
-        batch.draw(player.getRegion(), player.getX(), player.getY());
-
-
-        cam.update();
-        batch.setProjectionMatrix(cam.combined);
-        batch.end();
+        paused ^= Input.ispressed(Input.START);
+        if(paused){
+            menuInput();
+            drawOverWorld();
+            menu.render();
+        } else {
+            overWorldInput();
+            drawOverWorld();
+        }
     }
 
-    public void handleInput() {
+
+
+    public void overWorldInput() {
         int x = 0;
         int y = 0;
-        if (Input.isDown(Input.RIGHT)) {
-            x += 3;
-        }
-        if (Input.isDown(Input.UP)) {
-            y += 3;
-        }
-        if (Input.isDown(Input.LEFT)) {
-            x -= 3;
-        }
-        if (Input.isDown(Input.DOWN)) {
-            y -= 3;
-        }
+        if (Input.isDown(Input.RIGHT)) x += 3;
+        if (Input.isDown(Input.UP)) y += 3;
+        if (Input.isDown(Input.LEFT)) x -= 3;
+        if (Input.isDown(Input.DOWN)) y -= 3;
         player.walk(x, y);
         cam.translate(player.x - cam.position.x + 16, player.y - cam.position.y + 16);
         Input.update();
     }
+
+    public void menuInput(){
+        Input.update();
+    }
+
+
+    public void drawOverWorld(){
+        cam.update();
+        batch.setProjectionMatrix(cam.combined);
+
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        tmr.setView(cam);
+        tmr.render();
+
+        batch.begin();
+        batch.draw(player.getRegion(), player.getX(), player.getY());
+        batch.end();
+    }
+
 
     @Override
     public void dispose() {
