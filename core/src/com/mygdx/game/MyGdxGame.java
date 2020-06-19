@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
@@ -18,11 +19,12 @@ public class MyGdxGame extends ApplicationAdapter {
     public static final int SCALE = 2;
 
     public static final float STEP = 1 / 60f;
-    private float timeAcumulator = 0;
+    private float timeAccumulator = 0;
 
     private SpriteBatch batch;
     private Texture img;
     private TiledMap map;
+    private TiledMapTileLayer layer;
     private OrthogonalTiledMapRenderer tmr;
     private OrthographicCamera cam;
     private Menu menu;
@@ -49,9 +51,9 @@ public class MyGdxGame extends ApplicationAdapter {
     //render() runs once per frame
     @Override
     public void render() {
-        timeAcumulator += Gdx.graphics.getDeltaTime();
-        while (timeAcumulator >= STEP) {
-            timeAcumulator -= STEP;
+        timeAccumulator += Gdx.graphics.getDeltaTime();
+        while (timeAccumulator >= STEP) {
+            timeAccumulator -= STEP;
             frame();
         }
     }
@@ -62,7 +64,7 @@ public class MyGdxGame extends ApplicationAdapter {
      */
     public void frame() {
         paused ^= Input.ispressed(Input.START);
-        if(paused){
+        if (paused) {
             menuInput();
             drawOverWorld();
             menu.render();
@@ -73,7 +75,6 @@ public class MyGdxGame extends ApplicationAdapter {
     }
 
 
-
     public void overWorldInput() {
         int x = 0;
         int y = 0;
@@ -81,17 +82,18 @@ public class MyGdxGame extends ApplicationAdapter {
         if (Input.isDown(Input.UP)) y += 3;
         if (Input.isDown(Input.LEFT)) x -= 3;
         if (Input.isDown(Input.DOWN)) y -= 3;
-        player.walk(x, y);
+        player.walk(x, y, map.getLayers());
         cam.translate(player.x - cam.position.x + 16, player.y - cam.position.y + 16);
+
         Input.update();
     }
 
-    public void menuInput(){
+    public void menuInput() {
         Input.update();
     }
 
 
-    public void drawOverWorld(){
+    public void drawOverWorld() {
         cam.update();
         batch.setProjectionMatrix(cam.combined);
 
