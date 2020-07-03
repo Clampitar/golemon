@@ -14,22 +14,21 @@ public class Player extends Character {
     }
 
     public void walk(int xInput, int yInput, MapLayers layers) {
-        if(detectCollisionX((int)x + xInput, (int)y + yInput, layers)) {
-            super.walk(xInput, yInput);
+        if(detectCollision((int)x + X_SCALE/2 + xInput, (int)y, layers)) {
+            xInput = 0;
         }
+        if(detectCollision((int)x + X_SCALE/2, (int)y + yInput, layers)) {
+            yInput = 0;
+        }
+        super.walk(xInput, yInput);
     }
 
-    public boolean detectCollisionX(int x, int y, MapLayers layers){
+    public boolean detectCollision(int x, int y, MapLayers layers){
+        x /= X_SCALE;
+        y /= Y_SCALE;
         TiledMapTileLayer layer = (TiledMapTileLayer) layers.get(1);
-        TiledMapTileLayer.Cell cell = layer.getCell(x*X_SCALE, y*Y_SCALE);
-        layer.setOpacity(0.2f);
-        System.out.println("Cell:   "+cell);
-        return layer
-                .getCell(x, y)
-        == null;
+        TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+        return cell != null;
     }
 
-    public boolean detectCollisionY(int x, int y, MapLayers layers){
-        return false;
-    }
 }

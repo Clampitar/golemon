@@ -48,7 +48,7 @@ public class MyGdxGame extends ApplicationAdapter {
         paused = false;
     }
 
-    //render() runs once per frame
+
     @Override
     public void render() {
         timeAccumulator += Gdx.graphics.getDeltaTime();
@@ -60,7 +60,8 @@ public class MyGdxGame extends ApplicationAdapter {
 
 
     /**
-     * A frame that happens when the game is in the overWorld state.
+     * Is called during every frame of the game.
+     * Verifies the state of the game, then draws the world and handles input accordingly.
      */
     public void frame() {
         paused ^= Input.ispressed(Input.START);
@@ -75,6 +76,10 @@ public class MyGdxGame extends ApplicationAdapter {
     }
 
 
+    /**
+     * The way that the input is taken if the game is in the overWorld state.
+     *
+     */
     public void overWorldInput() {
         int x = 0;
         int y = 0;
