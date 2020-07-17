@@ -8,7 +8,7 @@ uses:	Magnetism
 		attracting one's fist to a face,
 		preventing others from warping to close to you? not really sure what path this should be
 
-(Asura) Hardness, luiquid viscosity, *kar-, i_viscum, *stieg-, *stik- 
+(Asura) Hardness, liquid viscosity, *kar-, i_viscum, *stieg-, *stik-
 Biology: skeleton
 uses:	increase durability, 
 		give shape to fluids
@@ -23,8 +23,9 @@ Biology:proprioception?, legs?, balance, location, mass...
 Uses:	warping to places, 
 		moving very fast, 
 		resisting acceleration
+		rainbow bridge (bifröst)
 
-(Deva) (something like chakra control)?, antimagic?, heat, mana
+(Preta) (something like chakra control)?, antimagic?, heat, mana
 Biology: stomach, small&large intestine
 Uses:	making solids more flexible,
 		heating stuff up,
@@ -39,7 +40,7 @@ Uses:	Healing,
 Advanced:Physical power of friendship
 
 ((secret)outer):control
-biology: PLAYER, motor nerves
+biology: PLAYER, motor nerves, golemancy
 
 
 

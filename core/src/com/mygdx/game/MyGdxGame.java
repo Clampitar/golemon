@@ -27,7 +27,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private TiledMapTileLayer layer;
     private OrthogonalTiledMapRenderer tmr;
     private OrthographicCamera cam;
-    private Menu menu;
+    private TextBox menu;
 
     private Player player;
 
@@ -44,7 +44,7 @@ public class MyGdxGame extends ApplicationAdapter {
         map = new TmxMapLoader().load("tiles/firstTileMap.tmx");
         tmr = new OrthogonalTiledMapRenderer(map, batch);
         //setting the menu
-        menu = new Menu(new Texture("menu/menu.png"), batch, cam);
+        menu = new TextBox(new Texture("dialogueBoxes/default.png"), batch, cam);
         paused = false;
     }
 
