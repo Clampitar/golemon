@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -19,16 +21,21 @@ public class TextBox {
     private float textX;
     private float textY;
 
-    public TextBox(Texture texture, SpriteBatch batch, OrthographicCamera cam) {
-        this.img = texture;
+    private int letterCounter = 0;
+
+    public TextBox(String texturePath, SpriteBatch batch, OrthographicCamera cam) {
+        this.img = new Texture(texturePath);
         this.batch= batch;
         this.cam = cam;
         font = new BitmapFont();
-        text = "sdsdsdsdsdsdsd";
+        //FileHandle fileHandle = new FileHandle("fonts/AGoblinAppears-o2aV.ttf");
+        //FileHandle fileHandle = Gdx.files.internal("fonts/AGoblinAppears-o2aV.ttf");
+        //font = new BitmapFont(fileHandle);
+        text = "123456789";
         renderX = -MyGdxGame.V_WIDTH / 2f;
         renderY = -MyGdxGame.V_HEIGHT / 2f;
         textX = renderX + 6;
-        textY = renderY + texture.getHeight() - 6;
+        textY = renderY + img.getHeight() - 6;
     }
 
 
@@ -37,51 +44,19 @@ public class TextBox {
         float y = cam.position.y;
         batch.begin();
         batch.draw(img, x + renderX, y + renderY);
-        font.draw(batch, text, x +textX, y + textY);
+        font.draw(batch, text.substring(0, Math.min(letterCounter,text.length())), x +textX, y + textY);
         batch.end();
+        letterCounter++;
     }
 
-    public void setImg(Texture img) {
-        this.img = img;
+    /**
+     * resets the properties of the textBox so that new dialogue appears corectly
+     * (for speed, this sould only be called once, when the dialogue box is closed
+     * or reset)
+     */
+    public void unRender(){
+        letterCounter = 0;
     }
 
-    public Texture getImg() {
-        return img;
-    }
 
-    public void setBatch(SpriteBatch batch) {
-        this.batch = batch;
-    }
-
-    public SpriteBatch getBatch() {
-        return batch;
-    }
-
-    public void setCam(OrthographicCamera cam) {
-        this.cam = cam;
-    }
-
-    public void setFont(BitmapFont font) {
-        this.font = font;
-    }
-
-    public void setRenderX(float renderX) {
-        this.renderX = renderX;
-    }
-
-    public void setRenderY(float renderY) {
-        this.renderY = renderY;
-    }
-
-    public void setTextX(float textX) {
-        this.textX = textX;
-    }
-
-    public void setTextY(float textY) {
-        this.textY = textY;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
 }

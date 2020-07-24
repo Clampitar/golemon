@@ -1,0 +1,25 @@
+Name:
+
+Personality:
+    diplomatic, polite
+    treats Player like they are their golemancer (and master)
+
+priorities:
+    their image
+    introducing golemancy to the world
+    having free time
+
+Beliefs:
+    ok with necromancy, but won't do it to preserve hs image
+    ok with his actions being controlled by an external being
+    relates to his golems.
+
+Story significance: Main character
+
+Abilities:
+    Controlled by the player
+    cannot fully perceive what the character does, but can deduce some of it
+
+Physical appearance:
+
+Tidbits:

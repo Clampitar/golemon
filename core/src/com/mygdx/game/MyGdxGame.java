@@ -44,7 +44,7 @@ public class MyGdxGame extends ApplicationAdapter {
         map = new TmxMapLoader().load("tiles/firstTileMap.tmx");
         tmr = new OrthogonalTiledMapRenderer(map, batch);
         //setting the menu
-        menu = new TextBox(new Texture("dialogueBoxes/default.png"), batch, cam);
+        menu = new TextBox("dialogueBoxes/default.png", batch, cam);
         paused = false;
     }
 
@@ -70,6 +70,7 @@ public class MyGdxGame extends ApplicationAdapter {
             drawOverWorld();
             menu.render();
         } else {
+            menu.unRender();
             overWorldInput();
             drawOverWorld();
         }
