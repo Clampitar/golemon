@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -33,6 +34,14 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private boolean paused;
 
+
+    enum GameState{
+        cutScene
+    }
+    private GameState gameState;
+
+    private Sound dialogueSound;
+
     @Override
     public void create() {
         Gdx.input.setInputProcessor(new Input());
@@ -40,12 +49,17 @@ public class MyGdxGame extends ApplicationAdapter {
         img = new Texture("characters/hiprechaun.png");
         player = new Player(img);
         cam = new OrthographicCamera(V_WIDTH, V_HEIGHT);
+        cam.translate(player.X_SCALE >> 2, player.Y_SCALE >> 1);
         // load tiled map
         map = new TmxMapLoader().load("tiles/firstTileMap.tmx");
         tmr = new OrthogonalTiledMapRenderer(map, batch);
         //setting the menu
-        menu = new TextBox("dialogueBoxes/default.png", batch, cam);
-        paused = false;
+        menu = new TextBox("dialogueBoxes/green.png", batch, cam);
+        menu.loadCutScene("cutScenes/tutorial.txt");
+        paused = true;
+        gameState = gameState.cutScene;
+
+        dialogueSound = Gdx.audio.newSound(Gdx.files.internal("sounds/chirp.wav"));
     }
 
 
@@ -64,13 +78,15 @@ public class MyGdxGame extends ApplicationAdapter {
      * Verifies the state of the game, then draws the world and handles input accordingly.
      */
     public void frame() {
-        paused ^= Input.ispressed(Input.START);
+        /* paused ^= Input.ispressed(Input.START); */
+        if(Input.isPressed(Input.START)) {
+            dialogueSound.play();
+        }
         if (paused) {
-            menuInput();
             drawOverWorld();
             menu.render();
+            menuInput();
         } else {
-            menu.unRender();
             overWorldInput();
             drawOverWorld();
         }
@@ -88,13 +104,19 @@ public class MyGdxGame extends ApplicationAdapter {
         if (Input.isDown(Input.UP)) y += 3;
         if (Input.isDown(Input.LEFT)) x -= 3;
         if (Input.isDown(Input.DOWN)) y -= 3;
+        float oldX = player.x;
+        float oldY = player.y;
         player.walk(x, y, map.getLayers());
-        cam.translate(player.x - cam.position.x + 16, player.y - cam.position.y + 16);
+        cam.translate(player.x - oldX, player.y - oldY);
 
+        paused = Input.isPressed(Input.START);
         Input.update();
     }
 
     public void menuInput() {
+        if (Input.isPressed(Input.START)){
+            paused = !menu.next();
+        }
         Input.update();
     }
 

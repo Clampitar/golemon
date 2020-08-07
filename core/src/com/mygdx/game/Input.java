@@ -33,7 +33,7 @@ public class Input extends InputAdapter {
         return keys[i];
     }
 
-    public static boolean ispressed(int i){
+    public static boolean isPressed(int i){
         return keys[i] && !pKeys[i];
     }
 

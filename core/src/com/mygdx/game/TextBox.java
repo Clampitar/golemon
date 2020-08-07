@@ -6,6 +6,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.LinkedList;
+import java.util.Scanner;
 
 public class TextBox {
     //anything that contains text
@@ -14,7 +20,7 @@ public class TextBox {
     private SpriteBatch batch;
     private OrthographicCamera cam;
     private BitmapFont font;
-    private String text;
+    private String[] text;
 
     private float renderX;
     private float renderY;
@@ -22,16 +28,19 @@ public class TextBox {
     private float textY;
 
     private int letterCounter = 0;
+    private int lineCounter = 0;
 
     public TextBox(String texturePath, SpriteBatch batch, OrthographicCamera cam) {
         this.img = new Texture(texturePath);
         this.batch= batch;
         this.cam = cam;
         font = new BitmapFont();
-        //FileHandle fileHandle = new FileHandle("fonts/AGoblinAppears-o2aV.ttf");
-        //FileHandle fileHandle = Gdx.files.internal("fonts/AGoblinAppears-o2aV.ttf");
+        //FileHandle fileHandle = Gdx.files.internal("fonts/arial24.fnt");
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Elfboyclassic-PKZgZ.ttf"));
+        font = generator.generateFont(new FreeTypeFontGenerator.FreeTypeFontParameter());
+        generator.dispose();
         //font = new BitmapFont(fileHandle);
-        text = "123456789";
+        defaultDialogue();
         renderX = -MyGdxGame.V_WIDTH / 2f;
         renderY = -MyGdxGame.V_HEIGHT / 2f;
         textX = renderX + 6;
@@ -44,7 +53,7 @@ public class TextBox {
         float y = cam.position.y;
         batch.begin();
         batch.draw(img, x + renderX, y + renderY);
-        font.draw(batch, text.substring(0, Math.min(letterCounter,text.length())), x +textX, y + textY);
+        font.draw(batch, text[lineCounter].substring(0, Math.min(letterCounter,text[lineCounter].length())), x +textX, y + textY);
         batch.end();
         letterCounter++;
     }
@@ -54,8 +63,28 @@ public class TextBox {
      * (for speed, this sould only be called once, when the dialogue box is closed
      * or reset)
      */
-    public void unRender(){
+    public boolean next(){
         letterCounter = 0;
+        lineCounter++;
+        if(lineCounter >= text.length){
+            lineCounter = 0;
+            return true;
+        }
+        return false;
+    }
+
+    private void defaultDialogue(){
+        text = new String[2];
+        text[0] = ("Hello,");
+        text[1] = ("it's ya boy.");
+
+    }
+
+    public void loadCutScene(String fileName){
+        FileHandle file = Gdx.files.internal(fileName);
+        text = file.readString().split("\n");
+
+
     }
 
 

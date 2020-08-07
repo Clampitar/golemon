@@ -1,0 +1,2 @@
+Hello world!
+next step is transtioning the cutscene to the menu to make the golem tutorial
