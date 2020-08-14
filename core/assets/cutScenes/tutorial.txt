@@ -1,2 +1,1 @@
-Hello world!
-next step is transtioning the cutscene to the menu to make the golem tutorial
+If everything works, the next time C is pressed, the tutorial starts.

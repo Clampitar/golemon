@@ -53,9 +53,13 @@ public class TextBox {
         float y = cam.position.y;
         batch.begin();
         batch.draw(img, x + renderX, y + renderY);
-        font.draw(batch, text[lineCounter].substring(0, Math.min(letterCounter,text[lineCounter].length())), x +textX, y + textY);
+        font.draw(batch, text[lineCounter].substring(0, letterCounter), x +textX, y + textY);
+        if(letterCounter > 53){
+            font.draw(batch, text[lineCounter].substring(53, letterCounter).trim(), x +textX, y + textY - 9);
+        }
         batch.end();
         letterCounter++;
+        letterCounter = Math.min(letterCounter,text[lineCounter].length());
     }
 
     /**

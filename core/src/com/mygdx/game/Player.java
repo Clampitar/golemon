@@ -5,9 +5,11 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
+import java.util.ArrayList;
+
 public class Player extends Character {
 
-
+    private ArrayList<? extends Material> inventory = new ArrayList<>();
 
     public Player(Texture texture) {
         super(texture);
