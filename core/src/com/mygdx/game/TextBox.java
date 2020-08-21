@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -30,16 +32,35 @@ public class TextBox {
     private int letterCounter = 0;
     private int lineCounter = 0;
 
+    private final int LETTERS_PER_LINE;
+    private int LINE_HEIGHT = 9;
+
+    public TextBox(String texturePath, SpriteBatch batch, OrthographicCamera cam, int lettersPerLine){
+        this.img = new Texture(texturePath);
+        this.batch= batch;
+        this.cam = cam;
+        LETTERS_PER_LINE = lettersPerLine;
+        renderX = -MyGdxGame.V_WIDTH / 2f;
+        renderY = -MyGdxGame.V_HEIGHT / 2f;
+    }
+
     public TextBox(String texturePath, SpriteBatch batch, OrthographicCamera cam) {
         this.img = new Texture(texturePath);
         this.batch= batch;
         this.cam = cam;
+
+        defaultFont();
+/*
         font = new BitmapFont();
-        //FileHandle fileHandle = Gdx.files.internal("fonts/arial24.fnt");
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Elfboyclassic-PKZgZ.ttf"));
-        font = generator.generateFont(new FreeTypeFontGenerator.FreeTypeFontParameter());
+        FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        fontParameter.color = new Color(0x287631ff);
+        fontParameter.borderWidth = 1;
+        fontParameter.borderColor = new Color(0xedd908ff);
+        font = generator.generateFont(fontParameter);
         generator.dispose();
-        //font = new BitmapFont(fileHandle);
+*/
+        LETTERS_PER_LINE = 48;
         defaultDialogue();
         renderX = -MyGdxGame.V_WIDTH / 2f;
         renderY = -MyGdxGame.V_HEIGHT / 2f;
@@ -48,18 +69,33 @@ public class TextBox {
     }
 
 
+
+
     public void render(){
         float x = cam.position.x;
         float y = cam.position.y;
         batch.begin();
         batch.draw(img, x + renderX, y + renderY);
-        font.draw(batch, text[lineCounter].substring(0, letterCounter), x +textX, y + textY);
-        if(letterCounter > 53){
-            font.draw(batch, text[lineCounter].substring(53, letterCounter).trim(), x +textX, y + textY - 9);
+        font.draw(batch, text[lineCounter].substring(0, Math.min(letterCounter, LETTERS_PER_LINE)), x +textX, y + textY);
+        if(letterCounter > LETTERS_PER_LINE){
+            font.draw(batch, text[lineCounter].substring(LETTERS_PER_LINE, letterCounter).trim(), x +textX, y + textY - LINE_HEIGHT);
         }
         batch.end();
         letterCounter++;
         letterCounter = Math.min(letterCounter,text[lineCounter].length());
+    }
+
+
+    public void renderList(Texture cursorImg, int cusorPosition){
+        float x = cam.position.x;
+        float y = cam.position.y;
+        batch.begin();
+        batch.draw(img, x + renderX, y + renderY);
+        for(int i = 0; i < text.length; i++) {
+            font.draw(batch, text[i], x +textX, y + textY -LINE_HEIGHT*i);
+        }
+        batch.draw(cursorImg, x + textX -1, y + textY - (LINE_HEIGHT >> 1) - cusorPosition * LINE_HEIGHT);
+        batch.end();
     }
 
     /**
@@ -84,12 +120,34 @@ public class TextBox {
 
     }
 
+    private void defaultFont(){
+        font = new BitmapFont();
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Elfboyclassic-PKZgZ.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        fontParameter.color = new Color(0x287631ff);
+        fontParameter.borderWidth = 1;
+        fontParameter.borderColor = new Color(0xedd908ff);
+        font = generator.generateFont(fontParameter);
+        generator.dispose();
+    }
+
+    /**
+     * loads a cutscene located at the internal path+filename.
+     * Currently only loads dialogue.
+     * <br/> TODO load non-dialogue things
+     * @param fileName a text file containing dialogue. Each
+     * line of the file is a line of dialogue.
+     */
     public void loadCutScene(String fileName){
         FileHandle file = Gdx.files.internal(fileName);
         text = file.readString().split("\n");
-
-
     }
 
+    public void setText(String[] text) {
+        this.text = text;
+    }
 
+    public void setText(ArrayList<String> text){
+        this.text = text.toArray(new String[0]);
+    }
 }

@@ -14,6 +14,7 @@ public class Input extends InputAdapter {
     public static final int LEFT = 2;
     public static final int DOWN = 3;
 
+    public static final int SELECT = 4;
     public static final int START = 5;
 
     static {
@@ -52,7 +53,10 @@ public class Input extends InputAdapter {
             case Keys.DOWN:
                 setKey(DOWN, true);
                 break;
-            case Keys.C:
+            case Keys.Z:
+                setKey(SELECT, true);
+                break;
+            case Keys.X:
                 setKey(START, true);
                 break;
         }
@@ -74,7 +78,10 @@ public class Input extends InputAdapter {
             case Keys.DOWN:
                 setKey(DOWN, false);
                 break;
-            case Keys.C:
+            case Keys.Z:
+                setKey(SELECT, false);
+                break;
+            case Keys.X:
                 setKey(START, false);
                 break;
         }

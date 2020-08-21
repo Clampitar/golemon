@@ -1,4 +1,10 @@
 package com.mygdx.game;
 
-public class Material {
+public enum Material {
+    sand,
+    rock,
+    flesh;
+    Material(){
+
+    }
 }

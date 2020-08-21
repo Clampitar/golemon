@@ -28,16 +28,20 @@ public class MyGdxGame extends ApplicationAdapter {
     private TiledMapTileLayer layer;
     private OrthogonalTiledMapRenderer tmr;
     private OrthographicCamera cam;
-    private TextBox menu;
+    private TextBox dialogue;
+    private Menu menu;
 
     private Player player;
 
-    private boolean paused;
 
-
-    enum GameState{
+    // private boolean paused;
+   enum GameState{
+        overWorld,
+        paused,
         cutScene
     }
+
+
     private GameState gameState;
 
     private Sound dialogueSound;
@@ -54,15 +58,17 @@ public class MyGdxGame extends ApplicationAdapter {
         map = new TmxMapLoader().load("tiles/firstTileMap.tmx");
         tmr = new OrthogonalTiledMapRenderer(map, batch);
         //setting the menu
-        menu = new TextBox("dialogueBoxes/green.png", batch, cam);
-        menu.loadCutScene("cutScenes/tutorial.txt");
-        paused = true;
-        gameState = gameState.cutScene;
+        dialogue = new TextBox("dialogueBoxes/green.png", batch, cam);
+        dialogue.loadCutScene("cutScenes/tutorial.txt");
+        menu = new Menu("menu/menu.png", batch, cam);
+        gameState = GameState.overWorld;
 
         dialogueSound = Gdx.audio.newSound(Gdx.files.internal("sounds/chirp.wav"));
     }
 
-
+    /**
+     *
+     */
     @Override
     public void render() {
         timeAccumulator += Gdx.graphics.getDeltaTime();
@@ -78,24 +84,32 @@ public class MyGdxGame extends ApplicationAdapter {
      * Verifies the state of the game, then draws the world and handles input accordingly.
      */
     public void frame() {
-        /* paused ^= Input.ispressed(Input.START); */
-        if(Input.isPressed(Input.START)) {
+        if(Input.isPressed(Input.SELECT)) {
             dialogueSound.play();
         }
-        if (paused) {
-            drawOverWorld();
-            menu.render();
-            menuInput();
-        } else {
-            overWorldInput();
-            drawOverWorld();
+        switch (gameState){
+            case overWorld:
+                overWorldInput();
+                drawOverWorld();
+                break;
+            case cutScene:
+                cutsceneInput();
+                drawOverWorld();
+                dialogue.render();
+                break;
+            case paused:
+                //drawOverWorld();
+                menuInput();
+                menu.render(player.getInventory());
+                break;
         }
+        Input.update();
     }
 
 
     /**
-     * The way that the input is taken if the game is in the overWorld state.
-     *
+     * The way that the input is taken if the game is in the overWorld state
+     * (The player can walk around and no events are happening.)
      */
     public void overWorldInput() {
         int x = 0;
@@ -109,15 +123,28 @@ public class MyGdxGame extends ApplicationAdapter {
         player.walk(x, y, map.getLayers());
         cam.translate(player.x - oldX, player.y - oldY);
 
-        paused = Input.isPressed(Input.START);
-        Input.update();
+        if(Input.isPressed(Input.SELECT)){
+            gameState = GameState.cutScene;
+        }
+        if(Input.isPressed(Input.START)){
+            gameState = GameState.paused;
+        }
+    }
+
+    public void cutsceneInput() {
+        if (Input.isPressed(Input.SELECT)){
+            if(dialogue.next()){
+                gameState = GameState.overWorld;
+                player.getInventory().add(Material.sand);
+            }
+        }
     }
 
     public void menuInput() {
-        if (Input.isPressed(Input.START)){
-            paused = !menu.next();
+        if(Input.isPressed(Input.START)){
+            gameState = GameState.overWorld;
         }
-        Input.update();
+        menu.input();
     }
 
 
