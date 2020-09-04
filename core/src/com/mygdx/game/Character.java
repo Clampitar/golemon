@@ -2,25 +2,21 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapLayers;
 
-public class Character {
+public class Character extends SpritedObject {
 
-    protected Texture texture;
     protected TextureRegion region;
 
     protected final int X_SCALE = 32;
     protected final int Y_SCALE = 32;
 
-    protected float x = 0;
-    protected float y = 0;
     protected float walkCycle = 0;
 
     protected int direction = Input.DOWN;
 
 
     public Character(Texture texture) {
-        this.texture = texture;
+        super(texture);
         region = new TextureRegion(texture, 0, direction * Y_SCALE, X_SCALE, Y_SCALE);
     }
 
@@ -70,11 +66,5 @@ public class Character {
         region.setRegion(xSprite, ySprite, X_SCALE, Y_SCALE);
     }
 
-    public float getX() {
-        return x;
-    }
 
-    public float getY() {
-        return y;
-    }
 }

@@ -2,13 +2,13 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
@@ -23,47 +23,57 @@ public class MyGdxGame extends ApplicationAdapter {
     private float timeAccumulator = 0;
 
     private SpriteBatch batch;
-    private Texture img;
     private TiledMap map;
-    private TiledMapTileLayer layer;
     private OrthogonalTiledMapRenderer tmr;
     private OrthographicCamera cam;
     private TextBox dialogue;
     private Menu menu;
 
     private Player player;
+    private Opponent dummy;
+    private Golem defaultGolem;
+
 
 
     // private boolean paused;
-   enum GameState{
+   public enum GameState{
         overWorld,
         paused,
-        cutScene
+        cutScene,
+        battle
     }
 
 
     private GameState gameState;
 
     private Sound dialogueSound;
+    private Music battleMusic;
 
     @Override
     public void create() {
         Gdx.input.setInputProcessor(new Input());
         batch = new SpriteBatch();
-        img = new Texture("characters/hiprechaun.png");
-        player = new Player(img);
+        player = new Player(new Texture("characters/hiprechaun.png"));
         cam = new OrthographicCamera(V_WIDTH, V_HEIGHT);
         cam.translate(player.X_SCALE >> 2, player.Y_SCALE >> 1);
+
         // load tiled map
         map = new TmxMapLoader().load("tiles/firstTileMap.tmx");
         tmr = new OrthogonalTiledMapRenderer(map, batch);
+
         //setting the menu
         dialogue = new TextBox("dialogueBoxes/green.png", batch, cam);
         dialogue.loadCutScene("cutScenes/tutorial.txt");
         menu = new Menu("menu/menu.png", batch, cam);
-        gameState = GameState.overWorld;
+
+        //golem and opponent
+        dummy = new Opponent();
+        defaultGolem = new Golem();
+
+        gameState = GameState.battle;
 
         dialogueSound = Gdx.audio.newSound(Gdx.files.internal("sounds/chirp.wav"));
+        battleMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/paragon.mp3"));
     }
 
     /**
@@ -87,6 +97,11 @@ public class MyGdxGame extends ApplicationAdapter {
         if(Input.isPressed(Input.SELECT)) {
             dialogueSound.play();
         }
+        if(gameState == GameState.battle && !battleMusic.isPlaying()){
+            battleMusic.play();
+        } else if(gameState != GameState.battle && battleMusic.isPlaying()){
+            battleMusic.stop();
+        }
         switch (gameState){
             case overWorld:
                 overWorldInput();
@@ -98,9 +113,13 @@ public class MyGdxGame extends ApplicationAdapter {
                 dialogue.render();
                 break;
             case paused:
-                //drawOverWorld();
+                drawOverWorld();
                 menuInput();
                 menu.render(player.getInventory());
+                break;
+            case battle:
+                battleInput();
+                drawBattle();
                 break;
         }
         Input.update();
@@ -147,6 +166,12 @@ public class MyGdxGame extends ApplicationAdapter {
         menu.input();
     }
 
+    public void battleInput(){
+        if(Input.isPressed(Input.START)){
+            gameState = GameState.paused;
+        }
+    }
+
 
     public void drawOverWorld() {
         cam.update();
@@ -157,7 +182,15 @@ public class MyGdxGame extends ApplicationAdapter {
         tmr.render();
 
         batch.begin();
-        batch.draw(player.getRegion(), player.getX(), player.getY());
+        player.draw(batch, player.getRegion());
+        //batch.draw(player.getRegion(), player.getX(), player.getY());
+        batch.end();
+    }
+
+    public void drawBattle(){
+        batch.begin();
+        defaultGolem.draw(batch);
+        dummy.draw(batch);
         batch.end();
     }
 
@@ -165,6 +198,5 @@ public class MyGdxGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         batch.dispose();
-        img.dispose();
     }
 }

@@ -1,12 +1,20 @@
 package com.mygdx.game;
 
-public class Golem {
+import com.badlogic.gdx.graphics.Texture;
+
+public class Golem extends SpritedObject {
     protected limb leftArm;
     protected limb rightArm;
     protected limb leftLeg;
     protected limb rightLeg;
-    class limb{
-        Material material;
+
+
+    public Golem() {
+        super(new Texture("fighters/defaultGolem.png"));
+    }
+
+    class limb extends  Appendage{
+        Material foreMaterial;
         Material jointMaterial;
 
     }

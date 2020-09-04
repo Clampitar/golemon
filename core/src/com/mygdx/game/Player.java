@@ -18,6 +18,7 @@ public class Player extends Character {
     private int COLLISION_LAYER = 1;
     private int MATERIAL_LAYER = 2;
 
+
     public Player(Texture texture) {
         super(texture);
         inventory = new ArrayList<>();
@@ -50,7 +51,7 @@ public class Player extends Character {
     public boolean detectCollision(int x, int y, MapLayers layers){
         x /= X_SCALE;
         y /= Y_SCALE;
-        TiledMapTileLayer layer = (TiledMapTileLayer) layers.get(VISUAL_LAYER);
+        TiledMapTileLayer layer = (TiledMapTileLayer) layers.get(COLLISION_LAYER);
         TiledMapTileLayer.Cell cell = layer.getCell(x, y);
         return cell != null;
     }
