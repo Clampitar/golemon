@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 import java.util.ArrayList;
@@ -14,14 +15,16 @@ public class Player extends Character {
 
     private ArrayList<Material> inventory;
 
-    private int VISUAL_LAYER = 0;
+    private int MATERIAL_LAYER = 0;
     private int COLLISION_LAYER = 1;
-    private int MATERIAL_LAYER = 2;
 
 
     public Player(Texture texture) {
         super(texture);
         inventory = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            inventory.add(Material.rock);
+        }
     }
 
     /**
@@ -56,11 +59,46 @@ public class Player extends Character {
         return cell != null;
     }
 
-    public Material detectPickup(int x, int y, MapLayer layer){
-        return Material.sand;
+    public Material detectPickup(MapLayers layers){
+        Material material;
+        int detectX = (int) x;
+        int detectY = (int) y;
+        // The place where the player is in front of it, centered to its sprite's rectangle
+        switch (direction){
+            case Input.UP:
+                detectY += Y_SCALE - 1;
+            case Input.DOWN:
+                detectX += X_SCALE / 2;
+                break;
+            case Input.RIGHT:
+                detectX += X_SCALE - 1;
+                case Input.LEFT:
+                    detectY += Y_SCALE / 2;
+        }
+
+        TiledMapTileLayer layer = (TiledMapTileLayer) layers.get(MATERIAL_LAYER);
+        TiledMapTileLayer.Cell cell = layer.getCell(detectX, detectY);
+        try {
+            material = obtainTileMaterial(cell.getTile());
+        } catch (NullPointerException e){
+            material = Material.nothing;
+        }
+
+        x = detectX * X_SCALE;
+        y = detectY * X_SCALE;
+
+        return material;
     }
 
     public ArrayList<Material> getInventory() {
         return inventory;
+    }
+
+    private Material obtainTileMaterial(TiledMapTile tile){
+        if(tile == null) return  Material.rock;
+        switch (tile.getId()){
+            case 1: return  Material.sand;
+            default:return Material.flesh;
+        }
     }
 }

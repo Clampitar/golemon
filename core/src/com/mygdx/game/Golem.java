@@ -13,6 +13,11 @@ public class Golem extends SpritedObject {
         super(new Texture("fighters/defaultGolem.png"));
     }
 
+    @Override
+    protected void setPosition(float x, float y) {
+        super.setPosition(x-MyGdxGame.V_WIDTH/MyGdxGame.SCALE + 64, y-MyGdxGame.V_HEIGHT/MyGdxGame.SCALE);
+    }
+
     class limb extends  Appendage{
         Material foreMaterial;
         Material jointMaterial;

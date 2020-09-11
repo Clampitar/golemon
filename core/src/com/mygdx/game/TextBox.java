@@ -8,15 +8,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Scanner;
+
 
 public class TextBox {
-    //anything that contains text
 
     private Texture img;
     private SpriteBatch batch;
@@ -29,11 +24,11 @@ public class TextBox {
     private float textX;
     private float textY;
 
-    private int letterCounter = 0;
+    private int letterCounter = 1;
     private int lineCounter = 0;
 
     private final int LETTERS_PER_LINE;
-    private int LINE_HEIGHT = 9;
+    private final int LINE_HEIGHT = 9;
 
     public TextBox(String texturePath, SpriteBatch batch, OrthographicCamera cam, int lettersPerLine){
         this.img = new Texture(texturePath);
@@ -50,18 +45,8 @@ public class TextBox {
         this.cam = cam;
 
         defaultFont();
-/*
-        font = new BitmapFont();
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Elfboyclassic-PKZgZ.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        fontParameter.color = new Color(0x287631ff);
-        fontParameter.borderWidth = 1;
-        fontParameter.borderColor = new Color(0xedd908ff);
-        font = generator.generateFont(fontParameter);
-        generator.dispose();
-*/
+
         LETTERS_PER_LINE = 48;
-        defaultDialogue();
         renderX = -MyGdxGame.V_WIDTH / 2f;
         renderY = -MyGdxGame.V_HEIGHT / 2f;
         textX = renderX + 6;
@@ -86,7 +71,7 @@ public class TextBox {
     }
 
 
-    public void renderList(Texture cursorImg, int cusorPosition){
+    public void renderList(Texture cursorImg, int cursorPosition){
         float x = cam.position.x;
         float y = cam.position.y;
         batch.begin();
@@ -94,13 +79,13 @@ public class TextBox {
         for(int i = 0; i < text.length; i++) {
             font.draw(batch, text[i], x +textX, y + textY -LINE_HEIGHT*i);
         }
-        batch.draw(cursorImg, x + textX -1, y + textY - (LINE_HEIGHT >> 1) - cusorPosition * LINE_HEIGHT);
+        batch.draw(cursorImg, x + textX -1, y + textY - (LINE_HEIGHT >> 1) - cursorPosition * LINE_HEIGHT);
         batch.end();
     }
 
     /**
-     * resets the properties of the textBox so that new dialogue appears corectly
-     * (for speed, this sould only be called once, when the dialogue box is closed
+     * resets the properties of the textBox so that new dialogue appears correctly
+     * (for speed, this should only be called once, when the dialogue box is closed
      * or reset)
      */
     public boolean next(){
@@ -113,11 +98,10 @@ public class TextBox {
         return false;
     }
 
-    private void defaultDialogue(){
-        text = new String[2];
-        text[0] = ("Hello,");
-        text[1] = ("it's ya boy.");
 
+    public void pickupDialogue(Material material){
+        text = new String[1];
+        text[0] = "Picked up "+material.name()+".";
     }
 
     private void defaultFont(){
@@ -149,5 +133,9 @@ public class TextBox {
 
     public void setText(ArrayList<String> text){
         this.text = text.toArray(new String[0]);
+    }
+
+    public boolean isNew(){
+        return letterCounter == 1;
     }
 }

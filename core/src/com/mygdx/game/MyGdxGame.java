@@ -39,7 +39,7 @@ public class MyGdxGame extends ApplicationAdapter {
    public enum GameState{
         overWorld,
         paused,
-        cutScene,
+        pickup,
         battle
     }
 
@@ -70,10 +70,13 @@ public class MyGdxGame extends ApplicationAdapter {
         dummy = new Opponent();
         defaultGolem = new Golem();
 
-        gameState = GameState.battle;
+        gameState = GameState.overWorld;
+
 
         dialogueSound = Gdx.audio.newSound(Gdx.files.internal("sounds/chirp.wav"));
-        battleMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/paragon.mp3"));
+        battleMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/wrath.wav"));
+
+       //drawOverWorld();
     }
 
     /**
@@ -95,7 +98,8 @@ public class MyGdxGame extends ApplicationAdapter {
      */
     public void frame() {
         if(Input.isPressed(Input.SELECT)) {
-            dialogueSound.play();
+            long id = dialogueSound.play();
+            dialogueSound.setVolume(id, 0.03f);
         }
         if(gameState == GameState.battle && !battleMusic.isPlaying()){
             battleMusic.play();
@@ -107,8 +111,8 @@ public class MyGdxGame extends ApplicationAdapter {
                 overWorldInput();
                 drawOverWorld();
                 break;
-            case cutScene:
-                cutsceneInput();
+            case pickup:
+                pickupInput();
                 drawOverWorld();
                 dialogue.render();
                 break;
@@ -120,6 +124,8 @@ public class MyGdxGame extends ApplicationAdapter {
             case battle:
                 battleInput();
                 drawBattle();
+
+                menu.render(player.getInventory());
                 break;
         }
         Input.update();
@@ -140,22 +146,27 @@ public class MyGdxGame extends ApplicationAdapter {
         float oldX = player.x;
         float oldY = player.y;
         player.walk(x, y, map.getLayers());
-        cam.translate(player.x - oldX, player.y - oldY);
+        cam.translate(player.x - cam.position.x, player.y - cam.position.y);
 
         if(Input.isPressed(Input.SELECT)){
-            gameState = GameState.cutScene;
+            gameState = GameState.pickup;
         }
         if(Input.isPressed(Input.START)){
             gameState = GameState.paused;
         }
     }
 
-    public void cutsceneInput() {
-        if (Input.isPressed(Input.SELECT)){
-            if(dialogue.next()){
-                gameState = GameState.overWorld;
-                player.getInventory().add(Material.sand);
+    public void pickupInput() {
+        if(dialogue.isNew()){
+            Material material = player.detectPickup(map.getLayers());
+            if(material != null){
+                dialogue.pickupDialogue(material);
+                player.getInventory().add(material);
             }
+        }
+        if (Input.isPressed(Input.SELECT)){
+                gameState = GameState.overWorld;
+                dialogue.next();
         }
     }
 
@@ -170,6 +181,7 @@ public class MyGdxGame extends ApplicationAdapter {
         if(Input.isPressed(Input.START)){
             gameState = GameState.paused;
         }
+        menu.input();
     }
 
 
@@ -188,6 +200,10 @@ public class MyGdxGame extends ApplicationAdapter {
     }
 
     public void drawBattle(){
+        cam.update();
+        defaultGolem.setPosition(cam.position.x, cam.position.y);
+        dummy.setPosition(cam.position.x, cam.position.y);
+        batch.setProjectionMatrix(cam.combined);
         batch.begin();
         defaultGolem.draw(batch);
         dummy.draw(batch);

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class SpritedObject {
 
-    protected final float DEFAULT_X = 0;
 
     protected Texture img;
     protected float x;
@@ -34,5 +33,10 @@ public class SpritedObject {
 
     protected void draw(SpriteBatch batch, TextureRegion img){
         batch.draw(img, x, y);
+    }
+
+    protected void setPosition(float x, float y){
+        this.x = x;
+        this.y = y;
     }
 }
