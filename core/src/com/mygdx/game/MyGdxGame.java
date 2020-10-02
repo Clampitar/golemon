@@ -27,7 +27,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private OrthogonalTiledMapRenderer tmr;
     private OrthographicCamera cam;
     private TextBox dialogue;
-    private Menu menu;
+    private CraftingMenu menu;
 
     private Player player;
     private Opponent dummy;
@@ -61,14 +61,14 @@ public class MyGdxGame extends ApplicationAdapter {
         map = new TmxMapLoader().load("tiles/firstTileMap.tmx");
         tmr = new OrthogonalTiledMapRenderer(map, batch);
 
-        //setting the menu
-        dialogue = new TextBox("dialogueBoxes/green.png", batch, cam);
-        dialogue.loadCutScene("cutScenes/tutorial.txt");
-        menu = new Menu("menu/menu.png", batch, cam);
-
         //golem and opponent
         dummy = new Opponent();
         defaultGolem = new Golem();
+
+        //setting the menu
+        dialogue = new TextBox("dialogueBoxes/green.png", batch, cam);
+        dialogue.loadCutScene("cutScenes/tutorial.txt");
+        menu = new CraftingMenu("menu/menu.png", batch, cam, defaultGolem);
 
         gameState = GameState.overWorld;
 
@@ -76,7 +76,6 @@ public class MyGdxGame extends ApplicationAdapter {
         dialogueSound = Gdx.audio.newSound(Gdx.files.internal("sounds/chirp.wav"));
         battleMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/wrath.wav"));
 
-       //drawOverWorld();
     }
 
     /**
@@ -98,8 +97,7 @@ public class MyGdxGame extends ApplicationAdapter {
      */
     public void frame() {
         if(Input.isPressed(Input.SELECT)) {
-            long id = dialogueSound.play();
-            dialogueSound.setVolume(id, 0.03f);
+            long id = dialogueSound.play(0.03f);
         }
         if(gameState == GameState.battle && !battleMusic.isPlaying()){
             battleMusic.play();
@@ -119,7 +117,7 @@ public class MyGdxGame extends ApplicationAdapter {
             case paused:
                 drawOverWorld();
                 menuInput();
-                menu.render(player.getInventory());
+                menu.render();
                 break;
             case battle:
                 battleInput();

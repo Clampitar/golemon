@@ -53,6 +53,14 @@ public class TextBox {
         textY = renderY + img.getHeight() - 6;
     }
 
+    public TextBox(String texturePath, SpriteBatch batch, OrthographicCamera cam, float xOffset, float yOffset) {
+        this(texturePath, batch, cam);
+        renderX += xOffset;
+        renderY += yOffset;
+        textX += xOffset;
+        textY += yOffset;
+    }
+
 
 
 
@@ -109,7 +117,7 @@ public class TextBox {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Elfboyclassic-PKZgZ.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         fontParameter.color = new Color(0x287631ff);
-        fontParameter.borderWidth = 1;
+        fontParameter.borderWidth = 0.95f;
         fontParameter.borderColor = new Color(0xedd908ff);
         font = generator.generateFont(fontParameter);
         generator.dispose();

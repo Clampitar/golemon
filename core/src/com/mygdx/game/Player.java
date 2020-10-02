@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -15,8 +14,8 @@ public class Player extends Character {
 
     private ArrayList<Material> inventory;
 
-    private int MATERIAL_LAYER = 0;
-    private int COLLISION_LAYER = 1;
+    private final int MATERIAL_LAYER = 0;
+    private final int COLLISION_LAYER = 1;
 
 
     public Player(Texture texture) {
@@ -77,15 +76,13 @@ public class Player extends Character {
         }
 
         TiledMapTileLayer layer = (TiledMapTileLayer) layers.get(MATERIAL_LAYER);
-        TiledMapTileLayer.Cell cell = layer.getCell(detectX, detectY);
+        TiledMapTileLayer.Cell cell = layer.getCell(detectX / X_SCALE, detectY / Y_SCALE);
         try {
             material = obtainTileMaterial(cell.getTile());
         } catch (NullPointerException e){
             material = Material.nothing;
         }
 
-        x = detectX * X_SCALE;
-        y = detectY * X_SCALE;
 
         return material;
     }

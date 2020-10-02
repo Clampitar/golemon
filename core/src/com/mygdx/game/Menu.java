@@ -8,11 +8,22 @@ import java.util.ArrayList;
 
 public class Menu{
 
-    private TextBox textBox;
-    private Cursor cursor;
+    protected TextBox textBox;
+    protected Cursor cursor;
+    protected Menu childMenu = null;
+    protected boolean activeChild = false;
 
     public Menu(String texturePath, SpriteBatch batch, OrthographicCamera cam) {
         textBox = new TextBox(texturePath, batch, cam);
+
+        textBox.setText(new String[]{"Menu option", "second option", "golems",
+                "sand", "I hate sand.", "It gets everywhere."});
+
+        cursor = new Cursor();
+    }
+
+    public Menu(String texturePath, SpriteBatch batch, OrthographicCamera cam, float x, float y) {
+        textBox = new TextBox(texturePath, batch, cam, x, y);
 
         textBox.setText(new String[]{"Menu option", "second option", "golems",
                 "sand", "I hate sand.", "It gets everywhere."});
@@ -36,6 +47,20 @@ public class Menu{
     }
 
     public void input(){
+        upDownInput();
+        if(Input.isPressed(Input.SELECT)){
+            cursorSelect();
+        }
+    }
+
+    public void input(Menu parentMenu){
+        upDownInput();
+        if(Input.isPressed(Input.SELECT)){
+            cursorSelect(parentMenu);
+        }
+    }
+
+    private void upDownInput(){
         if(Input.isPressed(Input.UP)){
             cursor.position--;
             if(cursor.position < 0) cursor.position = 0;
@@ -45,10 +70,23 @@ public class Menu{
         }
     }
 
+    /**
+     * Designates what happens when the select button is pressed in Input().
+     * Separated from Input() to simplify @override
+     */
+    protected void cursorSelect(){
+
+    }
+
+    protected int cursorSelect(Menu parentMenu){
+        parentMenu.activeChild = false;
+        return cursor.position;
+    }
+
     class Cursor{
         Texture img;
-        int position;
-        public Cursor(){
+        protected int position;
+        Cursor(){
             img = new Texture("menu/cursor.png");
             position = 0;
         }
