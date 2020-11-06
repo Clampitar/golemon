@@ -12,7 +12,6 @@ import java.util.ArrayList;
  */
 public class Player extends Character {
 
-    private ArrayList<Material> inventory;
 
     private final int MATERIAL_LAYER = 0;
     private final int COLLISION_LAYER = 1;
@@ -20,10 +19,6 @@ public class Player extends Character {
 
     public Player(Texture texture) {
         super(texture);
-        inventory = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            inventory.add(Material.rock);
-        }
     }
 
     /**
@@ -87,9 +82,6 @@ public class Player extends Character {
         return material;
     }
 
-    public ArrayList<Material> getInventory() {
-        return inventory;
-    }
 
     private Material obtainTileMaterial(TiledMapTile tile){
         if(tile == null) return  Material.rock;

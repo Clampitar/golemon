@@ -11,10 +11,6 @@ public class SpritedObject {
     protected float x;
     protected float y;
 
-    SpritedObject(String texturePath){
-        this(new Texture(texturePath));
-    }
-
     SpritedObject(Texture texture){
         this.img = texture;
         x=0;

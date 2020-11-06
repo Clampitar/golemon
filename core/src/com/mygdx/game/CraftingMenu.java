@@ -17,7 +17,7 @@ public class CraftingMenu extends Menu{
     @Override
     public void render() {
         if(activeChild){
-            childMenu.render();
+            childMenu.render(cursor.position);
         }
             textBox.setText(golem.toList());
             textBox.renderList(cursor.img, cursor.position);

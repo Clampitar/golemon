@@ -8,19 +8,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 
-public class TextBox {
+public class TextBox extends SpritedObject {
 
-    private Texture img;
     private SpriteBatch batch;
     private OrthographicCamera cam;
     private BitmapFont font;
     private String[] text;
 
-    private float renderX;
-    private float renderY;
     private float textX;
     private float textY;
 
@@ -28,47 +27,35 @@ public class TextBox {
     private int lineCounter = 0;
 
     private final int LETTERS_PER_LINE;
-    private final int LINE_HEIGHT = 9;
+    public final int LINE_HEIGHT = 9;
 
     public TextBox(String texturePath, SpriteBatch batch, OrthographicCamera cam, int lettersPerLine){
-        this.img = new Texture(texturePath);
+        super(new Texture(texturePath), -MyGdxGame.V_WIDTH / 2f, -MyGdxGame.V_HEIGHT / 2f);
         this.batch= batch;
         this.cam = cam;
         LETTERS_PER_LINE = lettersPerLine;
-        renderX = -MyGdxGame.V_WIDTH / 2f;
-        renderY = -MyGdxGame.V_HEIGHT / 2f;
+        defaultFont();
+        textX = x + 6;
+        textY = y + img.getHeight() - 6;
     }
 
     public TextBox(String texturePath, SpriteBatch batch, OrthographicCamera cam) {
-        this.img = new Texture(texturePath);
-        this.batch= batch;
-        this.cam = cam;
-
-        defaultFont();
-
-        LETTERS_PER_LINE = 48;
-        renderX = -MyGdxGame.V_WIDTH / 2f;
-        renderY = -MyGdxGame.V_HEIGHT / 2f;
-        textX = renderX + 6;
-        textY = renderY + img.getHeight() - 6;
+        this(texturePath, batch, cam, 48);
     }
 
     public TextBox(String texturePath, SpriteBatch batch, OrthographicCamera cam, float xOffset, float yOffset) {
         this(texturePath, batch, cam);
-        renderX += xOffset;
-        renderY += yOffset;
+        x += xOffset;
+        y += yOffset;
         textX += xOffset;
         textY += yOffset;
     }
-
-
-
 
     public void render(){
         float x = cam.position.x;
         float y = cam.position.y;
         batch.begin();
-        batch.draw(img, x + renderX, y + renderY);
+        batch.draw(img, x + x, y + y);
         font.draw(batch, text[lineCounter].substring(0, Math.min(letterCounter, LETTERS_PER_LINE)), x +textX, y + textY);
         if(letterCounter > LETTERS_PER_LINE){
             font.draw(batch, text[lineCounter].substring(LETTERS_PER_LINE, letterCounter).trim(), x +textX, y + textY - LINE_HEIGHT);
@@ -83,7 +70,7 @@ public class TextBox {
         float x = cam.position.x;
         float y = cam.position.y;
         batch.begin();
-        batch.draw(img, x + renderX, y + renderY);
+        batch.draw(img, x + x, y + y);
         for(int i = 0; i < text.length; i++) {
             font.draw(batch, text[i], x +textX, y + textY -LINE_HEIGHT*i);
         }
@@ -91,6 +78,13 @@ public class TextBox {
         batch.end();
     }
 
+    public void renderList(Texture cursorImg, int cursorPosition, int lineOffset){
+        y -= lineOffset*LINE_HEIGHT;
+        textY -= lineOffset*LINE_HEIGHT;
+        renderList(cursorImg, cursorPosition);
+        y += lineOffset*LINE_HEIGHT;
+        textY += lineOffset*LINE_HEIGHT;
+    }
     /**
      * resets the properties of the textBox so that new dialogue appears correctly
      * (for speed, this should only be called once, when the dialogue box is closed
@@ -138,6 +132,7 @@ public class TextBox {
     public void setText(String[] text) {
         this.text = text;
     }
+
 
     public void setText(ArrayList<String> text){
         this.text = text.toArray(new String[0]);

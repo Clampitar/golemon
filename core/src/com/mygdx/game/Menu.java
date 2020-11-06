@@ -33,17 +33,23 @@ public class Menu{
 
     public void render(){
         textBox.renderList(cursor.img, cursor.position);
-        //textBox.draw(cursor.getImg(), -2, cursor.position * textBox.LINE_HEIGHT);
     }
 
+    public void render(int lineOffset){
+        textBox.renderList(cursor.img, cursor.position, lineOffset);
+    }
+
+    /**
+     * 
+     * @param inventory
+     */
     public void render(ArrayList<Material> inventory){
         String[] inv = new String[inventory.size()];
         for (int i = 0; i < inv.length; i++) {
             inv[i] = inventory.get(i).name();
         }
         textBox.setText(inv);
-        textBox.renderList(cursor.img, cursor.position);
-        //textBox.draw(cursor.getImg(), -2, cursor.position * textBox.LINE_HEIGHT);
+        render();
     }
 
     public void input(){
@@ -53,11 +59,12 @@ public class Menu{
         }
     }
 
-    public void input(Menu parentMenu){
+    public int input(Menu parentMenu){
         upDownInput();
         if(Input.isPressed(Input.SELECT)){
-            cursorSelect(parentMenu);
+            return cursorSelect(parentMenu);
         }
+        return -1;
     }
 
     private void upDownInput(){
@@ -83,6 +90,10 @@ public class Menu{
         return cursor.position;
     }
 
+  /*  protected String get(int position){
+        //return textBox.g
+    }
+*/
     class Cursor{
         Texture img;
         protected int position;

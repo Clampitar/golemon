@@ -12,6 +12,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
+import java.util.ArrayList;
+
 public class MyGdxGame extends ApplicationAdapter {
 
     public static final String TITLE = "get a title";
@@ -29,6 +31,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private TextBox dialogue;
     private CraftingMenu menu;
 
+    private ArrayList<Material> inventory;
     private Player player;
     private Opponent dummy;
     private Golem defaultGolem;
@@ -70,16 +73,20 @@ public class MyGdxGame extends ApplicationAdapter {
         dialogue.loadCutScene("cutScenes/tutorial.txt");
         menu = new CraftingMenu("menu/menu.png", batch, cam, defaultGolem);
 
-        gameState = GameState.overWorld;
+        gameState = GameState.battle;
 
 
         dialogueSound = Gdx.audio.newSound(Gdx.files.internal("sounds/chirp.wav"));
         battleMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/wrath.wav"));
 
+        inventory = new ArrayList<>();
+        for (int i = 0; i < 4; i++)
+            inventory.add(Material.rock);
+
     }
 
     /**
-     *
+     * function from libgdx. I modify it into frame() to assure a fixed fps.
      */
     @Override
     public void render() {
@@ -97,7 +104,7 @@ public class MyGdxGame extends ApplicationAdapter {
      */
     public void frame() {
         if(Input.isPressed(Input.SELECT)) {
-            long id = dialogueSound.play(0.03f);
+            dialogueSound.play(0.03f);
         }
         if(gameState == GameState.battle && !battleMusic.isPlaying()){
             battleMusic.play();
@@ -123,7 +130,7 @@ public class MyGdxGame extends ApplicationAdapter {
                 battleInput();
                 drawBattle();
 
-                menu.render(player.getInventory());
+                menu.render(inventory);
                 break;
         }
         Input.update();
@@ -141,8 +148,6 @@ public class MyGdxGame extends ApplicationAdapter {
         if (Input.isDown(Input.UP)) y += 3;
         if (Input.isDown(Input.LEFT)) x -= 3;
         if (Input.isDown(Input.DOWN)) y -= 3;
-        float oldX = player.x;
-        float oldY = player.y;
         player.walk(x, y, map.getLayers());
         cam.translate(player.x - cam.position.x, player.y - cam.position.y);
 
@@ -154,12 +159,15 @@ public class MyGdxGame extends ApplicationAdapter {
         }
     }
 
+    /**
+     * What happens in a frame when a meterial is picked up by the player
+     */
     public void pickupInput() {
         if(dialogue.isNew()){
             Material material = player.detectPickup(map.getLayers());
             if(material != null){
                 dialogue.pickupDialogue(material);
-                player.getInventory().add(material);
+                inventory.add(material);
             }
         }
         if (Input.isPressed(Input.SELECT)){
@@ -182,7 +190,9 @@ public class MyGdxGame extends ApplicationAdapter {
         menu.input();
     }
 
-
+    /**
+     * Draws the overworld, with the player as its center.
+     */
     public void drawOverWorld() {
         cam.update();
         batch.setProjectionMatrix(cam.combined);
@@ -197,6 +207,10 @@ public class MyGdxGame extends ApplicationAdapter {
         batch.end();
     }
 
+    /**
+     * Draws a battle (INCOMPLETE)
+     * Corrently going for a prototype copy of pokemon style
+     */
     public void drawBattle(){
         cam.update();
         defaultGolem.setPosition(cam.position.x, cam.position.y);
