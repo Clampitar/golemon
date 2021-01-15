@@ -8,15 +8,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 
 
 public class TextBox extends SpritedObject {
 
-    private SpriteBatch batch;
-    private OrthographicCamera cam;
+    private final SpriteBatch batch;
+    private final OrthographicCamera cam;
     private BitmapFont font;
     private String[] text;
 
@@ -35,8 +32,8 @@ public class TextBox extends SpritedObject {
         this.cam = cam;
         LETTERS_PER_LINE = lettersPerLine;
         defaultFont();
-        textX = x + 6;
-        textY = y + img.getHeight() - 6;
+        textX = xOffset + 6;
+        textY = yOffset + img.getHeight() - 6;
     }
 
     public TextBox(String texturePath, SpriteBatch batch, OrthographicCamera cam) {
@@ -45,8 +42,8 @@ public class TextBox extends SpritedObject {
 
     public TextBox(String texturePath, SpriteBatch batch, OrthographicCamera cam, float xOffset, float yOffset) {
         this(texturePath, batch, cam);
-        x += xOffset;
-        y += yOffset;
+        this.xOffset += xOffset;
+        this.yOffset += yOffset;
         textX += xOffset;
         textY += yOffset;
     }
@@ -55,7 +52,7 @@ public class TextBox extends SpritedObject {
         float x = cam.position.x;
         float y = cam.position.y;
         batch.begin();
-        batch.draw(img, x + x, y + y);
+        batch.draw(img, x + xOffset, y + yOffset);
         font.draw(batch, text[lineCounter].substring(0, Math.min(letterCounter, LETTERS_PER_LINE)), x +textX, y + textY);
         if(letterCounter > LETTERS_PER_LINE){
             font.draw(batch, text[lineCounter].substring(LETTERS_PER_LINE, letterCounter).trim(), x +textX, y + textY - LINE_HEIGHT);
@@ -65,12 +62,11 @@ public class TextBox extends SpritedObject {
         letterCounter = Math.min(letterCounter,text[lineCounter].length());
     }
 
-
-    public void renderList(Texture cursorImg, int cursorPosition){
-        float x = cam.position.x;
-        float y = cam.position.y;
+    public void renderList(Texture cursorImg, int cursorPosition, int lineOffset){
+        float x = cam.position.x - lineOffset*LINE_HEIGHT;
+        float y = cam.position.y - lineOffset*LINE_HEIGHT;
         batch.begin();
-        batch.draw(img, x + x, y + y);
+        batch.draw(img, x + xOffset, y + yOffset);
         for(int i = 0; i < text.length; i++) {
             font.draw(batch, text[i], x +textX, y + textY -LINE_HEIGHT*i);
         }
@@ -78,13 +74,7 @@ public class TextBox extends SpritedObject {
         batch.end();
     }
 
-    public void renderList(Texture cursorImg, int cursorPosition, int lineOffset){
-        y -= lineOffset*LINE_HEIGHT;
-        textY -= lineOffset*LINE_HEIGHT;
-        renderList(cursorImg, cursorPosition);
-        y += lineOffset*LINE_HEIGHT;
-        textY += lineOffset*LINE_HEIGHT;
-    }
+
     /**
      * resets the properties of the textBox so that new dialogue appears correctly
      * (for speed, this should only be called once, when the dialogue box is closed
@@ -108,7 +98,7 @@ public class TextBox extends SpritedObject {
 
     private void defaultFont(){
         font = new BitmapFont();
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Elfboyclassic-PKZgZ.ttf"));
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/ElfBoyClassic-PKZgZ.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         fontParameter.color = new Color(0x287631ff);
         fontParameter.borderWidth = 0.95f;
@@ -131,11 +121,6 @@ public class TextBox extends SpritedObject {
 
     public void setText(String[] text) {
         this.text = text;
-    }
-
-
-    public void setText(ArrayList<String> text){
-        this.text = text.toArray(new String[0]);
     }
 
     public boolean isNew(){
