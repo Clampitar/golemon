@@ -5,8 +5,6 @@ import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
-import java.util.ArrayList;
-
 /**
  * The character that the player can control in the overworld.
  */
@@ -29,10 +27,10 @@ public class Player extends Character {
      * @param layers the map layers that the player can collide with
      */
     public void walk(int xInput, int yInput, MapLayers layers) {
-        if(detectCollision((int)x + X_SCALE/2 + xInput, (int)y, layers)) {
+        if(detectCollision((int) xOffset + X_SCALE/2 + xInput, (int) yOffset, layers)) {
             xInput = 0;
         }
-        if(detectCollision((int)x + X_SCALE/2, (int)y + yInput, layers)) {
+        if(detectCollision((int) xOffset + X_SCALE/2, (int) yOffset + yInput, layers)) {
             yInput = 0;
         }
         super.walk(xInput, yInput);
@@ -53,10 +51,15 @@ public class Player extends Character {
         return cell != null;
     }
 
+    /**
+     * Verifies if the player is in a spot where a material can be picked up.
+     * @param layers the map with witch the player interacts with
+     * @return the material the the player can pick up
+     */
     public Material detectPickup(MapLayers layers){
         Material material;
-        int detectX = (int) x;
-        int detectY = (int) y;
+        int detectX = (int) xOffset;
+        int detectY = (int) yOffset;
         // The place where the player is in front of it, centered to its sprite's rectangle
         switch (direction){
             case Input.UP:
@@ -77,17 +80,25 @@ public class Player extends Character {
         } catch (NullPointerException e){
             material = Material.nothing;
         }
-
-
+        
         return material;
     }
 
-
+    /**
+     *
+     * @param tile the tile whose material is retrieved
+     * @return The material that is at the specific tile
+     */
     private Material obtainTileMaterial(TiledMapTile tile){
-        if(tile == null) return  Material.rock;
-        switch (tile.getId()){
-            case 1: return  Material.sand;
-            default:return Material.flesh;
-        }
+            if (tile == null) return Material.flesh;
+            switch (tile.getId()) {
+                case 1:
+                    return Material.sand;
+                case 2:
+                    return Material.rock;
+                default:
+                    return Material.flesh;
+            }
+
     }
 }

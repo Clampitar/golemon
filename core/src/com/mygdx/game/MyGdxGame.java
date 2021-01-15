@@ -11,8 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-
-import java.util.ArrayList;
+import com.mygdx.game.Menus.MenuManager;
 
 public class MyGdxGame extends ApplicationAdapter {
 
@@ -29,13 +28,11 @@ public class MyGdxGame extends ApplicationAdapter {
     private OrthogonalTiledMapRenderer tmr;
     private OrthographicCamera cam;
     private TextBox dialogue;
-    private CraftingMenu menu;
+    private MenuManager menuManager;
 
-    private ArrayList<Material> inventory;
     private Player player;
     private Opponent dummy;
-    private Golem defaultGolem;
-
+    private Golem defaultGolem;//only a placeholder; TODO replace this so the battle still works
 
 
     // private boolean paused;
@@ -71,17 +68,15 @@ public class MyGdxGame extends ApplicationAdapter {
         //setting the menu
         dialogue = new TextBox("dialogueBoxes/green.png", batch, cam);
         dialogue.loadCutScene("cutScenes/tutorial.txt");
-        menu = new CraftingMenu("menu/menu.png", batch, cam, defaultGolem);
 
-        gameState = GameState.battle;
+        menuManager = new MenuManager(batch, cam);
+
+        gameState = GameState.overWorld;
 
 
         dialogueSound = Gdx.audio.newSound(Gdx.files.internal("sounds/chirp.wav"));
         battleMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/wrath.wav"));
 
-        inventory = new ArrayList<>();
-        for (int i = 0; i < 4; i++)
-            inventory.add(Material.rock);
 
     }
 
@@ -124,13 +119,13 @@ public class MyGdxGame extends ApplicationAdapter {
             case paused:
                 drawOverWorld();
                 menuInput();
-                menu.render();
+                menuManager.render();
                 break;
             case battle:
                 battleInput();
                 drawBattle();
 
-                menu.render(inventory);
+                menuManager.render();
                 break;
         }
         Input.update();
@@ -149,7 +144,7 @@ public class MyGdxGame extends ApplicationAdapter {
         if (Input.isDown(Input.LEFT)) x -= 3;
         if (Input.isDown(Input.DOWN)) y -= 3;
         player.walk(x, y, map.getLayers());
-        cam.translate(player.x - cam.position.x, player.y - cam.position.y);
+        cam.translate(player.xOffset - cam.position.x, player.yOffset - cam.position.y);
 
         if(Input.isPressed(Input.SELECT)){
             gameState = GameState.pickup;
@@ -167,7 +162,7 @@ public class MyGdxGame extends ApplicationAdapter {
             Material material = player.detectPickup(map.getLayers());
             if(material != null){
                 dialogue.pickupDialogue(material);
-                inventory.add(material);
+                menuManager.inventoryAdd(material);
             }
         }
         if (Input.isPressed(Input.SELECT)){
@@ -180,14 +175,14 @@ public class MyGdxGame extends ApplicationAdapter {
         if(Input.isPressed(Input.START)){
             gameState = GameState.overWorld;
         }
-        menu.input();
+        menuManager.input();
     }
 
     public void battleInput(){
         if(Input.isPressed(Input.START)){
             gameState = GameState.paused;
         }
-        menu.input();
+        //menu.input();
     }
 
     /**

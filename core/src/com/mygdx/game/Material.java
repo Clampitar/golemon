@@ -1,6 +1,8 @@
 package com.mygdx.game;
 
-public enum Material {
+import com.mygdx.game.Menus.Selection;
+
+public enum Material implements Selection {
     sand,
     rock,
     flesh,

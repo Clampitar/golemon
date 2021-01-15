@@ -28,11 +28,11 @@ public class Character extends SpritedObject {
         if (xInput != 0 || yInput != 0) {
             if (xInput != 0 && yInput != 0) {
                 //diagonals
-                x += xInput * Math.sin(Math.PI / 4);
-                y += yInput * Math.sin(Math.PI / 4);
+                xOffset += xInput * Math.sin(Math.PI / 4);
+                yOffset += yInput * Math.sin(Math.PI / 4);
             } else {
-                x += xInput;
-                y += yInput;
+                xOffset += xInput;
+                yOffset += yInput;
                 if (xInput > 0) {
                     direction = Input.RIGHT;
                 }

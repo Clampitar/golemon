@@ -8,7 +8,8 @@ public class Input extends InputAdapter {
     public static boolean[] keys;
     public static boolean[] pKeys;
 
-    public static final int NUM_KEYS = 6;
+    public static final int NUM_KEYS = 7;
+
     public static final int RIGHT = 0;
     public static final int UP = 1;
     public static final int LEFT = 2;
@@ -16,6 +17,7 @@ public class Input extends InputAdapter {
 
     public static final int SELECT = 4;
     public static final int START = 5;
+    public static final int TEST_BATTLE = 6;
 
     static {
         keys = new boolean[NUM_KEYS];
@@ -40,50 +42,38 @@ public class Input extends InputAdapter {
 
     @Override
     public boolean keyDown(int keycode) {
-        switch (keycode) {
-            case Keys.RIGHT:
-                setKey(RIGHT, true);
-                break;
-            case Keys.UP:
-                setKey(UP, true);
-                break;
-            case Keys.LEFT:
-                setKey(LEFT, true);
-                break;
-            case Keys.DOWN:
-                setKey(DOWN, true);
-                break;
-            case Keys.Z:
-                setKey(SELECT, true);
-                break;
-            case Keys.X:
-                setKey(START, true);
-                break;
-        }
-        return false;
+        return findKey(keycode, true);
     }
 
     @Override
     public boolean keyUp(int keycode) {
+        return findKey(keycode, false);
+    }
+
+    public boolean findKey(int keycode, boolean b){
         switch (keycode) {
             case Keys.RIGHT:
-                setKey(RIGHT, false);
+                setKey(RIGHT, b);
                 break;
             case Keys.UP:
-                setKey(UP, false);
+                setKey(UP, b);
                 break;
             case Keys.LEFT:
-                setKey(LEFT, false);
+                setKey(LEFT, b);
                 break;
             case Keys.DOWN:
-                setKey(DOWN, false);
+                setKey(DOWN, b);
                 break;
             case Keys.Z:
-                setKey(SELECT, false);
+                setKey(SELECT, b);
                 break;
             case Keys.X:
-                setKey(START, false);
+                setKey(START, b);
                 break;
+            case Keys.M:
+                setKey(TEST_BATTLE, b);
+                break;
+            default: return false;
         }
         return true;
     }
