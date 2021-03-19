@@ -152,6 +152,9 @@ public class MyGdxGame extends ApplicationAdapter {
         if(Input.isPressed(Input.START)){
             gameState = GameState.paused;
         }
+        if(Input.isPressed(Input.TEST_BATTLE)){
+            gameState = GameState.battle;
+        }
     }
 
     /**
@@ -181,6 +184,9 @@ public class MyGdxGame extends ApplicationAdapter {
     public void battleInput(){
         if(Input.isPressed(Input.START)){
             gameState = GameState.paused;
+        }
+        if(Input.isPressed(Input.TEST_BATTLE)){
+            gameState = GameState.overWorld;
         }
         //menu.input();
     }

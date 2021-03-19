@@ -26,6 +26,13 @@ public class TextBox extends SpritedObject {
     private final int LETTERS_PER_LINE;
     public final int LINE_HEIGHT = 9;
 
+    /**
+     *
+     * @param texturePath
+     * @param batch
+     * @param cam
+     * @param lettersPerLine
+     */
     public TextBox(String texturePath, SpriteBatch batch, OrthographicCamera cam, int lettersPerLine){
         super(new Texture(texturePath), -MyGdxGame.V_WIDTH / 2f, -MyGdxGame.V_HEIGHT / 2f);
         this.batch= batch;
@@ -49,13 +56,13 @@ public class TextBox extends SpritedObject {
     }
 
     public void render(){
-        float x = cam.position.x;
-        float y = cam.position.y;
+        float camX = cam.position.x;
+        float camY = cam.position.y;
         batch.begin();
-        batch.draw(img, x + xOffset, y + yOffset);
-        font.draw(batch, text[lineCounter].substring(0, Math.min(letterCounter, LETTERS_PER_LINE)), x +textX, y + textY);
+        batch.draw(img, camX + xOffset, camY + yOffset);
+        font.draw(batch, text[lineCounter].substring(0, Math.min(letterCounter, LETTERS_PER_LINE)), camX +textX, camY + textY);
         if(letterCounter > LETTERS_PER_LINE){
-            font.draw(batch, text[lineCounter].substring(LETTERS_PER_LINE, letterCounter).trim(), x +textX, y + textY - LINE_HEIGHT);
+            font.draw(batch, text[lineCounter].substring(LETTERS_PER_LINE, letterCounter).trim(), camX +textX, camY + textY - LINE_HEIGHT);
         }
         batch.end();
         letterCounter++;
@@ -63,14 +70,14 @@ public class TextBox extends SpritedObject {
     }
 
     public void renderList(Texture cursorImg, int cursorPosition, int lineOffset){
-        float x = cam.position.x - lineOffset*LINE_HEIGHT;
-        float y = cam.position.y - lineOffset*LINE_HEIGHT;
+        float camX = cam.position.x - lineOffset*LINE_HEIGHT;
+        float camY = cam.position.y - lineOffset*LINE_HEIGHT;
         batch.begin();
-        batch.draw(img, x + xOffset, y + yOffset);
+        batch.draw(img, camX + xOffset, camY + yOffset);
         for(int i = 0; i < text.length; i++) {
-            font.draw(batch, text[i], x +textX, y + textY -LINE_HEIGHT*i);
+            font.draw(batch, text[i], camX +textX, camY + textY -LINE_HEIGHT*i);
         }
-        batch.draw(cursorImg, x + textX -1, y + textY - (LINE_HEIGHT >> 1) - cursorPosition * LINE_HEIGHT);
+        batch.draw(cursorImg, camX + textX -1, camY + textY - (LINE_HEIGHT >> 1) - cursorPosition * LINE_HEIGHT);
         batch.end();
     }
 

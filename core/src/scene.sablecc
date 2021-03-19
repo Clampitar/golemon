@@ -1,0 +1,75 @@
+Package com.mygdx.game.Interp;
+
+Helpers
+
+  letter = ['a'..'z'];
+  string_char = [[32..127] - '"'];
+  digit = ['0'..'9'];
+  eol = 13 | 10 | 13 10;
+  tab = 9;
+  not_eol = [[0..0xffff]-[13 + 10]];
+
+Tokens
+
+  /* keywords */
+  
+  print = 'print';
+  println = 'println';
+  true = 'true';
+  false = 'false';
+  if = 'if';
+  then = 'then';
+  else = 'else';
+  while = 'while';
+  do = 'do';
+  end = 'end';
+  var = 'var';
+  
+  sc = ';';
+  assign = '=';
+  plus = '+';
+  minus = '-';
+  lt = '<';
+  eq = '==';
+
+  ident = letter (letter | digit)*;
+  string = '"' string_char* '"';
+  number = digit+;
+  
+  blank = (' ' | eol | tab)+;
+  comment = '#' not_eol*;
+    
+Ignored Tokens
+  blank, comment;
+
+
+Productions
+
+  prog =
+    [insts]:inst*;
+    
+  inst =
+    {decl} var ident assign exp sc |
+    {assign} ident assign exp sc |
+    {if_else} if exp then [then_inst]:inst else [else_inst]:inst |
+    {block} do [insts]:inst* end |
+    {while} while exp do inst |
+    {print_exp} print exp sc |
+    {println} println sc;
+    
+  exp =
+    {eq} [left]:exp eq [right]:additive_exp |
+    {lt} [left]:exp lt [right]:additive_exp |
+    {simple} additive_exp;
+
+  additive_exp =
+    {add} [left]:additive_exp plus [right]:term |
+    {sub} [left]:additive_exp minus [right]:term |
+    {simple} term;
+    
+  term =
+    {true} true |
+    {false} false |
+    {number} number |
+    {string} string |
+    {var} ident;
