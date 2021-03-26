@@ -5,16 +5,16 @@ package com.mygdx.game.Interp.node;
 import com.mygdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TWhile extends Token
+public final class TFun extends Token
 {
-    public TWhile()
+    public TFun()
     {
-        super.setText("while");
+        super.setText("fun");
     }
 
-    public TWhile(int line, int pos)
+    public TFun(int line, int pos)
     {
-        super.setText("while");
+        super.setText("fun");
         setLine(line);
         setPos(pos);
     }
@@ -22,18 +22,18 @@ public final class TWhile extends Token
     @Override
     public Object clone()
     {
-      return new TWhile(getLine(), getPos());
+      return new TFun(getLine(), getPos());
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseTWhile(this);
+        ((Analysis) sw).caseTFun(this);
     }
 
     @Override
     public void setText(@SuppressWarnings("unused") String text)
     {
-        throw new RuntimeException("Cannot change TWhile text.");
+        throw new RuntimeException("Cannot change TFun text.");
     }
 }

@@ -5,16 +5,16 @@ package com.mygdx.game.Interp.node;
 import com.mygdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TDo extends Token
+public final class TDecl extends Token
 {
-    public TDo()
+    public TDecl()
     {
-        super.setText("do");
+        super.setText("var");
     }
 
-    public TDo(int line, int pos)
+    public TDecl(int line, int pos)
     {
-        super.setText("do");
+        super.setText("var");
         setLine(line);
         setPos(pos);
     }
@@ -22,18 +22,18 @@ public final class TDo extends Token
     @Override
     public Object clone()
     {
-      return new TDo(getLine(), getPos());
+      return new TDecl(getLine(), getPos());
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseTDo(this);
+        ((Analysis) sw).caseTDecl(this);
     }
 
     @Override
     public void setText(@SuppressWarnings("unused") String text)
     {
-        throw new RuntimeException("Cannot change TDo text.");
+        throw new RuntimeException("Cannot change TDecl text.");
     }
 }

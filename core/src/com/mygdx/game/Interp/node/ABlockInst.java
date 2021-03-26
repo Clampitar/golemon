@@ -8,9 +8,10 @@ import com.mygdx.game.Interp.analysis.*;
 @SuppressWarnings("nls")
 public final class ABlockInst extends PInst
 {
-    private TDo _do_;
+    private TLBr _lBr_;
     private final LinkedList<PInst> _insts_ = new LinkedList<PInst>();
-    private TEnd _end_;
+    private TRBr _rBr_;
+    private TSc _sc_;
 
     public ABlockInst()
     {
@@ -18,16 +19,19 @@ public final class ABlockInst extends PInst
     }
 
     public ABlockInst(
-        @SuppressWarnings("hiding") TDo _do_,
+        @SuppressWarnings("hiding") TLBr _lBr_,
         @SuppressWarnings("hiding") List<?> _insts_,
-        @SuppressWarnings("hiding") TEnd _end_)
+        @SuppressWarnings("hiding") TRBr _rBr_,
+        @SuppressWarnings("hiding") TSc _sc_)
     {
         // Constructor
-        setDo(_do_);
+        setLBr(_lBr_);
 
         setInsts(_insts_);
 
-        setEnd(_end_);
+        setRBr(_rBr_);
+
+        setSc(_sc_);
 
     }
 
@@ -35,9 +39,10 @@ public final class ABlockInst extends PInst
     public Object clone()
     {
         return new ABlockInst(
-            cloneNode(this._do_),
+            cloneNode(this._lBr_),
             cloneList(this._insts_),
-            cloneNode(this._end_));
+            cloneNode(this._rBr_),
+            cloneNode(this._sc_));
     }
 
     @Override
@@ -46,16 +51,16 @@ public final class ABlockInst extends PInst
         ((Analysis) sw).caseABlockInst(this);
     }
 
-    public TDo getDo()
+    public TLBr getLBr()
     {
-        return this._do_;
+        return this._lBr_;
     }
 
-    public void setDo(TDo node)
+    public void setLBr(TLBr node)
     {
-        if(this._do_ != null)
+        if(this._lBr_ != null)
         {
-            this._do_.parent(null);
+            this._lBr_.parent(null);
         }
 
         if(node != null)
@@ -68,7 +73,7 @@ public final class ABlockInst extends PInst
             node.parent(this);
         }
 
-        this._do_ = node;
+        this._lBr_ = node;
     }
 
     public LinkedList<PInst> getInsts()
@@ -97,16 +102,16 @@ public final class ABlockInst extends PInst
         }
     }
 
-    public TEnd getEnd()
+    public TRBr getRBr()
     {
-        return this._end_;
+        return this._rBr_;
     }
 
-    public void setEnd(TEnd node)
+    public void setRBr(TRBr node)
     {
-        if(this._end_ != null)
+        if(this._rBr_ != null)
         {
-            this._end_.parent(null);
+            this._rBr_.parent(null);
         }
 
         if(node != null)
@@ -119,25 +124,51 @@ public final class ABlockInst extends PInst
             node.parent(this);
         }
 
-        this._end_ = node;
+        this._rBr_ = node;
+    }
+
+    public TSc getSc()
+    {
+        return this._sc_;
+    }
+
+    public void setSc(TSc node)
+    {
+        if(this._sc_ != null)
+        {
+            this._sc_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        this._sc_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._do_)
+            + toString(this._lBr_)
             + toString(this._insts_)
-            + toString(this._end_);
+            + toString(this._rBr_)
+            + toString(this._sc_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._do_ == child)
+        if(this._lBr_ == child)
         {
-            this._do_ = null;
+            this._lBr_ = null;
             return;
         }
 
@@ -146,9 +177,15 @@ public final class ABlockInst extends PInst
             return;
         }
 
-        if(this._end_ == child)
+        if(this._rBr_ == child)
         {
-            this._end_ = null;
+            this._rBr_ = null;
+            return;
+        }
+
+        if(this._sc_ == child)
+        {
+            this._sc_ = null;
             return;
         }
 
@@ -159,9 +196,9 @@ public final class ABlockInst extends PInst
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._do_ == oldChild)
+        if(this._lBr_ == oldChild)
         {
-            setDo((TDo) newChild);
+            setLBr((TLBr) newChild);
             return;
         }
 
@@ -183,9 +220,15 @@ public final class ABlockInst extends PInst
             }
         }
 
-        if(this._end_ == oldChild)
+        if(this._rBr_ == oldChild)
         {
-            setEnd((TEnd) newChild);
+            setRBr((TRBr) newChild);
+            return;
+        }
+
+        if(this._sc_ == oldChild)
+        {
+            setSc((TSc) newChild);
             return;
         }
 

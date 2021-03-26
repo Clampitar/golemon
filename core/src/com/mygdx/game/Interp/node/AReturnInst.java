@@ -5,61 +5,56 @@ package com.mygdx.game.Interp.node;
 import com.mygdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AWhileInst extends PInst
+public final class AReturnInst extends PInst
 {
-    private TWhile _while_;
+    private TReturn _return_;
     private PExp _exp_;
-    private TDo _do_;
-    private PInst _inst_;
+    private TSc _sc_;
 
-    public AWhileInst()
+    public AReturnInst()
     {
         // Constructor
     }
 
-    public AWhileInst(
-        @SuppressWarnings("hiding") TWhile _while_,
+    public AReturnInst(
+        @SuppressWarnings("hiding") TReturn _return_,
         @SuppressWarnings("hiding") PExp _exp_,
-        @SuppressWarnings("hiding") TDo _do_,
-        @SuppressWarnings("hiding") PInst _inst_)
+        @SuppressWarnings("hiding") TSc _sc_)
     {
         // Constructor
-        setWhile(_while_);
+        setReturn(_return_);
 
         setExp(_exp_);
 
-        setDo(_do_);
-
-        setInst(_inst_);
+        setSc(_sc_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new AWhileInst(
-            cloneNode(this._while_),
+        return new AReturnInst(
+            cloneNode(this._return_),
             cloneNode(this._exp_),
-            cloneNode(this._do_),
-            cloneNode(this._inst_));
+            cloneNode(this._sc_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAWhileInst(this);
+        ((Analysis) sw).caseAReturnInst(this);
     }
 
-    public TWhile getWhile()
+    public TReturn getReturn()
     {
-        return this._while_;
+        return this._return_;
     }
 
-    public void setWhile(TWhile node)
+    public void setReturn(TReturn node)
     {
-        if(this._while_ != null)
+        if(this._return_ != null)
         {
-            this._while_.parent(null);
+            this._return_.parent(null);
         }
 
         if(node != null)
@@ -72,7 +67,7 @@ public final class AWhileInst extends PInst
             node.parent(this);
         }
 
-        this._while_ = node;
+        this._return_ = node;
     }
 
     public PExp getExp()
@@ -100,16 +95,16 @@ public final class AWhileInst extends PInst
         this._exp_ = node;
     }
 
-    public TDo getDo()
+    public TSc getSc()
     {
-        return this._do_;
+        return this._sc_;
     }
 
-    public void setDo(TDo node)
+    public void setSc(TSc node)
     {
-        if(this._do_ != null)
+        if(this._sc_ != null)
         {
-            this._do_.parent(null);
+            this._sc_.parent(null);
         }
 
         if(node != null)
@@ -122,51 +117,25 @@ public final class AWhileInst extends PInst
             node.parent(this);
         }
 
-        this._do_ = node;
-    }
-
-    public PInst getInst()
-    {
-        return this._inst_;
-    }
-
-    public void setInst(PInst node)
-    {
-        if(this._inst_ != null)
-        {
-            this._inst_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._inst_ = node;
+        this._sc_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._while_)
+            + toString(this._return_)
             + toString(this._exp_)
-            + toString(this._do_)
-            + toString(this._inst_);
+            + toString(this._sc_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._while_ == child)
+        if(this._return_ == child)
         {
-            this._while_ = null;
+            this._return_ = null;
             return;
         }
 
@@ -176,15 +145,9 @@ public final class AWhileInst extends PInst
             return;
         }
 
-        if(this._do_ == child)
+        if(this._sc_ == child)
         {
-            this._do_ = null;
-            return;
-        }
-
-        if(this._inst_ == child)
-        {
-            this._inst_ = null;
+            this._sc_ = null;
             return;
         }
 
@@ -195,9 +158,9 @@ public final class AWhileInst extends PInst
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._while_ == oldChild)
+        if(this._return_ == oldChild)
         {
-            setWhile((TWhile) newChild);
+            setReturn((TReturn) newChild);
             return;
         }
 
@@ -207,15 +170,9 @@ public final class AWhileInst extends PInst
             return;
         }
 
-        if(this._do_ == oldChild)
+        if(this._sc_ == oldChild)
         {
-            setDo((TDo) newChild);
-            return;
-        }
-
-        if(this._inst_ == oldChild)
-        {
-            setInst((PInst) newChild);
+            setSc((TSc) newChild);
             return;
         }
 

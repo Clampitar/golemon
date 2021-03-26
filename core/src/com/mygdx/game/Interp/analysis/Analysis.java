@@ -13,13 +13,17 @@ public interface Analysis extends Switch
 
     void caseStart(Start node);
     void caseAProg(AProg node);
+    void caseAFunDecl(AFunDecl node);
+    void caseAFunBody(AFunBody node);
     void caseADeclInst(ADeclInst node);
     void caseAAssignInst(AAssignInst node);
     void caseAIfElseInst(AIfElseInst node);
-    void caseABlockInst(ABlockInst node);
-    void caseAWhileInst(AWhileInst node);
+    void caseAReturnInst(AReturnInst node);
     void caseAPrintExpInst(APrintExpInst node);
     void caseAPrintlnInst(APrintlnInst node);
+    void caseABlockInst(ABlockInst node);
+    void caseAThenPart(AThenPart node);
+    void caseAElsePart(AElsePart node);
     void caseAEqExp(AEqExp node);
     void caseALtExp(ALtExp node);
     void caseASimpleExp(ASimpleExp node);
@@ -31,6 +35,8 @@ public interface Analysis extends Switch
     void caseANumberTerm(ANumberTerm node);
     void caseAStringTerm(AStringTerm node);
     void caseAVarTerm(AVarTerm node);
+    void caseAParTerm(AParTerm node);
+    void caseAFunCallTerm(AFunCallTerm node);
 
     void caseTPrint(TPrint node);
     void caseTPrintln(TPrintln node);
@@ -39,16 +45,20 @@ public interface Analysis extends Switch
     void caseTIf(TIf node);
     void caseTThen(TThen node);
     void caseTElse(TElse node);
-    void caseTWhile(TWhile node);
-    void caseTDo(TDo node);
     void caseTEnd(TEnd node);
-    void caseTVar(TVar node);
+    void caseTFun(TFun node);
+    void caseTReturn(TReturn node);
+    void caseTDecl(TDecl node);
     void caseTSc(TSc node);
     void caseTAssign(TAssign node);
     void caseTPlus(TPlus node);
     void caseTMinus(TMinus node);
     void caseTLt(TLt node);
     void caseTEq(TEq node);
+    void caseTLPar(TLPar node);
+    void caseTRPar(TRPar node);
+    void caseTLBr(TLBr node);
+    void caseTRBr(TRBr node);
     void caseTIdent(TIdent node);
     void caseTString(TString node);
     void caseTNumber(TNumber node);

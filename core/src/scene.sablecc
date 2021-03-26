@@ -1,75 +1,95 @@
-Package com.mygdx.game.Interp;
+  Package com.mygdx.game.Interp;
 
-Helpers
+  Helpers
 
-  letter = ['a'..'z'];
-  string_char = [[32..127] - '"'];
-  digit = ['0'..'9'];
-  eol = 13 | 10 | 13 10;
-  tab = 9;
-  not_eol = [[0..0xffff]-[13 + 10]];
+    letter = ['a'..'z'];
+    string_char = [[32..127] - '"'];
+    digit = ['0'..'9'];
+    eol = 13 | 10 | 13 10;
+    tab = 9;
+    not_eol = [[0..0xffff]-[13 + 10]];
 
-Tokens
+  Tokens
 
-  /* keywords */
-  
-  print = 'print';
-  println = 'println';
-  true = 'true';
-  false = 'false';
-  if = 'if';
-  then = 'then';
-  else = 'else';
-  while = 'while';
-  do = 'do';
-  end = 'end';
-  var = 'var';
-  
-  sc = ';';
-  assign = '=';
-  plus = '+';
-  minus = '-';
-  lt = '<';
-  eq = '==';
+    /* keywords */
 
-  ident = letter (letter | digit)*;
-  string = '"' string_char* '"';
-  number = digit+;
-  
-  blank = (' ' | eol | tab)+;
-  comment = '#' not_eol*;
-    
-Ignored Tokens
-  blank, comment;
+    print = 'print';
+    println = 'println';
+    true = 'true';
+    false = 'false';
+    if = 'if';
+    then = 'then';
+    else = 'else';
+    end = 'end';
+    fun = 'fun';
+    return = 'return';
+    decl = 'var';
+
+    sc = ';';
+    assign = '=';
+    plus = '+';
+    minus = '-';
+    lt = '<';
+    eq = '==';
+
+    l_par = '(';
+    r_par = ')';
+    l_br = '{';
+    r_br = '}';
 
 
-Productions
+    ident = letter (letter | digit)*;
+    string = '"' string_char* '"';
+    number = digit+;
 
-  prog =
-    [insts]:inst*;
-    
-  inst =
-    {decl} var ident assign exp sc |
-    {assign} ident assign exp sc |
-    {if_else} if exp then [then_inst]:inst else [else_inst]:inst |
-    {block} do [insts]:inst* end |
-    {while} while exp do inst |
-    {print_exp} print exp sc |
-    {println} println sc;
-    
-  exp =
-    {eq} [left]:exp eq [right]:additive_exp |
-    {lt} [left]:exp lt [right]:additive_exp |
-    {simple} additive_exp;
+    blank = (' ' | eol | tab)+;
+    comment = '#' not_eol*;
 
-  additive_exp =
-    {add} [left]:additive_exp plus [right]:term |
-    {sub} [left]:additive_exp minus [right]:term |
-    {simple} term;
-    
-  term =
-    {true} true |
-    {false} false |
-    {number} number |
-    {string} string |
-    {var} ident;
+  Ignored Tokens
+    blank, comment;
+
+
+  Productions
+
+    prog =
+      [fun_decls]:fun_decl* [insts]:inst*;
+
+    fun_decl =
+      fun [name]:ident l_par [param]:ident r_par fun_body end;
+
+    fun_body =
+      [insts]:inst*;
+
+    inst =
+      {decl} decl ident assign exp sc |
+      {assign} ident assign exp sc |
+      {if_else} if exp then_part else_part? end |
+      {return} return exp sc |
+      {print_exp} print exp sc |
+      {println} println sc |
+      {block} l_br [insts]:inst* r_br sc;
+
+    then_part =
+      then [insts]:inst*;
+
+    else_part =
+      else [insts]:inst*;
+
+    exp =
+      {eq} [left]:exp eq [right]:additive_exp |
+      {lt} [left]:exp lt [right]:additive_exp |
+      {simple} additive_exp;
+
+    additive_exp =
+      {add} [left]:additive_exp plus [right]:term |
+      {sub} [left]:additive_exp minus [right]:term |
+      {simple} term;
+
+    term =
+      {true} true |
+      {false} false |
+      {number} number |
+      {string} string |
+      {var} ident |
+      {par} l_par exp r_par |
+      {fun_call} ident l_par [arg]:exp r_par;

@@ -5,16 +5,16 @@ package com.mygdx.game.Interp.node;
 import com.mygdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TVar extends Token
+public final class TRPar extends Token
 {
-    public TVar()
+    public TRPar()
     {
-        super.setText("var");
+        super.setText(")");
     }
 
-    public TVar(int line, int pos)
+    public TRPar(int line, int pos)
     {
-        super.setText("var");
+        super.setText(")");
         setLine(line);
         setPos(pos);
     }
@@ -22,18 +22,18 @@ public final class TVar extends Token
     @Override
     public Object clone()
     {
-      return new TVar(getLine(), getPos());
+      return new TRPar(getLine(), getPos());
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseTVar(this);
+        ((Analysis) sw).caseTRPar(this);
     }
 
     @Override
     public void setText(@SuppressWarnings("unused") String text)
     {
-        throw new RuntimeException("Cannot change TVar text.");
+        throw new RuntimeException("Cannot change TRPar text.");
     }
 }

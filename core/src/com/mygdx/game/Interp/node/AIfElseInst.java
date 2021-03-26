@@ -9,10 +9,9 @@ public final class AIfElseInst extends PInst
 {
     private TIf _if_;
     private PExp _exp_;
-    private TThen _then_;
-    private PInst _thenInst_;
-    private TElse _else_;
-    private PInst _elseInst_;
+    private PThenPart _thenPart_;
+    private PElsePart _elsePart_;
+    private TEnd _end_;
 
     public AIfElseInst()
     {
@@ -22,23 +21,20 @@ public final class AIfElseInst extends PInst
     public AIfElseInst(
         @SuppressWarnings("hiding") TIf _if_,
         @SuppressWarnings("hiding") PExp _exp_,
-        @SuppressWarnings("hiding") TThen _then_,
-        @SuppressWarnings("hiding") PInst _thenInst_,
-        @SuppressWarnings("hiding") TElse _else_,
-        @SuppressWarnings("hiding") PInst _elseInst_)
+        @SuppressWarnings("hiding") PThenPart _thenPart_,
+        @SuppressWarnings("hiding") PElsePart _elsePart_,
+        @SuppressWarnings("hiding") TEnd _end_)
     {
         // Constructor
         setIf(_if_);
 
         setExp(_exp_);
 
-        setThen(_then_);
+        setThenPart(_thenPart_);
 
-        setThenInst(_thenInst_);
+        setElsePart(_elsePart_);
 
-        setElse(_else_);
-
-        setElseInst(_elseInst_);
+        setEnd(_end_);
 
     }
 
@@ -48,10 +44,9 @@ public final class AIfElseInst extends PInst
         return new AIfElseInst(
             cloneNode(this._if_),
             cloneNode(this._exp_),
-            cloneNode(this._then_),
-            cloneNode(this._thenInst_),
-            cloneNode(this._else_),
-            cloneNode(this._elseInst_));
+            cloneNode(this._thenPart_),
+            cloneNode(this._elsePart_),
+            cloneNode(this._end_));
     }
 
     @Override
@@ -110,16 +105,16 @@ public final class AIfElseInst extends PInst
         this._exp_ = node;
     }
 
-    public TThen getThen()
+    public PThenPart getThenPart()
     {
-        return this._then_;
+        return this._thenPart_;
     }
 
-    public void setThen(TThen node)
+    public void setThenPart(PThenPart node)
     {
-        if(this._then_ != null)
+        if(this._thenPart_ != null)
         {
-            this._then_.parent(null);
+            this._thenPart_.parent(null);
         }
 
         if(node != null)
@@ -132,19 +127,19 @@ public final class AIfElseInst extends PInst
             node.parent(this);
         }
 
-        this._then_ = node;
+        this._thenPart_ = node;
     }
 
-    public PInst getThenInst()
+    public PElsePart getElsePart()
     {
-        return this._thenInst_;
+        return this._elsePart_;
     }
 
-    public void setThenInst(PInst node)
+    public void setElsePart(PElsePart node)
     {
-        if(this._thenInst_ != null)
+        if(this._elsePart_ != null)
         {
-            this._thenInst_.parent(null);
+            this._elsePart_.parent(null);
         }
 
         if(node != null)
@@ -157,19 +152,19 @@ public final class AIfElseInst extends PInst
             node.parent(this);
         }
 
-        this._thenInst_ = node;
+        this._elsePart_ = node;
     }
 
-    public TElse getElse()
+    public TEnd getEnd()
     {
-        return this._else_;
+        return this._end_;
     }
 
-    public void setElse(TElse node)
+    public void setEnd(TEnd node)
     {
-        if(this._else_ != null)
+        if(this._end_ != null)
         {
-            this._else_.parent(null);
+            this._end_.parent(null);
         }
 
         if(node != null)
@@ -182,32 +177,7 @@ public final class AIfElseInst extends PInst
             node.parent(this);
         }
 
-        this._else_ = node;
-    }
-
-    public PInst getElseInst()
-    {
-        return this._elseInst_;
-    }
-
-    public void setElseInst(PInst node)
-    {
-        if(this._elseInst_ != null)
-        {
-            this._elseInst_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._elseInst_ = node;
+        this._end_ = node;
     }
 
     @Override
@@ -216,10 +186,9 @@ public final class AIfElseInst extends PInst
         return ""
             + toString(this._if_)
             + toString(this._exp_)
-            + toString(this._then_)
-            + toString(this._thenInst_)
-            + toString(this._else_)
-            + toString(this._elseInst_);
+            + toString(this._thenPart_)
+            + toString(this._elsePart_)
+            + toString(this._end_);
     }
 
     @Override
@@ -238,27 +207,21 @@ public final class AIfElseInst extends PInst
             return;
         }
 
-        if(this._then_ == child)
+        if(this._thenPart_ == child)
         {
-            this._then_ = null;
+            this._thenPart_ = null;
             return;
         }
 
-        if(this._thenInst_ == child)
+        if(this._elsePart_ == child)
         {
-            this._thenInst_ = null;
+            this._elsePart_ = null;
             return;
         }
 
-        if(this._else_ == child)
+        if(this._end_ == child)
         {
-            this._else_ = null;
-            return;
-        }
-
-        if(this._elseInst_ == child)
-        {
-            this._elseInst_ = null;
+            this._end_ = null;
             return;
         }
 
@@ -281,27 +244,21 @@ public final class AIfElseInst extends PInst
             return;
         }
 
-        if(this._then_ == oldChild)
+        if(this._thenPart_ == oldChild)
         {
-            setThen((TThen) newChild);
+            setThenPart((PThenPart) newChild);
             return;
         }
 
-        if(this._thenInst_ == oldChild)
+        if(this._elsePart_ == oldChild)
         {
-            setThenInst((PInst) newChild);
+            setElsePart((PElsePart) newChild);
             return;
         }
 
-        if(this._else_ == oldChild)
+        if(this._end_ == oldChild)
         {
-            setElse((TElse) newChild);
-            return;
-        }
-
-        if(this._elseInst_ == oldChild)
-        {
-            setElseInst((PInst) newChild);
+            setEnd((TEnd) newChild);
             return;
         }
 
