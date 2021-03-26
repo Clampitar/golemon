@@ -61,16 +61,19 @@ public class Player extends Character {
         int detectX = (int) xOffset;
         int detectY = (int) yOffset;
         // The place where the player is in front of it, centered to its sprite's rectangle
+        detectX += X_SCALE / 2;
         switch (direction){
             case Input.UP:
-                detectY += Y_SCALE - 1;
+                detectY += Y_SCALE / 2 ;
+                break;
             case Input.DOWN:
-                detectX += X_SCALE / 2;
+                detectY -= Y_SCALE / 2;
                 break;
             case Input.RIGHT:
-                detectX += X_SCALE - 1;
-                case Input.LEFT:
-                    detectY += Y_SCALE / 2;
+                detectX += X_SCALE / 2;
+                break;
+            case Input.LEFT:
+                detectX -= X_SCALE / 2;
         }
 
         TiledMapTileLayer layer = (TiledMapTileLayer) layers.get(MATERIAL_LAYER);
@@ -78,7 +81,7 @@ public class Player extends Character {
         try {
             material = obtainTileMaterial(cell.getTile());
         } catch (NullPointerException e){
-            material = Material.nothing;
+            material = Material.Nothing;
         }
         
         return material;
@@ -89,15 +92,15 @@ public class Player extends Character {
      * @param tile the tile whose material is retrieved
      * @return The material that is at the specific tile
      */
-    private Material obtainTileMaterial(TiledMapTile tile){
-            if (tile == null) return Material.flesh;
+    private Material obtainTileMaterial(TiledMapTile tile) throws NullPointerException{
+            if (tile == null) return Material.Flesh;
             switch (tile.getId()) {
                 case 1:
-                    return Material.sand;
-                case 2:
-                    return Material.rock;
+                    return Material.Sand;
+                case 3:
+                    return Material.Rock;
                 default:
-                    return Material.flesh;
+                    return Material.Flesh;
             }
 
     }

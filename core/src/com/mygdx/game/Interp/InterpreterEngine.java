@@ -13,31 +13,9 @@ public class InterpreterEngine
 
     private Value result;
 
-    @Override
-    public void caseAWhileInst(
-            AWhileInst node) {
 
-        while (true) {
 
-            Value value = eval(node.getExp());
 
-            if (!(value instanceof BoolValue)) {
-                throw new InterpreterException(node.getWhile(),
-                        "expression is not a boolean");
-            }
-
-            if (!((BoolValue) value).getValue()) {
-                // sortir de la boucle
-                break;
-            }
-
-            // executer l'instruction
-            node.getInst().apply(this);
-        }
-
-    }
-
-    @Override
     public void caseAIfElseInst(
             AIfElseInst node) {
 
@@ -50,11 +28,11 @@ public class InterpreterEngine
 
         if (((BoolValue) value).getValue()) {
             // executer le then
-            node.getThenInst().apply(this);
+            node.getThenPart().apply(this);
         }
         else {
             // executer le else
-            node.getElseInst().apply(this);
+            node.getElsePart().apply(this);
         }
     }
 
@@ -73,7 +51,6 @@ public class InterpreterEngine
         System.out.print(value);
     }
 
-    @Override
     public void caseADeclInst(
             ADeclInst node) {
 

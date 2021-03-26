@@ -8,7 +8,7 @@ import com.mygdx.game.Material;
 class CraftingMenu extends Menu{
 
     Golem golem;
-    static final int NUM_LIMBS = 4;
+    static final int NUM_LIMBS = 5;
 
     public CraftingMenu(String texturePath, SpriteBatch batch, OrthographicCamera cam, Golem golem) {
         super(texturePath, batch, cam);

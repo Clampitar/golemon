@@ -72,16 +72,16 @@ public class SemanticVerifier
 
         // scope spécifique au then
         this.currentScope = new Scope(this.currentScope);
-        node.getThenInst().apply(this);
+        node.getThenPart().apply(this);
         this.currentScope = this.currentScope.getParent();
 
         // scope spécifique au else
         this.currentScope = new Scope(this.currentScope);
-        node.getElseInst().apply(this);
+        node.getElsePart().apply(this);
         this.currentScope = this.currentScope.getParent();
     }
 
-    @Override
+  /*  @Override
     public void caseAWhileInst(
             AWhileInst node) {
 
@@ -96,7 +96,7 @@ public class SemanticVerifier
         node.getInst().apply(this);
         this.currentScope = this.currentScope.getParent();
     }
-
+*/
     @Override
     public void caseAPrintExpInst(
             APrintExpInst node) {

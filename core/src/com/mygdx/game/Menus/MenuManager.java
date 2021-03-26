@@ -12,8 +12,8 @@ public class MenuManager {
     private CraftingMenu craftingMenu;
     private InventoryMenu inventoryMenu;
     private boolean limbSelected = false;//placeholder
-    public MenuManager(SpriteBatch batch, OrthographicCamera cam){
-        craftingMenu = new CraftingMenu("menu/menu.png", batch, cam, new Golem());
+    public MenuManager(SpriteBatch batch, OrthographicCamera cam, Golem golem){
+        craftingMenu = new CraftingMenu("menu/menu.png", batch, cam, golem);
         inventoryMenu = new InventoryMenu("menu/menu.png", batch, cam, 150f, 0f);
     }
 
@@ -32,10 +32,9 @@ public class MenuManager {
     }
 
     public void render(){
+        craftingMenu.render();
         if(limbSelected){
             inventoryMenu.render();
-        } else {
-            craftingMenu.render();
         }
     }
 

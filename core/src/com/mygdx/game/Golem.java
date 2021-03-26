@@ -3,15 +3,16 @@ package com.mygdx.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Golem extends SpritedObject {
-    protected limb leftArm = new limb();
-    protected limb rightArm = new limb();
-    protected limb leftLeg = new limb();
-    protected limb rightLeg = new limb();
+import java.io.FileNotFoundException;
 
+public class Golem extends SpritedObject {
+    protected limb leftArm = new limb("leftArm");
+    protected limb rightArm = new limb("rightArm");
+    protected limb leftLeg = new limb("leftLeg");
+    protected limb rightLeg = new limb("rightLeg");
 
     public Golem() {
-        super(new Texture("fighters/defaultGolem.png"));
+        super(new Texture("fighters/defaultGolemArmless.png"));
     }
 
     @Override
@@ -22,6 +23,7 @@ public class Golem extends SpritedObject {
     @Override
     protected void draw(SpriteBatch batch) {
         super.draw(batch);
+        batch.draw(leftArm.img, xOffset, yOffset);
     }
 
     /**
@@ -41,23 +43,43 @@ public class Golem extends SpritedObject {
     public void receiveMaterial(Material material, int position){
         switch (position){
             case 1:
-                leftLeg.jointMaterial = material;
+                leftLeg.switchMaterial(material);
                 break;
             case 2:
-                leftArm.jointMaterial = material;
+                leftArm.switchMaterial(material);
                 break;
             case 3:
-                rightLeg.jointMaterial = material;
+                rightLeg.switchMaterial(material);
                 break;
             case 4:
-                rightArm.jointMaterial = material;
+                rightArm.switchMaterial(material);
                 break;
         }
         System.out.println("received "+material+" at "+position);
     }
 
     class limb extends  Appendage{
-        Material jointMaterial = Material.nothing;
+        private final String LIMB_PATH = "fighters/";
+        Material jointMaterial;
+
+        protected Texture img;
+        String type;
+        public limb(String type){
+            this.type=type;
+            jointMaterial = Material.Sand;
+            updateTexture();
+        }
+        void switchMaterial(Material material){
+            jointMaterial=material;
+            System.out.println( type+" switches to "+jointMaterial);
+            updateTexture();
+        }
+
+        private void updateTexture(){
+
+                img = new Texture(LIMB_PATH + type + jointMaterial + ".png");
+                System.out.println("Path is now "+LIMB_PATH + type + jointMaterial + ".png");
+        }
     }
 
 }

@@ -13,7 +13,7 @@ class InventoryMenu extends Menu {
         super(texturePath, batch, cam, x, y);
         inventory = new ArrayList<>();
         for (int i = 0; i < 4; i++)
-            inventory.add(Material.rock);   //placeholder
+            inventory.add(Material.Rock);   //placeholder
     }
 
     public void add(Material material){

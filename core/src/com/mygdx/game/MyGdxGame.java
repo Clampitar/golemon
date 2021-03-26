@@ -69,7 +69,7 @@ public class MyGdxGame extends ApplicationAdapter {
         dialogue = new TextBox("dialogueBoxes/green.png", batch, cam);
         dialogue.loadCutScene("cutScenes/tutorial.txt");
 
-        menuManager = new MenuManager(batch, cam);
+        menuManager = new MenuManager(batch, cam, defaultGolem);
 
         gameState = GameState.overWorld;
 
@@ -148,9 +148,12 @@ public class MyGdxGame extends ApplicationAdapter {
 
         if(Input.isPressed(Input.SELECT)){
             gameState = GameState.pickup;
-        }
+        } else
         if(Input.isPressed(Input.START)){
             gameState = GameState.paused;
+        } else
+        if(Input.isPressed(Input.TEST_BATTLE)){
+            gameState = GameState.battle;
         }
         if(Input.isPressed(Input.TEST_BATTLE)){
             gameState = GameState.battle;
@@ -184,11 +187,12 @@ public class MyGdxGame extends ApplicationAdapter {
     public void battleInput(){
         if(Input.isPressed(Input.START)){
             gameState = GameState.paused;
+        } else if(Input.isPressed(Input.TEST_BATTLE)){
+            gameState = GameState.overWorld;
         }
         if(Input.isPressed(Input.TEST_BATTLE)){
             gameState = GameState.overWorld;
         }
-        //menu.input();
     }
 
     /**

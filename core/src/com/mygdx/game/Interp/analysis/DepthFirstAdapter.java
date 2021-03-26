@@ -51,6 +51,13 @@ public class DepthFirstAdapter extends AnalysisAdapter
     {
         inAProg(node);
         {
+            List<PFunDecl> copy = new ArrayList<PFunDecl>(node.getFunDecls());
+            for(PFunDecl e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        {
             List<PInst> copy = new ArrayList<PInst>(node.getInsts());
             for(PInst e : copy)
             {
@@ -58,6 +65,75 @@ public class DepthFirstAdapter extends AnalysisAdapter
             }
         }
         outAProg(node);
+    }
+
+    public void inAFunDecl(AFunDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFunDecl(AFunDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFunDecl(AFunDecl node)
+    {
+        inAFunDecl(node);
+        if(node.getFun() != null)
+        {
+            node.getFun().apply(this);
+        }
+        if(node.getName() != null)
+        {
+            node.getName().apply(this);
+        }
+        if(node.getLPar() != null)
+        {
+            node.getLPar().apply(this);
+        }
+        if(node.getParam() != null)
+        {
+            node.getParam().apply(this);
+        }
+        if(node.getRPar() != null)
+        {
+            node.getRPar().apply(this);
+        }
+        if(node.getFunBody() != null)
+        {
+            node.getFunBody().apply(this);
+        }
+        if(node.getEnd() != null)
+        {
+            node.getEnd().apply(this);
+        }
+        outAFunDecl(node);
+    }
+
+    public void inAFunBody(AFunBody node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFunBody(AFunBody node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFunBody(AFunBody node)
+    {
+        inAFunBody(node);
+        {
+            List<PInst> copy = new ArrayList<PInst>(node.getInsts());
+            for(PInst e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outAFunBody(node);
     }
 
     public void inADeclInst(ADeclInst node)
@@ -74,9 +150,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseADeclInst(ADeclInst node)
     {
         inADeclInst(node);
-        if(node.getVar() != null)
+        if(node.getDecl() != null)
         {
-            node.getVar().apply(this);
+            node.getDecl().apply(this);
         }
         if(node.getIdent() != null)
         {
@@ -152,88 +228,48 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getExp().apply(this);
         }
-        if(node.getThen() != null)
+        if(node.getThenPart() != null)
         {
-            node.getThen().apply(this);
+            node.getThenPart().apply(this);
         }
-        if(node.getThenInst() != null)
+        if(node.getElsePart() != null)
         {
-            node.getThenInst().apply(this);
-        }
-        if(node.getElse() != null)
-        {
-            node.getElse().apply(this);
-        }
-        if(node.getElseInst() != null)
-        {
-            node.getElseInst().apply(this);
-        }
-        outAIfElseInst(node);
-    }
-
-    public void inABlockInst(ABlockInst node)
-    {
-        defaultIn(node);
-    }
-
-    public void outABlockInst(ABlockInst node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseABlockInst(ABlockInst node)
-    {
-        inABlockInst(node);
-        if(node.getDo() != null)
-        {
-            node.getDo().apply(this);
-        }
-        {
-            List<PInst> copy = new ArrayList<PInst>(node.getInsts());
-            for(PInst e : copy)
-            {
-                e.apply(this);
-            }
+            node.getElsePart().apply(this);
         }
         if(node.getEnd() != null)
         {
             node.getEnd().apply(this);
         }
-        outABlockInst(node);
+        outAIfElseInst(node);
     }
 
-    public void inAWhileInst(AWhileInst node)
+    public void inAReturnInst(AReturnInst node)
     {
         defaultIn(node);
     }
 
-    public void outAWhileInst(AWhileInst node)
+    public void outAReturnInst(AReturnInst node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAWhileInst(AWhileInst node)
+    public void caseAReturnInst(AReturnInst node)
     {
-        inAWhileInst(node);
-        if(node.getWhile() != null)
+        inAReturnInst(node);
+        if(node.getReturn() != null)
         {
-            node.getWhile().apply(this);
+            node.getReturn().apply(this);
         }
         if(node.getExp() != null)
         {
             node.getExp().apply(this);
         }
-        if(node.getDo() != null)
+        if(node.getSc() != null)
         {
-            node.getDo().apply(this);
+            node.getSc().apply(this);
         }
-        if(node.getInst() != null)
-        {
-            node.getInst().apply(this);
-        }
-        outAWhileInst(node);
+        outAReturnInst(node);
     }
 
     public void inAPrintExpInst(APrintExpInst node)
@@ -288,6 +324,98 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getSc().apply(this);
         }
         outAPrintlnInst(node);
+    }
+
+    public void inABlockInst(ABlockInst node)
+    {
+        defaultIn(node);
+    }
+
+    public void outABlockInst(ABlockInst node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseABlockInst(ABlockInst node)
+    {
+        inABlockInst(node);
+        if(node.getLBr() != null)
+        {
+            node.getLBr().apply(this);
+        }
+        {
+            List<PInst> copy = new ArrayList<PInst>(node.getInsts());
+            for(PInst e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        if(node.getRBr() != null)
+        {
+            node.getRBr().apply(this);
+        }
+        if(node.getSc() != null)
+        {
+            node.getSc().apply(this);
+        }
+        outABlockInst(node);
+    }
+
+    public void inAThenPart(AThenPart node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAThenPart(AThenPart node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAThenPart(AThenPart node)
+    {
+        inAThenPart(node);
+        if(node.getThen() != null)
+        {
+            node.getThen().apply(this);
+        }
+        {
+            List<PInst> copy = new ArrayList<PInst>(node.getInsts());
+            for(PInst e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outAThenPart(node);
+    }
+
+    public void inAElsePart(AElsePart node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAElsePart(AElsePart node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAElsePart(AElsePart node)
+    {
+        inAElsePart(node);
+        if(node.getElse() != null)
+        {
+            node.getElse().apply(this);
+        }
+        {
+            List<PInst> copy = new ArrayList<PInst>(node.getInsts());
+            for(PInst e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outAElsePart(node);
     }
 
     public void inAEqExp(AEqExp node)
@@ -551,5 +679,67 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getIdent().apply(this);
         }
         outAVarTerm(node);
+    }
+
+    public void inAParTerm(AParTerm node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAParTerm(AParTerm node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAParTerm(AParTerm node)
+    {
+        inAParTerm(node);
+        if(node.getLPar() != null)
+        {
+            node.getLPar().apply(this);
+        }
+        if(node.getExp() != null)
+        {
+            node.getExp().apply(this);
+        }
+        if(node.getRPar() != null)
+        {
+            node.getRPar().apply(this);
+        }
+        outAParTerm(node);
+    }
+
+    public void inAFunCallTerm(AFunCallTerm node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFunCallTerm(AFunCallTerm node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFunCallTerm(AFunCallTerm node)
+    {
+        inAFunCallTerm(node);
+        if(node.getIdent() != null)
+        {
+            node.getIdent().apply(this);
+        }
+        if(node.getLPar() != null)
+        {
+            node.getLPar().apply(this);
+        }
+        if(node.getArg() != null)
+        {
+            node.getArg().apply(this);
+        }
+        if(node.getRPar() != null)
+        {
+            node.getRPar().apply(this);
+        }
+        outAFunCallTerm(node);
     }
 }

@@ -5,79 +5,49 @@ package com.mygdx.game.Interp.node;
 import com.mygdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class ADeclInst extends PInst
+public final class AFunCallTerm extends PTerm
 {
-    private TDecl _decl_;
     private TIdent _ident_;
-    private TAssign _assign_;
-    private PExp _exp_;
-    private TSc _sc_;
+    private TLPar _lPar_;
+    private PExp _arg_;
+    private TRPar _rPar_;
 
-    public ADeclInst()
+    public AFunCallTerm()
     {
         // Constructor
     }
 
-    public ADeclInst(
-        @SuppressWarnings("hiding") TDecl _decl_,
+    public AFunCallTerm(
         @SuppressWarnings("hiding") TIdent _ident_,
-        @SuppressWarnings("hiding") TAssign _assign_,
-        @SuppressWarnings("hiding") PExp _exp_,
-        @SuppressWarnings("hiding") TSc _sc_)
+        @SuppressWarnings("hiding") TLPar _lPar_,
+        @SuppressWarnings("hiding") PExp _arg_,
+        @SuppressWarnings("hiding") TRPar _rPar_)
     {
         // Constructor
-        setDecl(_decl_);
-
         setIdent(_ident_);
 
-        setAssign(_assign_);
+        setLPar(_lPar_);
 
-        setExp(_exp_);
+        setArg(_arg_);
 
-        setSc(_sc_);
+        setRPar(_rPar_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new ADeclInst(
-            cloneNode(this._decl_),
+        return new AFunCallTerm(
             cloneNode(this._ident_),
-            cloneNode(this._assign_),
-            cloneNode(this._exp_),
-            cloneNode(this._sc_));
+            cloneNode(this._lPar_),
+            cloneNode(this._arg_),
+            cloneNode(this._rPar_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseADeclInst(this);
-    }
-
-    public TDecl getDecl()
-    {
-        return this._decl_;
-    }
-
-    public void setDecl(TDecl node)
-    {
-        if(this._decl_ != null)
-        {
-            this._decl_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._decl_ = node;
+        ((Analysis) sw).caseAFunCallTerm(this);
     }
 
     public TIdent getIdent()
@@ -105,16 +75,16 @@ public final class ADeclInst extends PInst
         this._ident_ = node;
     }
 
-    public TAssign getAssign()
+    public TLPar getLPar()
     {
-        return this._assign_;
+        return this._lPar_;
     }
 
-    public void setAssign(TAssign node)
+    public void setLPar(TLPar node)
     {
-        if(this._assign_ != null)
+        if(this._lPar_ != null)
         {
-            this._assign_.parent(null);
+            this._lPar_.parent(null);
         }
 
         if(node != null)
@@ -127,19 +97,19 @@ public final class ADeclInst extends PInst
             node.parent(this);
         }
 
-        this._assign_ = node;
+        this._lPar_ = node;
     }
 
-    public PExp getExp()
+    public PExp getArg()
     {
-        return this._exp_;
+        return this._arg_;
     }
 
-    public void setExp(PExp node)
+    public void setArg(PExp node)
     {
-        if(this._exp_ != null)
+        if(this._arg_ != null)
         {
-            this._exp_.parent(null);
+            this._arg_.parent(null);
         }
 
         if(node != null)
@@ -152,19 +122,19 @@ public final class ADeclInst extends PInst
             node.parent(this);
         }
 
-        this._exp_ = node;
+        this._arg_ = node;
     }
 
-    public TSc getSc()
+    public TRPar getRPar()
     {
-        return this._sc_;
+        return this._rPar_;
     }
 
-    public void setSc(TSc node)
+    public void setRPar(TRPar node)
     {
-        if(this._sc_ != null)
+        if(this._rPar_ != null)
         {
-            this._sc_.parent(null);
+            this._rPar_.parent(null);
         }
 
         if(node != null)
@@ -177,51 +147,44 @@ public final class ADeclInst extends PInst
             node.parent(this);
         }
 
-        this._sc_ = node;
+        this._rPar_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._decl_)
             + toString(this._ident_)
-            + toString(this._assign_)
-            + toString(this._exp_)
-            + toString(this._sc_);
+            + toString(this._lPar_)
+            + toString(this._arg_)
+            + toString(this._rPar_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._decl_ == child)
-        {
-            this._decl_ = null;
-            return;
-        }
-
         if(this._ident_ == child)
         {
             this._ident_ = null;
             return;
         }
 
-        if(this._assign_ == child)
+        if(this._lPar_ == child)
         {
-            this._assign_ = null;
+            this._lPar_ = null;
             return;
         }
 
-        if(this._exp_ == child)
+        if(this._arg_ == child)
         {
-            this._exp_ = null;
+            this._arg_ = null;
             return;
         }
 
-        if(this._sc_ == child)
+        if(this._rPar_ == child)
         {
-            this._sc_ = null;
+            this._rPar_ = null;
             return;
         }
 
@@ -232,33 +195,27 @@ public final class ADeclInst extends PInst
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._decl_ == oldChild)
-        {
-            setDecl((TDecl) newChild);
-            return;
-        }
-
         if(this._ident_ == oldChild)
         {
             setIdent((TIdent) newChild);
             return;
         }
 
-        if(this._assign_ == oldChild)
+        if(this._lPar_ == oldChild)
         {
-            setAssign((TAssign) newChild);
+            setLPar((TLPar) newChild);
             return;
         }
 
-        if(this._exp_ == oldChild)
+        if(this._arg_ == oldChild)
         {
-            setExp((PExp) newChild);
+            setArg((PExp) newChild);
             return;
         }
 
-        if(this._sc_ == oldChild)
+        if(this._rPar_ == oldChild)
         {
-            setSc((TSc) newChild);
+            setRPar((TRPar) newChild);
             return;
         }
 

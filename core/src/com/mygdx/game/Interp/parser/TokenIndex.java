@@ -52,25 +52,25 @@ class TokenIndex extends AnalysisAdapter
     }
 
     @Override
-    public void caseTWhile(@SuppressWarnings("unused") TWhile node)
+    public void caseTEnd(@SuppressWarnings("unused") TEnd node)
     {
         this.index = 7;
     }
 
     @Override
-    public void caseTDo(@SuppressWarnings("unused") TDo node)
+    public void caseTFun(@SuppressWarnings("unused") TFun node)
     {
         this.index = 8;
     }
 
     @Override
-    public void caseTEnd(@SuppressWarnings("unused") TEnd node)
+    public void caseTReturn(@SuppressWarnings("unused") TReturn node)
     {
         this.index = 9;
     }
 
     @Override
-    public void caseTVar(@SuppressWarnings("unused") TVar node)
+    public void caseTDecl(@SuppressWarnings("unused") TDecl node)
     {
         this.index = 10;
     }
@@ -112,26 +112,50 @@ class TokenIndex extends AnalysisAdapter
     }
 
     @Override
-    public void caseTIdent(@SuppressWarnings("unused") TIdent node)
+    public void caseTLPar(@SuppressWarnings("unused") TLPar node)
     {
         this.index = 17;
     }
 
     @Override
-    public void caseTString(@SuppressWarnings("unused") TString node)
+    public void caseTRPar(@SuppressWarnings("unused") TRPar node)
     {
         this.index = 18;
     }
 
     @Override
-    public void caseTNumber(@SuppressWarnings("unused") TNumber node)
+    public void caseTLBr(@SuppressWarnings("unused") TLBr node)
     {
         this.index = 19;
     }
 
     @Override
-    public void caseEOF(@SuppressWarnings("unused") EOF node)
+    public void caseTRBr(@SuppressWarnings("unused") TRBr node)
     {
         this.index = 20;
+    }
+
+    @Override
+    public void caseTIdent(@SuppressWarnings("unused") TIdent node)
+    {
+        this.index = 21;
+    }
+
+    @Override
+    public void caseTString(@SuppressWarnings("unused") TString node)
+    {
+        this.index = 22;
+    }
+
+    @Override
+    public void caseTNumber(@SuppressWarnings("unused") TNumber node)
+    {
+        this.index = 23;
+    }
+
+    @Override
+    public void caseEOF(@SuppressWarnings("unused") EOF node)
+    {
+        this.index = 24;
     }
 }

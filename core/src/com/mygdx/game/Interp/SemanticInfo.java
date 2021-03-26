@@ -6,6 +6,6 @@ public class SemanticInfo {
     }
 
     public Scope getScope(){
-        retrun new Scope();//TODO implement
+        return new Scope();//TODO implement
     }
 }

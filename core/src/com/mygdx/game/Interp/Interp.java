@@ -14,12 +14,12 @@ public class Interp {
 
         if (args.length != 1) {
             System.err.println("Usage: java interp.Interp nomficher");
-            System.exit(1);
+            System.exit(0);
         }
 
         try {
-            com.mygdx.game.Interp.lexer.Lexer lexer
-                    = new com.mygdx.game.Interp.lexer.Lexer(new PushbackReader(new FileReader(args[0])));
+            Lexer lexer
+                    = new Lexer(new PushbackReader(new FileReader(args[0])));
             Parser parser = new Parser(lexer);
 
             Start tree = parser.parse();

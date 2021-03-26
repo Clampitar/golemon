@@ -6,23 +6,19 @@ import java.util.*;
 import com.mygdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AProg extends PProg
+public final class AFunBody extends PFunBody
 {
-    private final LinkedList<PFunDecl> _funDecls_ = new LinkedList<PFunDecl>();
     private final LinkedList<PInst> _insts_ = new LinkedList<PInst>();
 
-    public AProg()
+    public AFunBody()
     {
         // Constructor
     }
 
-    public AProg(
-        @SuppressWarnings("hiding") List<?> _funDecls_,
+    public AFunBody(
         @SuppressWarnings("hiding") List<?> _insts_)
     {
         // Constructor
-        setFunDecls(_funDecls_);
-
         setInsts(_insts_);
 
     }
@@ -30,41 +26,14 @@ public final class AProg extends PProg
     @Override
     public Object clone()
     {
-        return new AProg(
-            cloneList(this._funDecls_),
+        return new AFunBody(
             cloneList(this._insts_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAProg(this);
-    }
-
-    public LinkedList<PFunDecl> getFunDecls()
-    {
-        return this._funDecls_;
-    }
-
-    public void setFunDecls(List<?> list)
-    {
-        for(PFunDecl e : this._funDecls_)
-        {
-            e.parent(null);
-        }
-        this._funDecls_.clear();
-
-        for(Object obj_e : list)
-        {
-            PFunDecl e = (PFunDecl) obj_e;
-            if(e.parent() != null)
-            {
-                e.parent().removeChild(e);
-            }
-
-            e.parent(this);
-            this._funDecls_.add(e);
-        }
+        ((Analysis) sw).caseAFunBody(this);
     }
 
     public LinkedList<PInst> getInsts()
@@ -97,7 +66,6 @@ public final class AProg extends PProg
     public String toString()
     {
         return ""
-            + toString(this._funDecls_)
             + toString(this._insts_);
     }
 
@@ -105,11 +73,6 @@ public final class AProg extends PProg
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._funDecls_.remove(child))
-        {
-            return;
-        }
-
         if(this._insts_.remove(child))
         {
             return;
@@ -122,24 +85,6 @@ public final class AProg extends PProg
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        for(ListIterator<PFunDecl> i = this._funDecls_.listIterator(); i.hasNext();)
-        {
-            if(i.next() == oldChild)
-            {
-                if(newChild != null)
-                {
-                    i.set((PFunDecl) newChild);
-                    newChild.parent(this);
-                    oldChild.parent(null);
-                    return;
-                }
-
-                i.remove();
-                oldChild.parent(null);
-                return;
-            }
-        }
-
         for(ListIterator<PInst> i = this._insts_.listIterator(); i.hasNext();)
         {
             if(i.next() == oldChild)

@@ -6,22 +6,22 @@ import java.util.*;
 import com.mygdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AProg extends PProg
+public final class AElsePart extends PElsePart
 {
-    private final LinkedList<PFunDecl> _funDecls_ = new LinkedList<PFunDecl>();
+    private TElse _else_;
     private final LinkedList<PInst> _insts_ = new LinkedList<PInst>();
 
-    public AProg()
+    public AElsePart()
     {
         // Constructor
     }
 
-    public AProg(
-        @SuppressWarnings("hiding") List<?> _funDecls_,
+    public AElsePart(
+        @SuppressWarnings("hiding") TElse _else_,
         @SuppressWarnings("hiding") List<?> _insts_)
     {
         // Constructor
-        setFunDecls(_funDecls_);
+        setElse(_else_);
 
         setInsts(_insts_);
 
@@ -30,41 +30,40 @@ public final class AProg extends PProg
     @Override
     public Object clone()
     {
-        return new AProg(
-            cloneList(this._funDecls_),
+        return new AElsePart(
+            cloneNode(this._else_),
             cloneList(this._insts_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAProg(this);
+        ((Analysis) sw).caseAElsePart(this);
     }
 
-    public LinkedList<PFunDecl> getFunDecls()
+    public TElse getElse()
     {
-        return this._funDecls_;
+        return this._else_;
     }
 
-    public void setFunDecls(List<?> list)
+    public void setElse(TElse node)
     {
-        for(PFunDecl e : this._funDecls_)
+        if(this._else_ != null)
         {
-            e.parent(null);
+            this._else_.parent(null);
         }
-        this._funDecls_.clear();
 
-        for(Object obj_e : list)
+        if(node != null)
         {
-            PFunDecl e = (PFunDecl) obj_e;
-            if(e.parent() != null)
+            if(node.parent() != null)
             {
-                e.parent().removeChild(e);
+                node.parent().removeChild(node);
             }
 
-            e.parent(this);
-            this._funDecls_.add(e);
+            node.parent(this);
         }
+
+        this._else_ = node;
     }
 
     public LinkedList<PInst> getInsts()
@@ -97,7 +96,7 @@ public final class AProg extends PProg
     public String toString()
     {
         return ""
-            + toString(this._funDecls_)
+            + toString(this._else_)
             + toString(this._insts_);
     }
 
@@ -105,8 +104,9 @@ public final class AProg extends PProg
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._funDecls_.remove(child))
+        if(this._else_ == child)
         {
+            this._else_ = null;
             return;
         }
 
@@ -122,22 +122,10 @@ public final class AProg extends PProg
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        for(ListIterator<PFunDecl> i = this._funDecls_.listIterator(); i.hasNext();)
+        if(this._else_ == oldChild)
         {
-            if(i.next() == oldChild)
-            {
-                if(newChild != null)
-                {
-                    i.set((PFunDecl) newChild);
-                    newChild.parent(this);
-                    oldChild.parent(null);
-                    return;
-                }
-
-                i.remove();
-                oldChild.parent(null);
-                return;
-            }
+            setElse((TElse) newChild);
+            return;
         }
 
         for(ListIterator<PInst> i = this._insts_.listIterator(); i.hasNext();)
