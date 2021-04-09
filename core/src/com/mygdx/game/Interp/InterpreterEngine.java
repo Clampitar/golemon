@@ -15,7 +15,7 @@ public class InterpreterEngine
 
 
 
-
+/*
     public void caseAIfElseInst(
             AIfElseInst node) {
 
@@ -238,4 +238,6 @@ public class InterpreterEngine
 
         this.result = new StringValue(string);
     }
+
+ */
 }

@@ -7,30 +7,30 @@ import com.mygdx.game.Interp.lexer.*;
 import com.mygdx.game.Interp.node.*;
 import com.mygdx.game.Interp.parser.*;
 
-public class Interp {
+public class Interpreter {
+	
+	private static String pathChange = "../core/assets/cutScenes/";
 
-    public static void main(
-            String[] args) {
-
-        if (args.length != 1) {
-            System.err.println("Usage: java interp.Interp nomficher");
-            System.exit(0);
-        }
-
+    public void interpret(String fileName) {
+        fileName = pathChange + fileName;
         try {
-            Lexer lexer
-                    = new Lexer(new PushbackReader(new FileReader(args[0])));
+            Lexer lexer = null;
+            FileReader fileReader = new FileReader(fileName);;
+            PushbackReader pushbackReader = new PushbackReader(fileReader);
+            try {
+                lexer = new Lexer(pushbackReader);
+            } catch (ExceptionInInitializerError e) {
+                System.out.println("CORRUPTION DE FICHIERS: " + pushbackReader.ready() + " and "+ lexer +" found at "+e.getCause());
+                return;
+            }
             Parser parser = new Parser(lexer);
-
             Start tree = parser.parse();
-
             tree.apply(new SemanticVerifier());
-
             tree.apply(new InterpreterEngine());
         }
         catch (FileNotFoundException e) {
-            System.err
-                    .println("Le fichier " + args[0] + " n'a pas Ã©tÃ© trouvÃ©.");
+            System.err.println("Le fichier " + fileName + " n'a pas été trouvé.");
+            System.err.println("Vouz êtes dans = " + System.getProperty("user.dir"));
             System.exit(1);
         }
         catch (ParserException e) {
@@ -53,5 +53,6 @@ public class Interp {
             System.err.println("ERREUR D'INTERPRÃ‰TATION: " + e.getMessage());
             System.exit(1);
         }
+
     }
 }

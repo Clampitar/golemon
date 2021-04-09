@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.mygdx.game.Interp.Interpreter;
 import com.mygdx.game.Menus.MenuManager;
 
 public class MyGdxGame extends ApplicationAdapter {
@@ -33,6 +34,8 @@ public class MyGdxGame extends ApplicationAdapter {
     private Player player;
     private Opponent dummy;
     private Golem defaultGolem;//only a placeholder; TODO replace this so the battle still works
+
+    private Interpreter interpreter;
 
 
     // private boolean paused;
@@ -67,7 +70,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
         //setting the menu
         dialogue = new TextBox("dialogueBoxes/green.png", batch, cam);
-        dialogue.loadCutScene("cutScenes/tutorial.txt");
+     //   dialogue.loadCutScene("cutScenes/tutorial.txt");
 
         menuManager = new MenuManager(batch, cam, defaultGolem);
 
@@ -77,6 +80,7 @@ public class MyGdxGame extends ApplicationAdapter {
         dialogueSound = Gdx.audio.newSound(Gdx.files.internal("sounds/chirp.wav"));
         battleMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/wrath.wav"));
 
+        interpreter = new Interpreter();
 
     }
 
@@ -152,11 +156,8 @@ public class MyGdxGame extends ApplicationAdapter {
         if(Input.isPressed(Input.START)){
             gameState = GameState.paused;
         } else
-        if(Input.isPressed(Input.TEST_BATTLE)){
-            gameState = GameState.battle;
-        }
-        if(Input.isPressed(Input.TEST_BATTLE)){
-            gameState = GameState.battle;
+        if(Input.isPressed(Input.TEST_ITERPRETER)){
+            interpreter.interpret("test.fun");
         }
     }
 
@@ -187,10 +188,10 @@ public class MyGdxGame extends ApplicationAdapter {
     public void battleInput(){
         if(Input.isPressed(Input.START)){
             gameState = GameState.paused;
-        } else if(Input.isPressed(Input.TEST_BATTLE)){
+        } else if(Input.isPressed(Input.TEST_ITERPRETER)){
             gameState = GameState.overWorld;
         }
-        if(Input.isPressed(Input.TEST_BATTLE)){
+        if(Input.isPressed(Input.TEST_ITERPRETER)){
             gameState = GameState.overWorld;
         }
     }
