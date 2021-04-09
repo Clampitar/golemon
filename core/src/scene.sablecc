@@ -1,95 +1,142 @@
-  Package com.mygdx.game.Interp;
+Package com.mygdx.game.Interp;
 
-  Helpers
+Helpers
 
-    letter = ['a'..'z'];
-    string_char = [[32..127] - '"'];
-    digit = ['0'..'9'];
-    eol = 13 | 10 | 13 10;
-    tab = 9;
-    not_eol = [[0..0xffff]-[13 + 10]];
+  letter = ['a'..'z'];
+  string_char = [[32..127] - '"'];
+  digit = ['0'..'9'];
+  eol = 13 | 10 | 13 10;
+  tab = 9;
+  not_eol = [[0..0xffff]-[13 + 10]];
 
-  Tokens
+Tokens
 
-    /* keywords */
+  /* keywords */
 
-    print = 'print';
-    println = 'println';
-    true = 'true';
-    false = 'false';
-    if = 'if';
-    then = 'then';
-    else = 'else';
-    end = 'end';
-    fun = 'fun';
-    return = 'return';
-    decl = 'var';
+  print = 'print';
+  println = 'println';
+  true = 'true';
+  false = 'false';
+  if = 'if';
+  then = 'then';
+  else = 'else';
+  end = 'end';
+  fun = 'fun';
+  return = 'return';
+  struct = 'struct';
+  do = 'do';
+  var = 'var';
+  while = 'while';
 
-    sc = ';';
-    assign = '=';
-    plus = '+';
-    minus = '-';
-    lt = '<';
-    eq = '==';
+  sc = ';';
+  assign = '=';
+  plus = '+';
+  minus = '-';
+  lt = '<';
+  eq = '==';
+  comma = ',';
+  dot = '.';
 
-    l_par = '(';
-    r_par = ')';
-    l_br = '{';
-    r_br = '}';
-
-
-    ident = letter (letter | digit)*;
-    string = '"' string_char* '"';
-    number = digit+;
-
-    blank = (' ' | eol | tab)+;
-    comment = '#' not_eol*;
-
-  Ignored Tokens
-    blank, comment;
+  l_par = '(';
+  r_par = ')';
 
 
-  Productions
+  ident = letter (letter | digit | '_')*;
+  string = '"' string_char* '"';
+  number = digit+;
 
-    prog =
-      [fun_decls]:fun_decl* [insts]:inst*;
+  blank = (' ' | eol | tab)+;
+  comment = '#' not_eol*;
 
-    fun_decl =
-      fun [name]:ident l_par [param]:ident r_par fun_body end;
+Ignored Tokens
+  blank, comment;
 
-    fun_body =
-      [insts]:inst*;
 
-    inst =
-      {decl} decl ident assign exp sc |
-      {assign} ident assign exp sc |
-      {if_else} if exp then_part else_part? end |
-      {return} return exp sc |
-      {print_exp} print exp sc |
-      {println} println sc |
-      {block} l_br [insts]:inst* r_br sc;
+Productions
 
-    then_part =
-      then [insts]:inst*;
+  prog =
+    [struct_decls]:struct_decl* [fun_decls]:fun_decl* [insts]:inst*;
 
-    else_part =
-      else [insts]:inst*;
+  struct_decl =
+    struct ident fields end;
 
-    exp =
-      {eq} [left]:exp eq [right]:additive_exp |
-      {lt} [left]:exp lt [right]:additive_exp |
-      {simple} additive_exp;
+  fields =
+    field [additional_fields]:additional_field*;
 
-    additive_exp =
-      {add} [left]:additive_exp plus [right]:term |
-      {sub} [left]:additive_exp minus [right]:term |
-      {simple} term;
+  additional_field =
+    comma field;
 
-    term =
-      {true} true |
-      {false} false |
-      {number} number |
-      {string} string |
-      {var} ident |
-      {par} l_par exp r_par |
-      {fun_call} ident l_par [arg]:exp r_par;
+  field =
+    ident;
+
+  fun_decl =
+    fun [name]:ident l_par params? r_par do fun_body end;
+
+  fun_body =
+    [insts]:inst*;
+
+  inst =
+    {decl} var ident assign exp sc |
+    {assign} ident assign exp sc |
+    {field_assign} [left]:unary dot ident assign exp sc |
+    {if} if exp then_part else_part? end |
+    {while} while exp do while_body end |
+    {return} return exp sc |
+    {fun_call} ident l_par args? r_par sc |
+    {print_exp} print exp sc |
+    {println} println sc;
+
+  while_body =
+    [insts]:inst*;
+
+  then_part =
+    then [insts]:inst*;
+
+  else_part =
+    else [insts]:inst*;
+
+  exp =
+    {eq} [left]:exp eq [right]:additive_exp |
+    {lt} [left]:exp lt [right]:additive_exp |
+    {simple} additive_exp;
+
+  additive_exp =
+    {add} [left]:additive_exp plus [right]:unary |
+    {sub} [left]:additive_exp minus [right]:unary |
+    {simple} unary;
+
+  unary =
+    {field_access} [left]:unary dot ident |
+    {simple} term;
+
+  term =
+    {true} true |
+    {false} false |
+    {number} number |
+    {string} string |
+    {var} ident |
+    {par} l_par exp r_par |
+    {fun_call} ident l_par args? r_par |
+    {struct} struct ident l_par args? r_par |
+    {fun} fun l_par params? r_par do fun_body end;
+
+
+  params =
+    param [additional_params]:additional_param*;
+
+  additional_param =
+    comma param;
+
+  param =
+    ident;
+
+  args =
+    arg [additional_args]:additional_arg*;
+
+  additional_arg =
+    comma arg;
+
+  arg =
+    exp;
+
+

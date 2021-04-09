@@ -1,1 +1,0 @@
-If everything works, the next time C is pressed, the tutorial starts.

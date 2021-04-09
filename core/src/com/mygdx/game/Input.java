@@ -17,7 +17,7 @@ public class Input extends InputAdapter {
 
     public static final int SELECT = 4;
     public static final int START = 5;
-    public static final int TEST_BATTLE = 6;
+    public static final int TEST_ITERPRETER = 6;
 
     static {
         keys = new boolean[NUM_KEYS];
@@ -71,7 +71,7 @@ public class Input extends InputAdapter {
                 setKey(START, b);
                 break;
             case Keys.M:
-                setKey(TEST_BATTLE, b);
+                setKey(TEST_ITERPRETER, b);
                 break;
             default: return false;
         }

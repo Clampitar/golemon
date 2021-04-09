@@ -24,7 +24,7 @@ public class SemanticVerifier
 
         this.currentScope = new Scope();
     }
-
+/*
     @Override
     public void inABlockInst(
             ABlockInst node) {

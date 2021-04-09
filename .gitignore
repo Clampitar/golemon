@@ -125,3 +125,12 @@ Thumbs.db
 !/ios-moe/xcode/*.xcodeproj/xcshareddata
 !/ios-moe/xcode/*.xcodeproj/project.pbxproj
 /ios-moe/xcode/native/
+
+
+## sableCC
+
+core/src/com/mygdx/game/Interp/analysis/*
+core/src/com/mygdx/game/Interp/node/*
+core/src/com/mygdx/game/Interp/lexer/*
+core/src/com/mygdx/game/Interp/parser/*
+core/src/com/mygdx/game/Interp/analysis/Analysis.java
