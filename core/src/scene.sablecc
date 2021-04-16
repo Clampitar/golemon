@@ -1,4 +1,4 @@
-Package com.mygdx.game.Interp;
+Package gdx.game.Interp;
 
 Helpers
 
@@ -8,6 +8,7 @@ Helpers
   eol = 13 | 10 | 13 10;
   tab = 9;
   not_eol = [[0..0xffff]-[13 + 10]];
+  dot = 'dot';
 
 Tokens
 
@@ -27,7 +28,13 @@ Tokens
   do = 'do';
   var = 'var';
   while = 'while';
+  for = 'for';
+  
+  frame_advance = 'frameAdvance';
+  walk = 'walk';
 
+  /*punctuation */
+  
   sc = ';';
   assign = '=';
   plus = '+';
@@ -43,7 +50,8 @@ Tokens
 
   ident = letter (letter | digit | '_')*;
   string = '"' string_char* '"';
-  number = digit+;
+  integer = digit+;
+  float = digit* dot digit+;
 
   blank = (' ' | eol | tab)+;
   comment = '#' not_eol*;
@@ -80,12 +88,16 @@ Productions
     {assign} ident assign exp sc |
     {field_assign} [left]:unary dot ident assign exp sc |
     {if} if exp then_part else_part? end |
+    {block} do [insts]:inst* end |
     {while} while exp do while_body end |
+    {for} for [decl]:exp? [first]:sc [cond]:exp? [second]:sc [iter]:exp? do while_body end |
     {return} return exp sc |
     {fun_call} ident l_par args? r_par sc |
     {print_exp} print exp sc |
-    {println} println sc;
-
+    {println} println sc |
+    {frame_advance} frame_advance exp? sc |
+    {walk} walk l_par args r_par sc;
+    
   while_body =
     [insts]:inst*;
 
@@ -112,7 +124,7 @@ Productions
   term =
     {true} true |
     {false} false |
-    {number} number |
+    {integer} integer |
     {string} string |
     {var} ident |
     {par} l_par exp r_par |
