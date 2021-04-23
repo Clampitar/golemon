@@ -126,12 +126,9 @@ public class SemanticVerifier
     }
 
     @Override
-    public void caseANumberTerm(
-            ANumberTerm node) {
-
-        this.resultType = Type.INT;
+    public void caseAIntegerTerm(AIntegerTerm node) {
+    	this.resultType = Type.INT;
     }
-
     @Override
     public void caseAStringTerm(
             AStringTerm node) {

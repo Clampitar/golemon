@@ -107,7 +107,7 @@ public class FunctionInfo {
 
             if (argsIterator.hasNext()) {
                 Value arg = argsIterator.next();
-                frame.putVariable(param.getName(), arg, frame);
+                frame.putVariable(param.getName(), arg);
             }
             else {
                 throw new InterpreterException(location, frame,
