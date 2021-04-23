@@ -37,16 +37,14 @@ public class Frame {
 
     public void putVariable(
             TIdent ident,
-            Value value,
-            Frame frame) {
+            Value value) {
 
         String varName = ident.getText();
         this.variables.put(varName, value);
     }
 
     public Value getVariable(
-            TIdent ident,
-            Frame frame) {
+            TIdent ident) {
 
         String varName = ident.getText();
         return this.variables.get(varName);
