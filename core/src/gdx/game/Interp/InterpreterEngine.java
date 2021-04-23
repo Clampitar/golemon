@@ -11,7 +11,7 @@ import gdx.game.Interp.node.*;
 public class InterpreterEngine
         extends DepthFirstAdapter {
 
-    private Map<String, Value> variables = new HashMap<>();
+   // private Map<String, Value> variables = new HashMap<>();
 
     private Value result;
     private Value[] results;
@@ -108,7 +108,7 @@ public class InterpreterEngine
 
         Value value = eval(node.getExp());
         String varName = node.getIdent().getText();
-        this.variables.put(varName, value);
+        this.currentFrame.putVariable(node.getIdent(), value);
     }
 
     @Override
@@ -116,8 +116,8 @@ public class InterpreterEngine
             AAssignInst node) {
 
         Value value = eval(node.getExp());
-        String varName = node.getIdent().getText();
-        this.variables.put(varName, value);
+      //  String varName = node.getIdent().getText();
+        this.currentFrame.putVariable(node.getIdent(), value);
     }
 
     @Override
@@ -201,15 +201,15 @@ public class InterpreterEngine
     }
 
     @Override
-    public void caseANumberTerm(
-            ANumberTerm node) {
+    public void caseAIntegerTerm(
+            AIntegerTerm node) {
 
         try {
-            int number = Integer.parseInt(node.getNumber().getText());
+            int number = Integer.parseInt(node.getInteger().getText());
             this.result = new IntValue(number);
         }
         catch (NumberFormatException e) {
-            throw new InterpreterException(node.getNumber(),
+            throw new InterpreterException(node.getInteger(),
                     this.currentFrame,"Number is invalid");
         }
     }
@@ -218,10 +218,7 @@ public class InterpreterEngine
     public void caseAVarTerm(
             AVarTerm node) {
 
-        String varName = node.getIdent().getText();
-
-        this.result = this.variables.get(varName);
-        
+        this.result = this.currentFrame.getVariable(node.getIdent());
     }
 
     @Override
