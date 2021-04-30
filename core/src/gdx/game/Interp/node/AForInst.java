@@ -8,11 +8,13 @@ import gdx.game.Interp.analysis.*;
 public final class AForInst extends PInst
 {
     private TFor _for_;
-    private PExp _decl_;
-    private TSc _first_;
+    private TLPar _lPar_;
+    private PAssigner _decl_;
+    private TSc _firstSc_;
     private PExp _cond_;
-    private TSc _second_;
-    private PExp _iter_;
+    private TSc _secondSc_;
+    private PAssigner _iter_;
+    private TRPar _rPar_;
     private TDo _do_;
     private PWhileBody _whileBody_;
     private TEnd _end_;
@@ -24,11 +26,13 @@ public final class AForInst extends PInst
 
     public AForInst(
         @SuppressWarnings("hiding") TFor _for_,
-        @SuppressWarnings("hiding") PExp _decl_,
-        @SuppressWarnings("hiding") TSc _first_,
+        @SuppressWarnings("hiding") TLPar _lPar_,
+        @SuppressWarnings("hiding") PAssigner _decl_,
+        @SuppressWarnings("hiding") TSc _firstSc_,
         @SuppressWarnings("hiding") PExp _cond_,
-        @SuppressWarnings("hiding") TSc _second_,
-        @SuppressWarnings("hiding") PExp _iter_,
+        @SuppressWarnings("hiding") TSc _secondSc_,
+        @SuppressWarnings("hiding") PAssigner _iter_,
+        @SuppressWarnings("hiding") TRPar _rPar_,
         @SuppressWarnings("hiding") TDo _do_,
         @SuppressWarnings("hiding") PWhileBody _whileBody_,
         @SuppressWarnings("hiding") TEnd _end_)
@@ -36,15 +40,19 @@ public final class AForInst extends PInst
         // Constructor
         setFor(_for_);
 
+        setLPar(_lPar_);
+
         setDecl(_decl_);
 
-        setFirst(_first_);
+        setFirstSc(_firstSc_);
 
         setCond(_cond_);
 
-        setSecond(_second_);
+        setSecondSc(_secondSc_);
 
         setIter(_iter_);
+
+        setRPar(_rPar_);
 
         setDo(_do_);
 
@@ -59,11 +67,13 @@ public final class AForInst extends PInst
     {
         return new AForInst(
             cloneNode(this._for_),
+            cloneNode(this._lPar_),
             cloneNode(this._decl_),
-            cloneNode(this._first_),
+            cloneNode(this._firstSc_),
             cloneNode(this._cond_),
-            cloneNode(this._second_),
+            cloneNode(this._secondSc_),
             cloneNode(this._iter_),
+            cloneNode(this._rPar_),
             cloneNode(this._do_),
             cloneNode(this._whileBody_),
             cloneNode(this._end_));
@@ -100,12 +110,37 @@ public final class AForInst extends PInst
         this._for_ = node;
     }
 
-    public PExp getDecl()
+    public TLPar getLPar()
+    {
+        return this._lPar_;
+    }
+
+    public void setLPar(TLPar node)
+    {
+        if(this._lPar_ != null)
+        {
+            this._lPar_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        this._lPar_ = node;
+    }
+
+    public PAssigner getDecl()
     {
         return this._decl_;
     }
 
-    public void setDecl(PExp node)
+    public void setDecl(PAssigner node)
     {
         if(this._decl_ != null)
         {
@@ -125,16 +160,16 @@ public final class AForInst extends PInst
         this._decl_ = node;
     }
 
-    public TSc getFirst()
+    public TSc getFirstSc()
     {
-        return this._first_;
+        return this._firstSc_;
     }
 
-    public void setFirst(TSc node)
+    public void setFirstSc(TSc node)
     {
-        if(this._first_ != null)
+        if(this._firstSc_ != null)
         {
-            this._first_.parent(null);
+            this._firstSc_.parent(null);
         }
 
         if(node != null)
@@ -147,7 +182,7 @@ public final class AForInst extends PInst
             node.parent(this);
         }
 
-        this._first_ = node;
+        this._firstSc_ = node;
     }
 
     public PExp getCond()
@@ -175,16 +210,16 @@ public final class AForInst extends PInst
         this._cond_ = node;
     }
 
-    public TSc getSecond()
+    public TSc getSecondSc()
     {
-        return this._second_;
+        return this._secondSc_;
     }
 
-    public void setSecond(TSc node)
+    public void setSecondSc(TSc node)
     {
-        if(this._second_ != null)
+        if(this._secondSc_ != null)
         {
-            this._second_.parent(null);
+            this._secondSc_.parent(null);
         }
 
         if(node != null)
@@ -197,15 +232,15 @@ public final class AForInst extends PInst
             node.parent(this);
         }
 
-        this._second_ = node;
+        this._secondSc_ = node;
     }
 
-    public PExp getIter()
+    public PAssigner getIter()
     {
         return this._iter_;
     }
 
-    public void setIter(PExp node)
+    public void setIter(PAssigner node)
     {
         if(this._iter_ != null)
         {
@@ -223,6 +258,31 @@ public final class AForInst extends PInst
         }
 
         this._iter_ = node;
+    }
+
+    public TRPar getRPar()
+    {
+        return this._rPar_;
+    }
+
+    public void setRPar(TRPar node)
+    {
+        if(this._rPar_ != null)
+        {
+            this._rPar_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        this._rPar_ = node;
     }
 
     public TDo getDo()
@@ -305,11 +365,13 @@ public final class AForInst extends PInst
     {
         return ""
             + toString(this._for_)
+            + toString(this._lPar_)
             + toString(this._decl_)
-            + toString(this._first_)
+            + toString(this._firstSc_)
             + toString(this._cond_)
-            + toString(this._second_)
+            + toString(this._secondSc_)
             + toString(this._iter_)
+            + toString(this._rPar_)
             + toString(this._do_)
             + toString(this._whileBody_)
             + toString(this._end_);
@@ -325,15 +387,21 @@ public final class AForInst extends PInst
             return;
         }
 
+        if(this._lPar_ == child)
+        {
+            this._lPar_ = null;
+            return;
+        }
+
         if(this._decl_ == child)
         {
             this._decl_ = null;
             return;
         }
 
-        if(this._first_ == child)
+        if(this._firstSc_ == child)
         {
-            this._first_ = null;
+            this._firstSc_ = null;
             return;
         }
 
@@ -343,15 +411,21 @@ public final class AForInst extends PInst
             return;
         }
 
-        if(this._second_ == child)
+        if(this._secondSc_ == child)
         {
-            this._second_ = null;
+            this._secondSc_ = null;
             return;
         }
 
         if(this._iter_ == child)
         {
             this._iter_ = null;
+            return;
+        }
+
+        if(this._rPar_ == child)
+        {
+            this._rPar_ = null;
             return;
         }
 
@@ -386,15 +460,21 @@ public final class AForInst extends PInst
             return;
         }
 
-        if(this._decl_ == oldChild)
+        if(this._lPar_ == oldChild)
         {
-            setDecl((PExp) newChild);
+            setLPar((TLPar) newChild);
             return;
         }
 
-        if(this._first_ == oldChild)
+        if(this._decl_ == oldChild)
         {
-            setFirst((TSc) newChild);
+            setDecl((PAssigner) newChild);
+            return;
+        }
+
+        if(this._firstSc_ == oldChild)
+        {
+            setFirstSc((TSc) newChild);
             return;
         }
 
@@ -404,15 +484,21 @@ public final class AForInst extends PInst
             return;
         }
 
-        if(this._second_ == oldChild)
+        if(this._secondSc_ == oldChild)
         {
-            setSecond((TSc) newChild);
+            setSecondSc((TSc) newChild);
             return;
         }
 
         if(this._iter_ == oldChild)
         {
-            setIter((PExp) newChild);
+            setIter((PAssigner) newChild);
+            return;
+        }
+
+        if(this._rPar_ == oldChild)
+        {
+            setRPar((TRPar) newChild);
             return;
         }
 

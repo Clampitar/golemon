@@ -5,49 +5,74 @@ package gdx.game.Interp.node;
 import gdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AAssignInst extends PInst
+public final class ADeclAssigner extends PAssigner
 {
+    private TVar _var_;
     private TIdent _ident_;
     private TAssign _assign_;
     private PExp _exp_;
-    private TSc _sc_;
 
-    public AAssignInst()
+    public ADeclAssigner()
     {
         // Constructor
     }
 
-    public AAssignInst(
+    public ADeclAssigner(
+        @SuppressWarnings("hiding") TVar _var_,
         @SuppressWarnings("hiding") TIdent _ident_,
         @SuppressWarnings("hiding") TAssign _assign_,
-        @SuppressWarnings("hiding") PExp _exp_,
-        @SuppressWarnings("hiding") TSc _sc_)
+        @SuppressWarnings("hiding") PExp _exp_)
     {
         // Constructor
+        setVar(_var_);
+
         setIdent(_ident_);
 
         setAssign(_assign_);
 
         setExp(_exp_);
 
-        setSc(_sc_);
-
     }
 
     @Override
     public Object clone()
     {
-        return new AAssignInst(
+        return new ADeclAssigner(
+            cloneNode(this._var_),
             cloneNode(this._ident_),
             cloneNode(this._assign_),
-            cloneNode(this._exp_),
-            cloneNode(this._sc_));
+            cloneNode(this._exp_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAAssignInst(this);
+        ((Analysis) sw).caseADeclAssigner(this);
+    }
+
+    public TVar getVar()
+    {
+        return this._var_;
+    }
+
+    public void setVar(TVar node)
+    {
+        if(this._var_ != null)
+        {
+            this._var_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        this._var_ = node;
     }
 
     public TIdent getIdent()
@@ -125,45 +150,26 @@ public final class AAssignInst extends PInst
         this._exp_ = node;
     }
 
-    public TSc getSc()
-    {
-        return this._sc_;
-    }
-
-    public void setSc(TSc node)
-    {
-        if(this._sc_ != null)
-        {
-            this._sc_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._sc_ = node;
-    }
-
     @Override
     public String toString()
     {
         return ""
+            + toString(this._var_)
             + toString(this._ident_)
             + toString(this._assign_)
-            + toString(this._exp_)
-            + toString(this._sc_);
+            + toString(this._exp_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
+        if(this._var_ == child)
+        {
+            this._var_ = null;
+            return;
+        }
+
         if(this._ident_ == child)
         {
             this._ident_ = null;
@@ -182,12 +188,6 @@ public final class AAssignInst extends PInst
             return;
         }
 
-        if(this._sc_ == child)
-        {
-            this._sc_ = null;
-            return;
-        }
-
         throw new RuntimeException("Not a child.");
     }
 
@@ -195,6 +195,12 @@ public final class AAssignInst extends PInst
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
+        if(this._var_ == oldChild)
+        {
+            setVar((TVar) newChild);
+            return;
+        }
+
         if(this._ident_ == oldChild)
         {
             setIdent((TIdent) newChild);
@@ -210,12 +216,6 @@ public final class AAssignInst extends PInst
         if(this._exp_ == oldChild)
         {
             setExp((PExp) newChild);
-            return;
-        }
-
-        if(this._sc_ == oldChild)
-        {
-            setSc((TSc) newChild);
             return;
         }
 

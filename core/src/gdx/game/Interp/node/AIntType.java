@@ -5,46 +5,46 @@ package gdx.game.Interp.node;
 import gdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class ASimpleAdditiveExp extends PAdditiveExp
+public final class AIntType extends PType
 {
-    private PMultExp _multExp_;
+    private TIntType _intType_;
 
-    public ASimpleAdditiveExp()
+    public AIntType()
     {
         // Constructor
     }
 
-    public ASimpleAdditiveExp(
-        @SuppressWarnings("hiding") PMultExp _multExp_)
+    public AIntType(
+        @SuppressWarnings("hiding") TIntType _intType_)
     {
         // Constructor
-        setMultExp(_multExp_);
+        setIntType(_intType_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new ASimpleAdditiveExp(
-            cloneNode(this._multExp_));
+        return new AIntType(
+            cloneNode(this._intType_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseASimpleAdditiveExp(this);
+        ((Analysis) sw).caseAIntType(this);
     }
 
-    public PMultExp getMultExp()
+    public TIntType getIntType()
     {
-        return this._multExp_;
+        return this._intType_;
     }
 
-    public void setMultExp(PMultExp node)
+    public void setIntType(TIntType node)
     {
-        if(this._multExp_ != null)
+        if(this._intType_ != null)
         {
-            this._multExp_.parent(null);
+            this._intType_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class ASimpleAdditiveExp extends PAdditiveExp
             node.parent(this);
         }
 
-        this._multExp_ = node;
+        this._intType_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._multExp_);
+            + toString(this._intType_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._multExp_ == child)
+        if(this._intType_ == child)
         {
-            this._multExp_ = null;
+            this._intType_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class ASimpleAdditiveExp extends PAdditiveExp
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._multExp_ == oldChild)
+        if(this._intType_ == oldChild)
         {
-            setMultExp((PMultExp) newChild);
+            setIntType((TIntType) newChild);
             return;
         }
 

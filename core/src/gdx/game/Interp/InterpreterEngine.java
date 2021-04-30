@@ -11,13 +11,12 @@ import gdx.game.Interp.node.*;
 public class InterpreterEngine
         extends DepthFirstAdapter {
 
-   // private Map<String, Value> variables = new HashMap<>();
-
     private Value result;
-    private Value[] results;
+    private List<Value> currentArgs;
     private Frame currentFrame;
     private SemanticInfo semantics;
-    private Iterator<PInst> iterator;
+    private PInst currentInst;
+    
     public int frameDelay = 0;
     
     Player player;
@@ -27,7 +26,7 @@ public class InterpreterEngine
 		this.player = player;
 		this.game = game;
 		this.semantics = semantics;
-		iterator = null;
+		currentFrame = null;
     }
     
     private void visit(Node node) {
@@ -38,18 +37,32 @@ public class InterpreterEngine
     
     @Override
     public void caseAProg(AProg node) {
-    	this.currentFrame = new Frame();
+    	if(this.currentFrame == null)
+    		this.currentFrame = new Frame(node.getInsts());
     	frameDelay = 0;
-    	if(iterator == null) {
-    		iterator = node.getInsts().iterator();
-    	}
     	//Si la lecture est intérompue l'itérateur est conservé 
     	//et le programme peut continuer à la même ligne si celui-si est ré-appelé
-    	while (iterator.hasNext()) {
-			visit((PInst) iterator.next());
-			if(frameDelay > 0)
-				return;
-		}
+    	try {
+    		while (hasNext()) {
+    			currentInst = (PInst) currentFrame.next();
+    			visit(currentInst);
+    			
+			}
+    	} catch(frameAdvanceException e) {}
+    }
+    
+    public boolean hasNext() {
+    	if(this.currentFrame instanceof BlockFrame && !currentFrame.hasNext()) {
+    		PAssigner assigner = ((BlockFrame) this.currentFrame).getEndLoopInst();
+    		visit(assigner);
+    		PExp exp = ((BlockFrame) this.currentFrame).getLoopExpression();
+    		BoolValue val = (BoolValue) eval(exp);
+    		if(val.getValue()) {
+    			((BlockFrame) this.currentFrame).reIterate();
+    			return true;
+    		}
+    	}
+    	return currentFrame.hasNext();
     }
 
     public void caseAIfInst(
@@ -69,22 +82,27 @@ public class InterpreterEngine
     
     @Override
     public void caseAWhileInst(AWhileInst node) {
-    	while(true) {
-    		BoolValue value = (BoolValue) eval(node.getExp());
-    		if(!value.getValue())
-    			break;
+    	this.currentFrame = new BlockFrame(this.currentFrame, node.getExp());
     		visit(node.getWhileBody());
-    	}
+    	this.currentFrame = this.currentFrame.getParentFrame();
+    }
+    
+    @Override
+    public void caseAWhileBody(AWhileBody node) {
+    	this.currentFrame.iterate(node.getInsts());
+    	
+    		while (currentFrame.hasNext()) {
+    			visit((PInst) currentFrame.next());
+			}
+    	
+    	
     }
     
     public void caseAForInst(AForInst node) {
-    	//Value
-    	while(true) {
-    		BoolValue condition = (BoolValue) eval(node.getCond());
-    		if(!condition.getValue())
-    			break;
-    		visit(node.getWhileBody());
-    	}
+    	this.currentFrame = new BlockFrame(this.currentFrame, node.getCond(), node.getIter());
+    	visit(node.getDecl());
+    	visit(node.getWhileBody());
+		this.currentFrame = this.currentFrame.getParentFrame();
     };
 
     @Override
@@ -100,25 +118,28 @@ public class InterpreterEngine
 
         Value value = eval(node.getExp());
         System.out.print(value);
-        player.walk(5, 10);
     }
-
-    public void caseADeclInst(
-            ADeclInst node) {
-
-        Value value = eval(node.getExp());
-        String varName = node.getIdent().getText();
-        this.currentFrame.putVariable(node.getIdent(), value);
-    }
-
+    
     @Override
-    public void caseAAssignInst(
-            AAssignInst node) {
-
-        Value value = eval(node.getExp());
-      //  String varName = node.getIdent().getText();
+    public void caseADeclAssigner(ADeclAssigner node) {
+    	Value value = eval(node.getExp());
         this.currentFrame.putVariable(node.getIdent(), value);
     }
+    
+    @Override
+    public void caseAAssignAssigner(AAssignAssigner node) {
+    	Value value = eval(node.getExp());
+        this.currentFrame.putVariable(node.getIdent(), value);
+    }
+    
+    @Override
+    	public void caseAReturnInst(AReturnInst node) {
+    		if(node.getExp() != null) {
+    			Value value = eval(node.getExp());
+    			this.currentFrame.setReturnValue(value);
+    		}
+    		throw new ReturnException();
+    	}
 
     @Override
     public void caseAEqExp(
@@ -186,18 +207,21 @@ public class InterpreterEngine
         this.result = new IntValue(((IntValue) leftValue).getValue()
                 + ((IntValue) rightValue).getValue());
     }
+    
+    @Override
+    public void caseAMultMultExp(AMultMultExp node) {
+    	 Value leftValue = eval(node.getLeft());
+         Value rightValue = eval(node.getRight());
+         
+         this.result = new IntValue(((IntValue) leftValue).getValue()
+                 + ((IntValue) rightValue).getValue());
+    };
 
     private Value eval(
             Node node) {
 
         node.apply(this);
         return this.result;
-    }
-    
-    private Value[] evalList(
-    		Node node) {
-    	node.apply(this);
-    	return this.results;
     }
 
     @Override
@@ -248,24 +272,76 @@ public class InterpreterEngine
     
     @Override
     public void caseAFrameAdvanceInst(AFrameAdvanceInst node) {
-    	frameDelay = 1;
-    	Value value = eval(node.getExp());
-    	if(value instanceof IntValue) {
-    		frameDelay = ((IntValue) value).getValue();
+    	this.frameDelay = 1;
+    	if(node.getExp() != null) {
+    		Value value = eval(node.getExp());
+    		this.frameDelay = ((IntValue) value).getValue();
     	}
+
+    	throw new frameAdvanceException();
     }
     
     @Override
     public void caseAWalkInst(AWalkInst node) {
-    	IntValue x = (IntValue) evalList(node.getArgs())[0];
-    	IntValue y = (IntValue) evalList(node.getArgs())[1];
+    	List<Value> previousArgs = this.currentArgs;
+        this.currentArgs = new LinkedList<>();
+        visit(node.getArgs());
+    	IntValue x = (IntValue) this.currentArgs.get(0);
+    	IntValue y = (IntValue) this.currentArgs.get(1);
     	player.walk(x.getValue(), y.getValue());
+    	this.currentArgs = previousArgs;
     }
     
     @Override
-    public void caseAArgs(AArgs node) {
+    public void caseAArg(AArg node) {
+    	this.currentArgs.add(eval(node.getExp()));
+    }
+    
+    @Override
+    public void caseAFunCallInst(AFunCallInst node) {
     	// TODO Auto-generated method stub
-    	super.caseAArgs(node);
+    	System.err.println("function call instruction");
+    	
+    	
+    }
+    
+    @Override
+    	public void caseAFunCallTerm(AFunCallTerm node) {
+    	List<Value> previousArgs = this.currentArgs;
+        this.currentArgs = new LinkedList<>();
+        visit(node.getArgs());
+        List<Value> args = this.currentArgs;
+        this.currentArgs = previousArgs;
+        
+        FunctionInfo info = this.semantics.getFunInfo(node.getIdent().getText());
+        Frame frame = new Frame(currentFrame, info, node.getIdent());
+    	
+        info.assignArgs(args, frame, node.getLPar());
+        
+     // noter la localisation courante
+        this.currentFrame.setLocation(node.getLPar());
+
+        // Exécuter le corps de la fonction
+        this.currentFrame = frame;
+    	
+    	try {
+    		visit(info.getFunBody());
+    	} catch (ReturnException e) {}
+    	
+    	this.result = frame.getReturnValue();
+
+        this.currentFrame = frame.getParentFrame();
+    	
+    	this.currentFrame.setLocation(null);
+    	}
+    
+    private class ReturnException
+    extends RuntimeException {
+		private static final long serialVersionUID = -6195413933405715175L;
+    }
+    private class frameAdvanceException
+    extends RuntimeException {
+		private static final long serialVersionUID = -3997841407698069347L;
     }
 
  

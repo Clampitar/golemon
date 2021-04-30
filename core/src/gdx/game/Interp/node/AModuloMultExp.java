@@ -5,26 +5,26 @@ package gdx.game.Interp.node;
 import gdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AAddAdditiveExp extends PAdditiveExp
+public final class AModuloMultExp extends PMultExp
 {
-    private PAdditiveExp _left_;
-    private TPlus _plus_;
-    private PMultExp _right_;
+    private PMultExp _left_;
+    private TModulo _modulo_;
+    private PUnary _right_;
 
-    public AAddAdditiveExp()
+    public AModuloMultExp()
     {
         // Constructor
     }
 
-    public AAddAdditiveExp(
-        @SuppressWarnings("hiding") PAdditiveExp _left_,
-        @SuppressWarnings("hiding") TPlus _plus_,
-        @SuppressWarnings("hiding") PMultExp _right_)
+    public AModuloMultExp(
+        @SuppressWarnings("hiding") PMultExp _left_,
+        @SuppressWarnings("hiding") TModulo _modulo_,
+        @SuppressWarnings("hiding") PUnary _right_)
     {
         // Constructor
         setLeft(_left_);
 
-        setPlus(_plus_);
+        setModulo(_modulo_);
 
         setRight(_right_);
 
@@ -33,24 +33,24 @@ public final class AAddAdditiveExp extends PAdditiveExp
     @Override
     public Object clone()
     {
-        return new AAddAdditiveExp(
+        return new AModuloMultExp(
             cloneNode(this._left_),
-            cloneNode(this._plus_),
+            cloneNode(this._modulo_),
             cloneNode(this._right_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAAddAdditiveExp(this);
+        ((Analysis) sw).caseAModuloMultExp(this);
     }
 
-    public PAdditiveExp getLeft()
+    public PMultExp getLeft()
     {
         return this._left_;
     }
 
-    public void setLeft(PAdditiveExp node)
+    public void setLeft(PMultExp node)
     {
         if(this._left_ != null)
         {
@@ -70,16 +70,16 @@ public final class AAddAdditiveExp extends PAdditiveExp
         this._left_ = node;
     }
 
-    public TPlus getPlus()
+    public TModulo getModulo()
     {
-        return this._plus_;
+        return this._modulo_;
     }
 
-    public void setPlus(TPlus node)
+    public void setModulo(TModulo node)
     {
-        if(this._plus_ != null)
+        if(this._modulo_ != null)
         {
-            this._plus_.parent(null);
+            this._modulo_.parent(null);
         }
 
         if(node != null)
@@ -92,15 +92,15 @@ public final class AAddAdditiveExp extends PAdditiveExp
             node.parent(this);
         }
 
-        this._plus_ = node;
+        this._modulo_ = node;
     }
 
-    public PMultExp getRight()
+    public PUnary getRight()
     {
         return this._right_;
     }
 
-    public void setRight(PMultExp node)
+    public void setRight(PUnary node)
     {
         if(this._right_ != null)
         {
@@ -125,7 +125,7 @@ public final class AAddAdditiveExp extends PAdditiveExp
     {
         return ""
             + toString(this._left_)
-            + toString(this._plus_)
+            + toString(this._modulo_)
             + toString(this._right_);
     }
 
@@ -139,9 +139,9 @@ public final class AAddAdditiveExp extends PAdditiveExp
             return;
         }
 
-        if(this._plus_ == child)
+        if(this._modulo_ == child)
         {
-            this._plus_ = null;
+            this._modulo_ = null;
             return;
         }
 
@@ -160,19 +160,19 @@ public final class AAddAdditiveExp extends PAdditiveExp
         // Replace child
         if(this._left_ == oldChild)
         {
-            setLeft((PAdditiveExp) newChild);
+            setLeft((PMultExp) newChild);
             return;
         }
 
-        if(this._plus_ == oldChild)
+        if(this._modulo_ == oldChild)
         {
-            setPlus((TPlus) newChild);
+            setModulo((TModulo) newChild);
             return;
         }
 
         if(this._right_ == oldChild)
         {
-            setRight((PMultExp) newChild);
+            setRight((PUnary) newChild);
             return;
         }
 
