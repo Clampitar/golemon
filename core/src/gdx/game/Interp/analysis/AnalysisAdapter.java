@@ -105,6 +105,24 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAIntType(AIntType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseABoolType(ABoolType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAStringType(AStringType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAFunDecl(AFunDecl node)
     {
         defaultCase(node);
@@ -117,19 +135,7 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseADeclInst(ADeclInst node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseAAssignInst(AAssignInst node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseAFieldAssignInst(AFieldAssignInst node)
+    public void caseAAssignerInst(AAssignerInst node)
     {
         defaultCase(node);
     }
@@ -195,6 +201,24 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseADeclAssigner(ADeclAssigner node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAAssignAssigner(AAssignAssigner node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAFieldAssignAssigner(AFieldAssignAssigner node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAWhileBody(AWhileBody node)
     {
         defaultCase(node);
@@ -225,6 +249,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAGtExp(AGtExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseASimpleExp(ASimpleExp node)
     {
         defaultCase(node);
@@ -244,6 +274,24 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseASimpleAdditiveExp(ASimpleAdditiveExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAMultMultExp(AMultMultExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAModuloMultExp(AModuloMultExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseASimpleMultExp(ASimpleMultExp node)
     {
         defaultCase(node);
     }
@@ -304,12 +352,6 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAStructTerm(AStructTerm node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseAFunTerm(AFunTerm node)
     {
         defaultCase(node);
     }
@@ -399,12 +441,6 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseTFun(TFun node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
     public void caseTReturn(TReturn node)
     {
         defaultCase(node);
@@ -436,6 +472,24 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTFor(TFor node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTIntType(TIntType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTBoolType(TBoolType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTStringType(TStringType node)
     {
         defaultCase(node);
     }
@@ -477,7 +531,25 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseTMult(TMult node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTModulo(TModulo node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTLt(TLt node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTGt(TGt node)
     {
         defaultCase(node);
     }

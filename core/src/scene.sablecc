@@ -22,13 +22,16 @@ Tokens
   then = 'then';
   else = 'else';
   end = 'end';
-  fun = 'fun';
   return = 'return';
   struct = 'struct';
   do = 'do';
   var = 'var';
   while = 'while';
   for = 'for';
+  
+  int_type = 'int';
+  bool_type = 'bool';
+  string_type = 'string';
   
   frame_advance = 'frameAdvance';
   walk = 'walk';
@@ -39,7 +42,10 @@ Tokens
   assign = '=';
   plus = '+';
   minus = '-';
+  mult = '*';
+  modulo = '%';
   lt = '<';
+  gt = '>';
   eq = '==';
   comma = ',';
   dot = '.';
@@ -76,27 +82,38 @@ Productions
 
   field =
     ident;
+    
+  type =
+    {int} int_type |
+    {bool} bool_type |
+    {string} string_type;
 
   fun_decl =
-    fun [name]:ident l_par params? r_par do fun_body end;
+    type [name]:ident l_par params? r_par do fun_body end;
 
   fun_body =
     [insts]:inst*;
 
   inst =
-    {decl} var ident assign exp sc |
-    {assign} ident assign exp sc |
-    {field_assign} [left]:unary dot ident assign exp sc |
+ //   {decl} var ident assign exp sc |
+  //  {assign} ident assign exp sc |
+   // {field_assign} [left]:unary dot ident assign exp sc |
+    {assigner} assigner sc |
     {if} if exp then_part else_part? end |
     {block} do [insts]:inst* end |
     {while} while exp do while_body end |
-    {for} for [decl]:exp? [first]:sc [cond]:exp? [second]:sc [iter]:exp? do while_body end |
+    {for} for l_par [decl]:assigner? [first_sc]:sc [cond]:exp? [second_sc]:sc [iter]:assigner? r_par do while_body end |
     {return} return exp sc |
     {fun_call} ident l_par args? r_par sc |
     {print_exp} print exp sc |
     {println} println sc |
     {frame_advance} frame_advance exp? sc |
     {walk} walk l_par args r_par sc;
+    
+  assigner =
+    {decl} var ident assign exp |
+    {assign} ident assign exp |
+    {field_assign} [left]:unary dot ident assign exp;
     
   while_body =
     [insts]:inst*;
@@ -110,12 +127,18 @@ Productions
   exp =
     {eq} [left]:exp eq [right]:additive_exp |
     {lt} [left]:exp lt [right]:additive_exp |
+    {gt} [left]:exp gt [right]:additive_exp |
     {simple} additive_exp;
 
   additive_exp =
-    {add} [left]:additive_exp plus [right]:unary |
-    {sub} [left]:additive_exp minus [right]:unary |
-    {simple} unary;
+    {add} [left]:additive_exp plus [right]:mult_exp |
+    {sub} [left]:additive_exp minus [right]:mult_exp |
+    {simple} mult_exp;
+    
+  mult_exp =
+  	{mult} [left]:mult_exp mult [right]:unary |
+  	{modulo} [left]:mult_exp modulo [right]:unary |
+  	{simple} unary;
 
   unary =
     {field_access} [left]:unary dot ident |
@@ -129,8 +152,8 @@ Productions
     {var} ident |
     {par} l_par exp r_par |
     {fun_call} ident l_par args? r_par |
-    {struct} struct ident l_par args? r_par |
-    {fun} fun l_par params? r_par do fun_body end;
+    {struct} struct ident l_par args? r_par;
+ //   {fun} fun l_par params? r_par do fun_body end;
 
 
   params =
@@ -140,7 +163,7 @@ Productions
     comma param;
 
   param =
-    ident;
+    type ident;
 
   args =
     arg [additional_args]:additional_arg*;

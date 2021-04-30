@@ -5,26 +5,26 @@ package gdx.game.Interp.node;
 import gdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AAddAdditiveExp extends PAdditiveExp
+public final class AGtExp extends PExp
 {
-    private PAdditiveExp _left_;
-    private TPlus _plus_;
-    private PMultExp _right_;
+    private PExp _left_;
+    private TGt _gt_;
+    private PAdditiveExp _right_;
 
-    public AAddAdditiveExp()
+    public AGtExp()
     {
         // Constructor
     }
 
-    public AAddAdditiveExp(
-        @SuppressWarnings("hiding") PAdditiveExp _left_,
-        @SuppressWarnings("hiding") TPlus _plus_,
-        @SuppressWarnings("hiding") PMultExp _right_)
+    public AGtExp(
+        @SuppressWarnings("hiding") PExp _left_,
+        @SuppressWarnings("hiding") TGt _gt_,
+        @SuppressWarnings("hiding") PAdditiveExp _right_)
     {
         // Constructor
         setLeft(_left_);
 
-        setPlus(_plus_);
+        setGt(_gt_);
 
         setRight(_right_);
 
@@ -33,24 +33,24 @@ public final class AAddAdditiveExp extends PAdditiveExp
     @Override
     public Object clone()
     {
-        return new AAddAdditiveExp(
+        return new AGtExp(
             cloneNode(this._left_),
-            cloneNode(this._plus_),
+            cloneNode(this._gt_),
             cloneNode(this._right_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAAddAdditiveExp(this);
+        ((Analysis) sw).caseAGtExp(this);
     }
 
-    public PAdditiveExp getLeft()
+    public PExp getLeft()
     {
         return this._left_;
     }
 
-    public void setLeft(PAdditiveExp node)
+    public void setLeft(PExp node)
     {
         if(this._left_ != null)
         {
@@ -70,16 +70,16 @@ public final class AAddAdditiveExp extends PAdditiveExp
         this._left_ = node;
     }
 
-    public TPlus getPlus()
+    public TGt getGt()
     {
-        return this._plus_;
+        return this._gt_;
     }
 
-    public void setPlus(TPlus node)
+    public void setGt(TGt node)
     {
-        if(this._plus_ != null)
+        if(this._gt_ != null)
         {
-            this._plus_.parent(null);
+            this._gt_.parent(null);
         }
 
         if(node != null)
@@ -92,15 +92,15 @@ public final class AAddAdditiveExp extends PAdditiveExp
             node.parent(this);
         }
 
-        this._plus_ = node;
+        this._gt_ = node;
     }
 
-    public PMultExp getRight()
+    public PAdditiveExp getRight()
     {
         return this._right_;
     }
 
-    public void setRight(PMultExp node)
+    public void setRight(PAdditiveExp node)
     {
         if(this._right_ != null)
         {
@@ -125,7 +125,7 @@ public final class AAddAdditiveExp extends PAdditiveExp
     {
         return ""
             + toString(this._left_)
-            + toString(this._plus_)
+            + toString(this._gt_)
             + toString(this._right_);
     }
 
@@ -139,9 +139,9 @@ public final class AAddAdditiveExp extends PAdditiveExp
             return;
         }
 
-        if(this._plus_ == child)
+        if(this._gt_ == child)
         {
-            this._plus_ = null;
+            this._gt_ = null;
             return;
         }
 
@@ -160,19 +160,19 @@ public final class AAddAdditiveExp extends PAdditiveExp
         // Replace child
         if(this._left_ == oldChild)
         {
-            setLeft((PAdditiveExp) newChild);
+            setLeft((PExp) newChild);
             return;
         }
 
-        if(this._plus_ == oldChild)
+        if(this._gt_ == oldChild)
         {
-            setPlus((TPlus) newChild);
+            setGt((TGt) newChild);
             return;
         }
 
         if(this._right_ == oldChild)
         {
-            setRight((PMultExp) newChild);
+            setRight((PAdditiveExp) newChild);
             return;
         }
 

@@ -1,6 +1,8 @@
 package gdx.game.Interp;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 
 import gdx.game.Interp.node.*;
@@ -8,22 +10,24 @@ import gdx.game.Interp.node.*;
 
 public class Frame {
 
-    private Frame parentFrame;
-
-    private Map<String, Value> variables = new HashMap<>();
-
+    protected Frame parentFrame;
+    protected Map<String, Value> variables = new HashMap<>();
     private Value returnValue;
-
-    private FunctionInfo functionInfo;
+    private FunctionInfo functionInfo;    
+    protected Iterator<PInst> iterator;
 
     /* Localisation de l'appel d'une fonction */
     private Token location;
 
     /* Constructeur pour le programme principal */
-    public Frame() {
-
+    public Frame(LinkedList<PInst> insts) {
+    	this.iterator = insts.iterator();
     }
-
+    
+    public Frame(Frame parentFrame) {
+    	this.parentFrame = parentFrame;
+    }
+    
     /* Construction pour les appels de fonction */
     public Frame(
             Frame parentFrame,
@@ -33,6 +37,19 @@ public class Frame {
         this.parentFrame = parentFrame;
         this.functionInfo = functionInfo;
         this.location = location;
+    }
+
+    /* Construction pour les appels de fonction */
+    public Frame(
+            Frame parentFrame,
+            FunctionInfo functionInfo,
+            Token location,
+            LinkedList<PInst> insts) {
+
+        this.parentFrame = parentFrame;
+        this.functionInfo = functionInfo;
+        this.location = location;
+        this.iterator = insts.iterator();
     }
 
     public void putVariable(
@@ -94,6 +111,18 @@ public class Frame {
     public int getPos() {
 
         return this.location.getPos();
+    }
+    
+    public Boolean hasNext() {
+    	return iterator.hasNext();
+    }
+    
+    public PInst next() {
+    	return iterator.next();
+    }
+    
+    public void iterate(LinkedList<PInst> insts) {
+    	this.iterator = insts.iterator();
     }
 
 

@@ -5,51 +5,51 @@ package gdx.game.Interp.node;
 import gdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AParam extends PParam
+public final class AAssignerInst extends PInst
 {
-    private PType _type_;
-    private TIdent _ident_;
+    private PAssigner _assigner_;
+    private TSc _sc_;
 
-    public AParam()
+    public AAssignerInst()
     {
         // Constructor
     }
 
-    public AParam(
-        @SuppressWarnings("hiding") PType _type_,
-        @SuppressWarnings("hiding") TIdent _ident_)
+    public AAssignerInst(
+        @SuppressWarnings("hiding") PAssigner _assigner_,
+        @SuppressWarnings("hiding") TSc _sc_)
     {
         // Constructor
-        setType(_type_);
+        setAssigner(_assigner_);
 
-        setIdent(_ident_);
+        setSc(_sc_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new AParam(
-            cloneNode(this._type_),
-            cloneNode(this._ident_));
+        return new AAssignerInst(
+            cloneNode(this._assigner_),
+            cloneNode(this._sc_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAParam(this);
+        ((Analysis) sw).caseAAssignerInst(this);
     }
 
-    public PType getType()
+    public PAssigner getAssigner()
     {
-        return this._type_;
+        return this._assigner_;
     }
 
-    public void setType(PType node)
+    public void setAssigner(PAssigner node)
     {
-        if(this._type_ != null)
+        if(this._assigner_ != null)
         {
-            this._type_.parent(null);
+            this._assigner_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +62,19 @@ public final class AParam extends PParam
             node.parent(this);
         }
 
-        this._type_ = node;
+        this._assigner_ = node;
     }
 
-    public TIdent getIdent()
+    public TSc getSc()
     {
-        return this._ident_;
+        return this._sc_;
     }
 
-    public void setIdent(TIdent node)
+    public void setSc(TSc node)
     {
-        if(this._ident_ != null)
+        if(this._sc_ != null)
         {
-            this._ident_.parent(null);
+            this._sc_.parent(null);
         }
 
         if(node != null)
@@ -87,30 +87,30 @@ public final class AParam extends PParam
             node.parent(this);
         }
 
-        this._ident_ = node;
+        this._sc_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._type_)
-            + toString(this._ident_);
+            + toString(this._assigner_)
+            + toString(this._sc_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._type_ == child)
+        if(this._assigner_ == child)
         {
-            this._type_ = null;
+            this._assigner_ = null;
             return;
         }
 
-        if(this._ident_ == child)
+        if(this._sc_ == child)
         {
-            this._ident_ = null;
+            this._sc_ = null;
             return;
         }
 
@@ -121,15 +121,15 @@ public final class AParam extends PParam
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._type_ == oldChild)
+        if(this._assigner_ == oldChild)
         {
-            setType((PType) newChild);
+            setAssigner((PAssigner) newChild);
             return;
         }
 
-        if(this._ident_ == oldChild)
+        if(this._sc_ == oldChild)
         {
-            setIdent((TIdent) newChild);
+            setSc((TSc) newChild);
             return;
         }
 

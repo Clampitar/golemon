@@ -133,7 +133,7 @@ public class MyGdxGame extends ApplicationAdapter {
                 menuManager.render();
                 break;
             case cutScene:
-            	if(waitCounter > FINISHED_CUTSCENE + 1) {
+            	if(waitCounter > FINISHED_CUTSCENE) {
             		waitCounter--;
                     drawOverWorld();
             	} else {

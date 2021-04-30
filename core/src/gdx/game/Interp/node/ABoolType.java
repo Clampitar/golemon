@@ -5,46 +5,46 @@ package gdx.game.Interp.node;
 import gdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class ASimpleAdditiveExp extends PAdditiveExp
+public final class ABoolType extends PType
 {
-    private PMultExp _multExp_;
+    private TBoolType _boolType_;
 
-    public ASimpleAdditiveExp()
+    public ABoolType()
     {
         // Constructor
     }
 
-    public ASimpleAdditiveExp(
-        @SuppressWarnings("hiding") PMultExp _multExp_)
+    public ABoolType(
+        @SuppressWarnings("hiding") TBoolType _boolType_)
     {
         // Constructor
-        setMultExp(_multExp_);
+        setBoolType(_boolType_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new ASimpleAdditiveExp(
-            cloneNode(this._multExp_));
+        return new ABoolType(
+            cloneNode(this._boolType_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseASimpleAdditiveExp(this);
+        ((Analysis) sw).caseABoolType(this);
     }
 
-    public PMultExp getMultExp()
+    public TBoolType getBoolType()
     {
-        return this._multExp_;
+        return this._boolType_;
     }
 
-    public void setMultExp(PMultExp node)
+    public void setBoolType(TBoolType node)
     {
-        if(this._multExp_ != null)
+        if(this._boolType_ != null)
         {
-            this._multExp_.parent(null);
+            this._boolType_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class ASimpleAdditiveExp extends PAdditiveExp
             node.parent(this);
         }
 
-        this._multExp_ = node;
+        this._boolType_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._multExp_);
+            + toString(this._boolType_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._multExp_ == child)
+        if(this._boolType_ == child)
         {
-            this._multExp_ = null;
+            this._boolType_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class ASimpleAdditiveExp extends PAdditiveExp
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._multExp_ == oldChild)
+        if(this._boolType_ == oldChild)
         {
-            setMultExp((PMultExp) newChild);
+            setBoolType((TBoolType) newChild);
             return;
         }
 

@@ -9,7 +9,7 @@ public final class ASubAdditiveExp extends PAdditiveExp
 {
     private PAdditiveExp _left_;
     private TMinus _minus_;
-    private PUnary _right_;
+    private PMultExp _right_;
 
     public ASubAdditiveExp()
     {
@@ -19,7 +19,7 @@ public final class ASubAdditiveExp extends PAdditiveExp
     public ASubAdditiveExp(
         @SuppressWarnings("hiding") PAdditiveExp _left_,
         @SuppressWarnings("hiding") TMinus _minus_,
-        @SuppressWarnings("hiding") PUnary _right_)
+        @SuppressWarnings("hiding") PMultExp _right_)
     {
         // Constructor
         setLeft(_left_);
@@ -95,12 +95,12 @@ public final class ASubAdditiveExp extends PAdditiveExp
         this._minus_ = node;
     }
 
-    public PUnary getRight()
+    public PMultExp getRight()
     {
         return this._right_;
     }
 
-    public void setRight(PUnary node)
+    public void setRight(PMultExp node)
     {
         if(this._right_ != null)
         {
@@ -172,7 +172,7 @@ public final class ASubAdditiveExp extends PAdditiveExp
 
         if(this._right_ == oldChild)
         {
-            setRight((PUnary) newChild);
+            setRight((PMultExp) newChild);
             return;
         }
 

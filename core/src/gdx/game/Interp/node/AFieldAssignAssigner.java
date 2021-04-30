@@ -5,28 +5,30 @@ package gdx.game.Interp.node;
 import gdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class ADeclInst extends PInst
+public final class AFieldAssignAssigner extends PAssigner
 {
-    private TVar _var_;
+    private PUnary _left_;
+    private TDot _dot_;
     private TIdent _ident_;
     private TAssign _assign_;
     private PExp _exp_;
-    private TSc _sc_;
 
-    public ADeclInst()
+    public AFieldAssignAssigner()
     {
         // Constructor
     }
 
-    public ADeclInst(
-        @SuppressWarnings("hiding") TVar _var_,
+    public AFieldAssignAssigner(
+        @SuppressWarnings("hiding") PUnary _left_,
+        @SuppressWarnings("hiding") TDot _dot_,
         @SuppressWarnings("hiding") TIdent _ident_,
         @SuppressWarnings("hiding") TAssign _assign_,
-        @SuppressWarnings("hiding") PExp _exp_,
-        @SuppressWarnings("hiding") TSc _sc_)
+        @SuppressWarnings("hiding") PExp _exp_)
     {
         // Constructor
-        setVar(_var_);
+        setLeft(_left_);
+
+        setDot(_dot_);
 
         setIdent(_ident_);
 
@@ -34,37 +36,35 @@ public final class ADeclInst extends PInst
 
         setExp(_exp_);
 
-        setSc(_sc_);
-
     }
 
     @Override
     public Object clone()
     {
-        return new ADeclInst(
-            cloneNode(this._var_),
+        return new AFieldAssignAssigner(
+            cloneNode(this._left_),
+            cloneNode(this._dot_),
             cloneNode(this._ident_),
             cloneNode(this._assign_),
-            cloneNode(this._exp_),
-            cloneNode(this._sc_));
+            cloneNode(this._exp_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseADeclInst(this);
+        ((Analysis) sw).caseAFieldAssignAssigner(this);
     }
 
-    public TVar getVar()
+    public PUnary getLeft()
     {
-        return this._var_;
+        return this._left_;
     }
 
-    public void setVar(TVar node)
+    public void setLeft(PUnary node)
     {
-        if(this._var_ != null)
+        if(this._left_ != null)
         {
-            this._var_.parent(null);
+            this._left_.parent(null);
         }
 
         if(node != null)
@@ -77,7 +77,32 @@ public final class ADeclInst extends PInst
             node.parent(this);
         }
 
-        this._var_ = node;
+        this._left_ = node;
+    }
+
+    public TDot getDot()
+    {
+        return this._dot_;
+    }
+
+    public void setDot(TDot node)
+    {
+        if(this._dot_ != null)
+        {
+            this._dot_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        this._dot_ = node;
     }
 
     public TIdent getIdent()
@@ -155,49 +180,30 @@ public final class ADeclInst extends PInst
         this._exp_ = node;
     }
 
-    public TSc getSc()
-    {
-        return this._sc_;
-    }
-
-    public void setSc(TSc node)
-    {
-        if(this._sc_ != null)
-        {
-            this._sc_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._sc_ = node;
-    }
-
     @Override
     public String toString()
     {
         return ""
-            + toString(this._var_)
+            + toString(this._left_)
+            + toString(this._dot_)
             + toString(this._ident_)
             + toString(this._assign_)
-            + toString(this._exp_)
-            + toString(this._sc_);
+            + toString(this._exp_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._var_ == child)
+        if(this._left_ == child)
         {
-            this._var_ = null;
+            this._left_ = null;
+            return;
+        }
+
+        if(this._dot_ == child)
+        {
+            this._dot_ = null;
             return;
         }
 
@@ -219,12 +225,6 @@ public final class ADeclInst extends PInst
             return;
         }
 
-        if(this._sc_ == child)
-        {
-            this._sc_ = null;
-            return;
-        }
-
         throw new RuntimeException("Not a child.");
     }
 
@@ -232,9 +232,15 @@ public final class ADeclInst extends PInst
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._var_ == oldChild)
+        if(this._left_ == oldChild)
         {
-            setVar((TVar) newChild);
+            setLeft((PUnary) newChild);
+            return;
+        }
+
+        if(this._dot_ == oldChild)
+        {
+            setDot((TDot) newChild);
             return;
         }
 
@@ -253,12 +259,6 @@ public final class ADeclInst extends PInst
         if(this._exp_ == oldChild)
         {
             setExp((PExp) newChild);
-            return;
-        }
-
-        if(this._sc_ == oldChild)
-        {
-            setSc((TSc) newChild);
             return;
         }
 

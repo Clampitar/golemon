@@ -5,46 +5,46 @@ package gdx.game.Interp.node;
 import gdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class ASimpleAdditiveExp extends PAdditiveExp
+public final class ASimpleMultExp extends PMultExp
 {
-    private PMultExp _multExp_;
+    private PUnary _unary_;
 
-    public ASimpleAdditiveExp()
+    public ASimpleMultExp()
     {
         // Constructor
     }
 
-    public ASimpleAdditiveExp(
-        @SuppressWarnings("hiding") PMultExp _multExp_)
+    public ASimpleMultExp(
+        @SuppressWarnings("hiding") PUnary _unary_)
     {
         // Constructor
-        setMultExp(_multExp_);
+        setUnary(_unary_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new ASimpleAdditiveExp(
-            cloneNode(this._multExp_));
+        return new ASimpleMultExp(
+            cloneNode(this._unary_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseASimpleAdditiveExp(this);
+        ((Analysis) sw).caseASimpleMultExp(this);
     }
 
-    public PMultExp getMultExp()
+    public PUnary getUnary()
     {
-        return this._multExp_;
+        return this._unary_;
     }
 
-    public void setMultExp(PMultExp node)
+    public void setUnary(PUnary node)
     {
-        if(this._multExp_ != null)
+        if(this._unary_ != null)
         {
-            this._multExp_.parent(null);
+            this._unary_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class ASimpleAdditiveExp extends PAdditiveExp
             node.parent(this);
         }
 
-        this._multExp_ = node;
+        this._unary_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._multExp_);
+            + toString(this._unary_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._multExp_ == child)
+        if(this._unary_ == child)
         {
-            this._multExp_ = null;
+            this._unary_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class ASimpleAdditiveExp extends PAdditiveExp
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._multExp_ == oldChild)
+        if(this._unary_ == oldChild)
         {
-            setMultExp((PMultExp) newChild);
+            setUnary((PUnary) newChild);
             return;
         }
 

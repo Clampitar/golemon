@@ -7,7 +7,7 @@ import gdx.game.Interp.analysis.*;
 @SuppressWarnings("nls")
 public final class AFunDecl extends PFunDecl
 {
-    private TFun _fun_;
+    private PType _type_;
     private TIdent _name_;
     private TLPar _lPar_;
     private PParams _params_;
@@ -22,7 +22,7 @@ public final class AFunDecl extends PFunDecl
     }
 
     public AFunDecl(
-        @SuppressWarnings("hiding") TFun _fun_,
+        @SuppressWarnings("hiding") PType _type_,
         @SuppressWarnings("hiding") TIdent _name_,
         @SuppressWarnings("hiding") TLPar _lPar_,
         @SuppressWarnings("hiding") PParams _params_,
@@ -32,7 +32,7 @@ public final class AFunDecl extends PFunDecl
         @SuppressWarnings("hiding") TEnd _end_)
     {
         // Constructor
-        setFun(_fun_);
+        setType(_type_);
 
         setName(_name_);
 
@@ -54,7 +54,7 @@ public final class AFunDecl extends PFunDecl
     public Object clone()
     {
         return new AFunDecl(
-            cloneNode(this._fun_),
+            cloneNode(this._type_),
             cloneNode(this._name_),
             cloneNode(this._lPar_),
             cloneNode(this._params_),
@@ -70,16 +70,16 @@ public final class AFunDecl extends PFunDecl
         ((Analysis) sw).caseAFunDecl(this);
     }
 
-    public TFun getFun()
+    public PType getType()
     {
-        return this._fun_;
+        return this._type_;
     }
 
-    public void setFun(TFun node)
+    public void setType(PType node)
     {
-        if(this._fun_ != null)
+        if(this._type_ != null)
         {
-            this._fun_.parent(null);
+            this._type_.parent(null);
         }
 
         if(node != null)
@@ -92,7 +92,7 @@ public final class AFunDecl extends PFunDecl
             node.parent(this);
         }
 
-        this._fun_ = node;
+        this._type_ = node;
     }
 
     public TIdent getName()
@@ -274,7 +274,7 @@ public final class AFunDecl extends PFunDecl
     public String toString()
     {
         return ""
-            + toString(this._fun_)
+            + toString(this._type_)
             + toString(this._name_)
             + toString(this._lPar_)
             + toString(this._params_)
@@ -288,9 +288,9 @@ public final class AFunDecl extends PFunDecl
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._fun_ == child)
+        if(this._type_ == child)
         {
-            this._fun_ = null;
+            this._type_ = null;
             return;
         }
 
@@ -343,9 +343,9 @@ public final class AFunDecl extends PFunDecl
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._fun_ == oldChild)
+        if(this._type_ == oldChild)
         {
-            setFun((TFun) newChild);
+            setType((PType) newChild);
             return;
         }
 

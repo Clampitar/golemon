@@ -1,25 +1,21 @@
-fun foo(i) do
-  return 2;
+int foo(int i) do
+  i = i + 1;
+  return i + 10;
 end
 
-fun bar(x) do
-  return foo(3);
+bool bar(int x) do
+  return foo(x+3);
 end
 
-print bar(4) + 2;
+print false;
+print bar(3) + 2;
 println;
+var q = 0;
 
-print "Autre resultat: ";
-print foo(10) - 1;
-println;
-# walk (20);
-frameAdvance 15;
-print "delyed";
-println;
-var q = 120;
-
-while(20 < q) do
-q = q - 10;
-frameAdvance q;
-print "   "+q;
+for(q = 3;q < 10;q = q + 1) do
+q = q + 1;
+walk(5, 5);
+frameAdvance 20;
+print q;
+print "  ";
 end

@@ -42,8 +42,8 @@ public class Interpreter {
             tree = parser.parse();
             
             SemanticInfo semantics = new SemanticInfo();
-            
-            tree.apply(new SemanticVerifier(semantics));
+            tree.apply(new SemanticVerifierPhase1(semantics));
+            tree.apply(new SemanticVerifierPhase2(semantics));
             iEngine = new InterpreterEngine(player, game, semantics);
             
         }

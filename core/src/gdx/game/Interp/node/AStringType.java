@@ -5,46 +5,46 @@ package gdx.game.Interp.node;
 import gdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class ASimpleAdditiveExp extends PAdditiveExp
+public final class AStringType extends PType
 {
-    private PMultExp _multExp_;
+    private TStringType _stringType_;
 
-    public ASimpleAdditiveExp()
+    public AStringType()
     {
         // Constructor
     }
 
-    public ASimpleAdditiveExp(
-        @SuppressWarnings("hiding") PMultExp _multExp_)
+    public AStringType(
+        @SuppressWarnings("hiding") TStringType _stringType_)
     {
         // Constructor
-        setMultExp(_multExp_);
+        setStringType(_stringType_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new ASimpleAdditiveExp(
-            cloneNode(this._multExp_));
+        return new AStringType(
+            cloneNode(this._stringType_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseASimpleAdditiveExp(this);
+        ((Analysis) sw).caseAStringType(this);
     }
 
-    public PMultExp getMultExp()
+    public TStringType getStringType()
     {
-        return this._multExp_;
+        return this._stringType_;
     }
 
-    public void setMultExp(PMultExp node)
+    public void setStringType(TStringType node)
     {
-        if(this._multExp_ != null)
+        if(this._stringType_ != null)
         {
-            this._multExp_.parent(null);
+            this._stringType_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class ASimpleAdditiveExp extends PAdditiveExp
             node.parent(this);
         }
 
-        this._multExp_ = node;
+        this._stringType_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._multExp_);
+            + toString(this._stringType_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._multExp_ == child)
+        if(this._stringType_ == child)
         {
-            this._multExp_ = null;
+            this._stringType_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class ASimpleAdditiveExp extends PAdditiveExp
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._multExp_ == oldChild)
+        if(this._stringType_ == oldChild)
         {
-            setMultExp((PMultExp) newChild);
+            setStringType((TStringType) newChild);
             return;
         }
 

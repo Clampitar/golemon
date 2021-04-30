@@ -4,7 +4,7 @@ package gdx.game.Interp;
 import gdx.game.Interp.analysis.*;
 import gdx.game.Interp.node.*;
 
-public class SemanticVerifier
+public class SemanticVerifierPhase2
         extends DepthFirstAdapter {
 
     private Scope currentScope;
@@ -13,9 +13,19 @@ public class SemanticVerifier
     
     private SemanticInfo semantics;
     
-    public SemanticVerifier(SemanticInfo semantics) {
+    private FunctionInfo currentFunctionInfo;
+    
+    public SemanticVerifierPhase2(SemanticInfo semantics) {
 		this.semantics = semantics;
 	}
+    
+    private void visit(
+            Node node) {
+
+        if (node != null) {
+            node.apply(this);
+        }
+    }
 
     private Type evalType(
             Node node) {
@@ -25,10 +35,36 @@ public class SemanticVerifier
     }
 
     @Override
-    public void inAProg(
+    public void caseAProg(
             AProg node) {
 
         this.currentScope = new Scope();
+        
+        for (PFunDecl pFunDecl : node.getFunDecls()) {
+        	visit(pFunDecl);
+        }
+        
+        this.currentScope = new Scope(this.currentScope);
+        this.semantics.addScope(node, this.currentScope);
+        
+        for(PInst inst : node.getInsts()) {
+        	visit(inst);
+        }
+        
+        this.currentScope = this.currentScope.getParent();
+    }
+    
+    @Override
+    public void caseAFunDecl(AFunDecl node) {
+    	this.currentScope = new Scope(this.currentScope);
+    	semantics.addScope(node, currentScope);
+    	
+    	this.currentFunctionInfo = this.semantics.getFunInfo(node.getName().getText());
+    	this.currentFunctionInfo.addParamsToScope(this.currentScope);
+    	visit(node.getFunBody());
+    	
+    	this.currentFunctionInfo = null;
+    	this.currentScope = this.currentScope.getParent();
     }
 
     @Override
@@ -36,6 +72,7 @@ public class SemanticVerifier
             ABlockInst node) {
 
         this.currentScope = new Scope(this.currentScope);
+        this.semantics.addScope(node, currentScope);
     }
 
     @Override
@@ -46,16 +83,16 @@ public class SemanticVerifier
     }
 
     @Override
-    public void caseADeclInst(
-            ADeclInst node) {
+    public void caseADeclAssigner(
+            ADeclAssigner node) {
 
         Type type = evalType(node.getExp());
         this.currentScope.addDecl(node.getIdent(), type);
     }
 
     @Override
-    public void caseAAssignInst(
-            AAssignInst node) {
+    public void caseAAssignAssigner(
+            AAssignAssigner node) {
 
         Type expType = evalType(node.getExp());
         Type varType = this.currentScope.getType(node.getIdent());
@@ -102,13 +139,23 @@ public class SemanticVerifier
         node.getWhileBody().apply(this);
         this.currentScope = this.currentScope.getParent();
     }
-
+    
     @Override
-    public void caseAPrintExpInst(
-            APrintExpInst node) {
+    public void caseAForInst(
+            AForInst node) {
 
-        // vérifier l'expression
-        evalType(node.getExp());
+        Type type = evalType(node.getCond());
+        
+        if (type != Type.BOOL) {
+            throw new SemanticException(node.getFirstSc(),
+                    "expression is not a boolean");
+        }
+        
+        node.getDecl();
+
+        this.currentScope = new Scope(this.currentScope);
+        node.getWhileBody().apply(this);
+        this.currentScope = this.currentScope.getParent();
     }
 
     @Override
@@ -195,15 +242,37 @@ public class SemanticVerifier
         Type leftType = evalType(node.getLeft());
         Type rightType = evalType(node.getRight());
 
-        if (leftType != Type.INT) {
-            throw new SemanticException(node.getLt(),
-                    "left operand is not a number");
-        }
+        numbersOnly(leftType, rightType, node.getLt());
 
-        if (rightType != Type.INT) {
-            throw new SemanticException(node.getLt(),
-                    "right operand is not a number");
-        }
+        this.resultType = Type.BOOL;
+    }
+    
+    @Override
+    public void caseAGtExp(AGtExp node) {
+    	Type leftType = evalType(node.getLeft());
+        Type rightType = evalType(node.getRight());
+
+        numbersOnly(leftType, rightType, node.getGt());
+
+        this.resultType = Type.BOOL;
+    }
+    
+    @Override
+    public void caseAMultMultExp(AMultMultExp node) {
+    	Type leftType = evalType(node.getLeft());
+        Type rightType = evalType(node.getRight());
+
+        numbersOnly(leftType, rightType, node.getMult());
+
+        this.resultType = Type.BOOL;
+    }
+    
+    @Override
+    public void caseAModuloMultExp(AModuloMultExp node) {
+    	Type leftType = evalType(node.getLeft());
+        Type rightType = evalType(node.getRight());
+
+        numbersOnly(leftType, rightType, node.getModulo());
 
         this.resultType = Type.BOOL;
     }
@@ -221,5 +290,17 @@ public class SemanticVerifier
         }
 
         this.resultType = Type.BOOL;
+    }
+    
+    public void numbersOnly(Type leftType, Type rightType, Token token) {
+    	if (leftType != Type.INT) {
+            throw new SemanticException(token,
+                    "left operand is not a number");
+        }
+
+        if (rightType != Type.INT) {
+            throw new SemanticException(token,
+                    "right operand is not a number");
+        }
     }
 }
