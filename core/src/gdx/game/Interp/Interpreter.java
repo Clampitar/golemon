@@ -3,6 +3,8 @@ package gdx.game.Interp;
 
 import java.io.*;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
+
 import gdx.game.MyGdxGame;
 import gdx.game.Player;
 import gdx.game.Interp.lexer.*;
@@ -15,18 +17,20 @@ public class Interpreter {
 	
 	private InterpreterEngine iEngine;
 	private Start tree;
+	MyGdxGame game;
 	
 	public int read() {
 		try {
 			tree.apply(iEngine);
 		} catch (InterpreterException e) {
             System.err.println("ERREUR D'INTERPRÉTATION: " + e.getMessage());
-            System.exit(1);
+            game.say("ERREUR D'INTERPRÉTATION");
         }
 		return iEngine.frameDelay;
 	}
 
-    public Interpreter(String fileName, Player player, MyGdxGame game) {
+    public Interpreter(String fileName, Player player, OrthographicCamera cam, MyGdxGame game) {
+    	this.game = game;
         fileName = pathChange + fileName;
         try {
             Lexer lexer = null;
@@ -44,7 +48,7 @@ public class Interpreter {
             SemanticInfo semantics = new SemanticInfo();
             tree.apply(new SemanticVerifierPhase1(semantics));
             tree.apply(new SemanticVerifierPhase2(semantics));
-            iEngine = new InterpreterEngine(player, game, semantics);
+            iEngine = new InterpreterEngine(player, game, cam,  semantics);
             
         }
         catch (FileNotFoundException e) {
@@ -54,19 +58,19 @@ public class Interpreter {
         }
         catch (ParserException e) {
             System.err.println("ERREUR DE SYNTAXE: " + e.getMessage());
-            System.exit(1);
+            game.say("ERREUR DE SYNTAXE");
         }
         catch (LexerException e) {
             System.err.println("ERREUR LEXICALE: " + e.getMessage());
-            System.exit(1);
+            game.say("ERREUR LEXICALE");
         }
         catch (IOException e) {
             System.err.println("ERREUR DE E/S: " + e.getMessage());
-            System.exit(1);
+            game.say("ERREUR DE E/S");
         }
         catch (SemanticException e) {
             System.err.println("ERREUR SÉMANTIQUE: " + e.getMessage());
-            System.exit(1);
+            game.say("ERREUR SÉMANTIQUE");
         }
 
     }

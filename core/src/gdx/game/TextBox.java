@@ -102,6 +102,12 @@ public class TextBox extends SpritedObject {
         text = new String[1];
         text[0] = "Picked up "+material.name()+".";
     }
+    
+    public void say(String message) {
+    	text = new String[1];
+    	text[0] = message;
+    	letterCounter = 2;
+    }
 
     private void defaultFont(){
         font = new BitmapFont();

@@ -57,19 +57,6 @@ public class Scope {
         }
         throw new SemanticException(ident,
                 "variable " + name + " is not declared");
-
-        // Code maladroit original développé en classe
-        //
-        // String name = ident.getText();
-        // if (!alreadyDeclared(name)) {
-        // throw new SemanticException(ident,
-        // "variable " + name + " is not declared");
-        // }
-        //
-        // if (this.declaredVariables.containsKey(name)) {
-        // return this.declaredVariables.get(name);
-        // }
-        // return this.parent.getType(ident);
     }
 
     public Scope getParent() {

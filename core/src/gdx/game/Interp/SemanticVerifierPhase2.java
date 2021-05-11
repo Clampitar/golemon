@@ -1,6 +1,9 @@
 
 package gdx.game.Interp;
 
+import java.util.List;
+import java.util.LinkedList;
+
 import gdx.game.Interp.analysis.*;
 import gdx.game.Interp.node.*;
 
@@ -14,6 +17,8 @@ public class SemanticVerifierPhase2
     private SemanticInfo semantics;
     
     private FunctionInfo currentFunctionInfo;
+    
+    private LinkedList<Type> currentArgs;
     
     public SemanticVerifierPhase2(SemanticInfo semantics) {
 		this.semantics = semantics;
@@ -39,7 +44,7 @@ public class SemanticVerifierPhase2
             AProg node) {
 
         this.currentScope = new Scope();
-        
+        this.currentArgs = new LinkedList<>();
         for (PFunDecl pFunDecl : node.getFunDecls()) {
         	visit(pFunDecl);
         }
@@ -66,6 +71,73 @@ public class SemanticVerifierPhase2
     	this.currentFunctionInfo = null;
     	this.currentScope = this.currentScope.getParent();
     }
+    
+    @Override
+    public void caseAFunCallInst(AFunCallInst node) {
+    	this.currentArgs = new LinkedList<>();
+    	FunctionInfo info = this.semantics.getFunInfo(node.getIdent().getText());
+    	if(info == null)
+    		throw new SemanticException(node.getLPar(), "function " +node.getIdent().getText() + " is not declared");
+    	visit(node.getArgs());
+    	compareArgs(info, node.getRPar());
+    }
+    
+    @Override
+    public void caseAFunCallTerm(AFunCallTerm node) {
+    	this.currentArgs = new LinkedList<>();
+    	FunctionInfo info = this.semantics.getFunInfo(node.getIdent().getText());
+    	if(info == null)
+    		throw new SemanticException(node.getLPar(), "function " +node.getIdent().getText() + " is not declared");
+    	if(info.getReturnType() == Type.VOID)
+    		throw new SemanticException(node.getLPar(), "void functions cannot be used as a term");
+    	visit(node.getArgs());
+    	compareArgs(info, node.getRPar());
+    }
+    
+    private void compareArgs(FunctionInfo funcInfo, Token token) {
+    	List<ParamInfo> info = funcInfo.getParams();
+    	if(info.size() != this.currentArgs.size())
+    		throw new SemanticException(token, "expected "+info.size()+" arguments, got "+this.currentArgs.size());
+    	for(int i = 0; i < info.size(); i++)
+    		if(info.get(i).getType() != this.currentArgs.get(i))
+    			throw new SemanticException(token, "expected " +info.get(i).getType()+", got "+this.currentArgs.get(i));
+    }
+    
+    @Override
+    public void caseAReturnInst(AReturnInst node) {
+    	Type type = Type.VOID;
+    	if(node.getExp() != null)
+    		type = evalType(node.getExp());
+    	if(type != currentFunctionInfo.getReturnType())
+    		throw new SemanticException(node.getSc(), 
+    				"cannot return "+type+"; must return "+currentFunctionInfo.getReturnType());
+    }
+    
+    @Override
+    public void caseAArg(AArg node) {
+    	
+    	   this.currentArgs.add(evalType(node.getExp()));
+    }
+    
+    @Override
+    public void caseAWalkInst(AWalkInst node) {
+    	this.currentArgs = new LinkedList<>();
+		visit(node.getArgs());
+		if(this.currentArgs.size() != 2)
+			throw new SemanticException(node.getWalk(), "native method walk must have exactly 2 arguments");
+		if(this.currentArgs.get(0) != Type.INT || this.currentArgs.get(1) != Type.INT)
+				throw new SemanticException(node.getWalk(), "both arguments of native method walk must be integers");
+    }
+    
+    @Override
+    public void caseAMoveCamInst(AMoveCamInst node) {
+    	this.currentArgs = new LinkedList<>();
+		visit(node.getArgs());
+		if(this.currentArgs.size() != 2)
+			throw new SemanticException(node.getMoveCam(), "native method moveCam must have exactly 2 arguments");
+		if(this.currentArgs.get(0) != Type.INT || this.currentArgs.get(1) != Type.INT)
+				throw new SemanticException(node.getMoveCam(), "both arguments of native method moveCam must be integers");
+    }
 
     @Override
     public void inABlockInst(
@@ -80,6 +152,14 @@ public class SemanticVerifierPhase2
             ABlockInst node) {
 
         this.currentScope = this.currentScope.getParent();
+    }
+    
+    @Override
+    public void caseAFrameAdvanceInst(AFrameAdvanceInst node) {
+    	if(node.getExp() != null && evalType(node.getExp()) != Type.INT)
+    		throw new SemanticException(node.getFrameAdvance(), "native method frameAdvance must have a integer argument");
+    	if(this.currentFunctionInfo != null && this.currentFunctionInfo.getReturnType() != Type.VOID)
+    		throw new SemanticException(node.getFrameAdvance(), "cannot call frameAdvance on a non-void function");
     }
 
     @Override
@@ -120,7 +200,8 @@ public class SemanticVerifierPhase2
 
         // scope spécifique au else
         this.currentScope = new Scope(this.currentScope);
-        node.getElsePart().apply(this);
+        if(node.getElsePart() != null)
+        	node.getElsePart().apply(this);
         this.currentScope = this.currentScope.getParent();
     }
 
@@ -134,7 +215,6 @@ public class SemanticVerifierPhase2
             throw new SemanticException(node.getWhile(),
                     "expression is not a boolean");
         }
-
         this.currentScope = new Scope(this.currentScope);
         node.getWhileBody().apply(this);
         this.currentScope = this.currentScope.getParent();
@@ -143,17 +223,14 @@ public class SemanticVerifierPhase2
     @Override
     public void caseAForInst(
             AForInst node) {
-
+        this.currentScope = new Scope(this.currentScope);
+        visit(node.getDecl());
         Type type = evalType(node.getCond());
         
         if (type != Type.BOOL) {
             throw new SemanticException(node.getFirstSc(),
                     "expression is not a boolean");
         }
-        
-        node.getDecl();
-
-        this.currentScope = new Scope(this.currentScope);
         node.getWhileBody().apply(this);
         this.currentScope = this.currentScope.getParent();
     }
@@ -236,14 +313,10 @@ public class SemanticVerifierPhase2
     }
 
     @Override
-    public void caseALtExp(
-            ALtExp node) {
-
+    public void caseALtExp(ALtExp node) {
         Type leftType = evalType(node.getLeft());
         Type rightType = evalType(node.getRight());
-
         numbersOnly(leftType, rightType, node.getLt());
-
         this.resultType = Type.BOOL;
     }
     
@@ -251,9 +324,23 @@ public class SemanticVerifierPhase2
     public void caseAGtExp(AGtExp node) {
     	Type leftType = evalType(node.getLeft());
         Type rightType = evalType(node.getRight());
-
         numbersOnly(leftType, rightType, node.getGt());
-
+        this.resultType = Type.BOOL;
+    }
+    
+    @Override
+    public void caseALeExp(ALeExp node) {
+        Type leftType = evalType(node.getLeft());
+        Type rightType = evalType(node.getRight());
+        numbersOnly(leftType, rightType, node.getLt());
+        this.resultType = Type.BOOL;
+    }
+    
+    @Override
+    public void caseAGeExp(AGeExp node) {
+    	Type leftType = evalType(node.getLeft());
+        Type rightType = evalType(node.getRight());
+        numbersOnly(leftType, rightType, node.getGt());
         this.resultType = Type.BOOL;
     }
     
@@ -264,7 +351,7 @@ public class SemanticVerifierPhase2
 
         numbersOnly(leftType, rightType, node.getMult());
 
-        this.resultType = Type.BOOL;
+        this.resultType = Type.INT;
     }
     
     @Override
@@ -274,7 +361,7 @@ public class SemanticVerifierPhase2
 
         numbersOnly(leftType, rightType, node.getModulo());
 
-        this.resultType = Type.BOOL;
+        this.resultType = Type.INT;
     }
 
     @Override
@@ -292,7 +379,38 @@ public class SemanticVerifierPhase2
         this.resultType = Type.BOOL;
     }
     
-    public void numbersOnly(Type leftType, Type rightType, Token token) {
+    @Override
+    public void caseAPostAddIncrement(APostAddIncrement node) {
+    	Type type = this.currentScope.getType(node.getIdent());
+    	numberOnly(type, node.getPlusInc());
+    	this.resultType = Type.INT;
+    }
+    @Override
+    public void caseAPostSubIncrement(APostSubIncrement node) {
+    	Type type = this.currentScope.getType(node.getIdent());
+    	numberOnly(type, node.getMinusInc());
+    	this.resultType = Type.INT;
+    }
+    @Override
+    public void caseAPreAddIncrement(APreAddIncrement node) {
+    	Type type = this.currentScope.getType(node.getIdent());
+    	numberOnly(type, node.getPlusInc());
+    	this.resultType = Type.INT;
+    }
+    @Override
+    public void caseAPreSubIncrement(APreSubIncrement node) {
+    	Type type = this.currentScope.getType(node.getIdent());
+    	numberOnly(type, node.getMinusInc());
+    	this.resultType = Type.INT;
+    }    
+    
+    private void numberOnly(Type type, Token token) {
+    	if(type != Type.INT) {
+    		throw new SemanticException(token, type+" cannot be incremented");
+    	}
+    }
+    
+    private void numbersOnly(Type leftType, Type rightType, Token token) {
     	if (leftType != Type.INT) {
             throw new SemanticException(token,
                     "left operand is not a number");

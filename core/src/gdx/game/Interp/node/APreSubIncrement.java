@@ -5,51 +5,51 @@ package gdx.game.Interp.node;
 import gdx.game.Interp.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AIntegerTerm extends PTerm
+public final class APreSubIncrement extends PIncrement
 {
-    private TMinus _minus_;
-    private TInteger _integer_;
+    private TMinusInc _minusInc_;
+    private TIdent _ident_;
 
-    public AIntegerTerm()
+    public APreSubIncrement()
     {
         // Constructor
     }
 
-    public AIntegerTerm(
-        @SuppressWarnings("hiding") TMinus _minus_,
-        @SuppressWarnings("hiding") TInteger _integer_)
+    public APreSubIncrement(
+        @SuppressWarnings("hiding") TMinusInc _minusInc_,
+        @SuppressWarnings("hiding") TIdent _ident_)
     {
         // Constructor
-        setMinus(_minus_);
+        setMinusInc(_minusInc_);
 
-        setInteger(_integer_);
+        setIdent(_ident_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new AIntegerTerm(
-            cloneNode(this._minus_),
-            cloneNode(this._integer_));
+        return new APreSubIncrement(
+            cloneNode(this._minusInc_),
+            cloneNode(this._ident_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAIntegerTerm(this);
+        ((Analysis) sw).caseAPreSubIncrement(this);
     }
 
-    public TMinus getMinus()
+    public TMinusInc getMinusInc()
     {
-        return this._minus_;
+        return this._minusInc_;
     }
 
-    public void setMinus(TMinus node)
+    public void setMinusInc(TMinusInc node)
     {
-        if(this._minus_ != null)
+        if(this._minusInc_ != null)
         {
-            this._minus_.parent(null);
+            this._minusInc_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +62,19 @@ public final class AIntegerTerm extends PTerm
             node.parent(this);
         }
 
-        this._minus_ = node;
+        this._minusInc_ = node;
     }
 
-    public TInteger getInteger()
+    public TIdent getIdent()
     {
-        return this._integer_;
+        return this._ident_;
     }
 
-    public void setInteger(TInteger node)
+    public void setIdent(TIdent node)
     {
-        if(this._integer_ != null)
+        if(this._ident_ != null)
         {
-            this._integer_.parent(null);
+            this._ident_.parent(null);
         }
 
         if(node != null)
@@ -87,30 +87,30 @@ public final class AIntegerTerm extends PTerm
             node.parent(this);
         }
 
-        this._integer_ = node;
+        this._ident_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._minus_)
-            + toString(this._integer_);
+            + toString(this._minusInc_)
+            + toString(this._ident_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._minus_ == child)
+        if(this._minusInc_ == child)
         {
-            this._minus_ = null;
+            this._minusInc_ = null;
             return;
         }
 
-        if(this._integer_ == child)
+        if(this._ident_ == child)
         {
-            this._integer_ = null;
+            this._ident_ = null;
             return;
         }
 
@@ -121,15 +121,15 @@ public final class AIntegerTerm extends PTerm
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._minus_ == oldChild)
+        if(this._minusInc_ == oldChild)
         {
-            setMinus((TMinus) newChild);
+            setMinusInc((TMinusInc) newChild);
             return;
         }
 
-        if(this._integer_ == oldChild)
+        if(this._ident_ == oldChild)
         {
-            setInteger((TInteger) newChild);
+            setIdent((TIdent) newChild);
             return;
         }
 

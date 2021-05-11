@@ -65,61 +65,20 @@ public class FunctionInfo {
         }
     }
 
-    public void checkArgTypes(
-            List<Type> argTypes,
-            Token location) {
-
-        // itérateur pour les arguments
-        Iterator<Type> argTypesIterator = argTypes.iterator();
-        // boucle sur les paramÃ¨tres
-        for (ParamInfo param : this.paramList) {
-
-            if (argTypesIterator.hasNext()) {
-                Type argType = argTypesIterator.next();
-                if (argType != param.getType()) {
-                    throw new SemanticException(location,
-                            "invalid argument for the the "
-                                    + param.getName().getText() + " parameter");
-                }
-            }
-            else {
-                throw new SemanticException(location,
-                        "missing argument for the " + param.getName().getText()
-                                + " parameter");
-            }
-        }
-
-        // argument de trop?
-        if (argTypesIterator.hasNext()) {
-            throw new SemanticException(location, "too many arguments");
-        }
-    }
-
     public void assignArgs(
             List<Value> args,
             Frame frame,
             Token location) {
 
-        // itÃ©rateur pour les arguments
+        // itérateur pour les arguments
         Iterator<Value> argsIterator = args.iterator();
-        // boucle sur les paramÃ¨tres
+        // boucle sur les paramètres
         for (ParamInfo param : this.paramList) {
 
-            if (argsIterator.hasNext()) {
-                Value arg = argsIterator.next();
-                frame.putVariable(param.getName(), arg);
-            }
-            else {
-                throw new InterpreterException(location, frame,
-                        "missing value for the " + param.getName().getText()
-                                + " parameter");
-            }
-        }
+            // La verification est faite dans semantingVerifier()
+            Value arg = argsIterator.next();
+            frame.putVariable(param.getName(), arg);
 
-        // argument de trop?
-        if (argsIterator.hasNext()) {
-            throw new InterpreterException(location, frame,
-                    "too many arguments");
         }
     }
 

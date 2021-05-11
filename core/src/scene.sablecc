@@ -32,9 +32,14 @@ Tokens
   int_type = 'int';
   bool_type = 'bool';
   string_type = 'string';
+  void_type = 'void';
   
+  /*methodes natives*/
+  
+  say = 'say';
   frame_advance = 'frameAdvance';
   walk = 'walk';
+  move_cam = 'moveCam';
 
   /*punctuation */
   
@@ -43,6 +48,8 @@ Tokens
   plus = '+';
   minus = '-';
   mult = '*';
+  plus_inc = '++';
+  minus_inc = '--';
   modulo = '%';
   lt = '<';
   gt = '>';
@@ -86,7 +93,8 @@ Productions
   type =
     {int} int_type |
     {bool} bool_type |
-    {string} string_type;
+    {string} string_type |
+    {void} void_type;
 
   fun_decl =
     type [name]:ident l_par params? r_par do fun_body end;
@@ -103,17 +111,20 @@ Productions
     {block} do [insts]:inst* end |
     {while} while exp do while_body end |
     {for} for l_par [decl]:assigner? [first_sc]:sc [cond]:exp? [second_sc]:sc [iter]:assigner? r_par do while_body end |
-    {return} return exp sc |
+    {return} return exp? sc |
     {fun_call} ident l_par args? r_par sc |
     {print_exp} print exp sc |
     {println} println sc |
+    {say} say exp sc |
     {frame_advance} frame_advance exp? sc |
-    {walk} walk l_par args r_par sc;
+    {walk} walk l_par args r_par sc |
+    {move_cam} move_cam l_par args r_par sc;
     
   assigner =
     {decl} var ident assign exp |
     {assign} ident assign exp |
-    {field_assign} [left]:unary dot ident assign exp;
+    {field_assign} [left]:unary dot ident assign exp |
+    {increment} increment;
     
   while_body =
     [insts]:inst*;
@@ -128,6 +139,8 @@ Productions
     {eq} [left]:exp eq [right]:additive_exp |
     {lt} [left]:exp lt [right]:additive_exp |
     {gt} [left]:exp gt [right]:additive_exp |
+    {le} [left]:exp lt assign [right]:additive_exp |
+    {ge} [left]:exp gt assign [right]:additive_exp |
     {simple} additive_exp;
 
   additive_exp =
@@ -147,14 +160,20 @@ Productions
   term =
     {true} true |
     {false} false |
-    {integer} integer |
+    {integer} minus? integer |
     {string} string |
     {var} ident |
     {par} l_par exp r_par |
     {fun_call} ident l_par args? r_par |
-    {struct} struct ident l_par args? r_par;
+    {struct} struct ident l_par args? r_par |
+    {increment} increment;
  //   {fun} fun l_par params? r_par do fun_body end;
 
+  increment =
+    {pre_add} plus_inc ident |
+    {post_add} ident plus_inc |
+    {pre_sub} minus_inc ident |
+    {post_sub}  ident minus_inc;
 
   params =
     param [additional_params]:additional_param*;
