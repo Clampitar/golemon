@@ -1,21 +1,27 @@
-int foo(int i) do
-  i = i + 1;
-  return i + 10;
+
+void bar( int q) do
+  for(;q > 0;) do
+    q--;
+    for(var i = 0; i < q; i++) do
+    var x = 5;
+    var y = 5;
+    if((q % 4) % 3 == 0) then
+      x = -5;
+    end
+    if(q % 4 < 2) then
+      y = -5;
+    end 
+    walk(x, y);
+    moveCam(x, y);
+    frameAdvance 2;
+    end
+    frameAdvance 1;
+  end
+  frameAdvance 5;
+  return ;
 end
 
-bool bar(int x) do
-  return foo(x+3);
-end
-
-print false;
-print bar(3) + 2;
 println;
-var q = 0;
-
-for(q = 3;q < 10;q = q + 1) do
-q = q + 1;
-walk(5, 5);
-frameAdvance 20;
-print q;
-print "  ";
-end
+print "hi";
+bar(5);
+print " goodbye";

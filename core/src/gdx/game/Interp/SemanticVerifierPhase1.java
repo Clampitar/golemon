@@ -37,6 +37,7 @@ public class SemanticVerifierPhase1 extends DepthFirstAdapter {
 		this.currentType = null;
 		
 		this.semantics.addFunDecl(node, params, returnType);
+		visit(node.getFunBody());
 	}
 	
 	@Override
@@ -44,6 +45,8 @@ public class SemanticVerifierPhase1 extends DepthFirstAdapter {
 		this.currentType = null;
 		visit(node.getType());
 		Type type = this.currentType;
+		if(type == Type.VOID)
+			throw new SemanticException(node.getIdent(), "parameter cannot be void type");
 		this.currentType = null;
 		
 		currentParams.add(new ParamInfo(node, type));
@@ -68,6 +71,13 @@ public class SemanticVerifierPhase1 extends DepthFirstAdapter {
             AStringType node) {
 
         this.currentType = Type.STRING;
+    }
+    
+    @Override
+    public void caseAVoidType(
+            AVoidType node) {
+
+        this.currentType = Type.VOID;
     }
 
 }

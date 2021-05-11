@@ -123,6 +123,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAVoidType(AVoidType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAFunDecl(AFunDecl node)
     {
         defaultCase(node);
@@ -189,6 +195,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseASayInst(ASayInst node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAFrameAdvanceInst(AFrameAdvanceInst node)
     {
         defaultCase(node);
@@ -196,6 +208,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAWalkInst(AWalkInst node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAMoveCamInst(AMoveCamInst node)
     {
         defaultCase(node);
     }
@@ -214,6 +232,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAFieldAssignAssigner(AFieldAssignAssigner node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAIncrementAssigner(AIncrementAssigner node)
     {
         defaultCase(node);
     }
@@ -250,6 +274,18 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAGtExp(AGtExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseALeExp(ALeExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAGeExp(AGeExp node)
     {
         defaultCase(node);
     }
@@ -352,6 +388,36 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAStructTerm(AStructTerm node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAIncrementTerm(AIncrementTerm node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAPreAddIncrement(APreAddIncrement node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAPostAddIncrement(APostAddIncrement node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAPreSubIncrement(APreSubIncrement node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAPostSubIncrement(APostSubIncrement node)
     {
         defaultCase(node);
     }
@@ -495,6 +561,18 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseTVoidType(TVoidType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTSay(TSay node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTFrameAdvance(TFrameAdvance node)
     {
         defaultCase(node);
@@ -502,6 +580,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTWalk(TWalk node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTMoveCam(TMoveCam node)
     {
         defaultCase(node);
     }
@@ -532,6 +616,18 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTMult(TMult node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTPlusInc(TPlusInc node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTMinusInc(TMinusInc node)
     {
         defaultCase(node);
     }

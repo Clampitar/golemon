@@ -83,7 +83,7 @@ public class MyGdxGame extends ApplicationAdapter {
         dialogueSound = Gdx.audio.newSound(Gdx.files.internal("sounds/chirp.wav"));
         battleMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/wrath.wav"));
 
-        interpreter = new Interpreter("test.fun", player, this);
+      //  interpreter = new Interpreter("test.fun", player, this);
 
     }
 
@@ -169,7 +169,7 @@ public class MyGdxGame extends ApplicationAdapter {
         } else
         if(Input.isPressed(Input.TEST_ITERPRETER)){
         	gameState = GameState.cutScene;
-        	interpreter = new Interpreter("test.fun", player, this);
+        	interpreter = new Interpreter("test.fun", player,cam, this);
         }
     }
 
@@ -237,6 +237,11 @@ public class MyGdxGame extends ApplicationAdapter {
         defaultGolem.draw(batch);
         dummy.draw(batch);
         batch.end();
+    }
+    
+    public void say(String message) {
+    	gameState = GameState.pickup;
+    	dialogue.say(message);
     }
 
 

@@ -3,6 +3,8 @@ package gdx.game.Interp;
 
 import java.util.*;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
+
 import gdx.game.MyGdxGame;
 import gdx.game.Player;
 import gdx.game.Interp.analysis.*;
@@ -20,11 +22,13 @@ public class InterpreterEngine
     public int frameDelay = 0;
     
     Player player;
+    OrthographicCamera cam;
     MyGdxGame game;
 
-    public InterpreterEngine(Player player, MyGdxGame game, SemanticInfo semantics) {
+    public InterpreterEngine(Player player,MyGdxGame game, OrthographicCamera cam,  SemanticInfo semantics) {
 		this.player = player;
 		this.game = game;
+		this.cam = cam;
 		this.semantics = semantics;
 		currentFrame = null;
     }
@@ -44,25 +48,35 @@ public class InterpreterEngine
     	//et le programme peut continuer à la même ligne si celui-si est ré-appelé
     	try {
     		while (hasNext()) {
-    			currentInst = (PInst) currentFrame.next();
-    			visit(currentInst);
+    			try {
+    				currentInst = (PInst) currentFrame.next();
+    				visit(currentInst);
+    			} catch(ReturnException e) {exitFunction();}
     			
 			}
     	} catch(frameAdvanceException e) {}
     }
     
     public boolean hasNext() {
+        if(this.currentFrame.hasNext()) return true;
     	if(this.currentFrame instanceof BlockFrame && !currentFrame.hasNext()) {
     		PAssigner assigner = ((BlockFrame) this.currentFrame).getEndLoopInst();
     		visit(assigner);
     		PExp exp = ((BlockFrame) this.currentFrame).getLoopExpression();
     		BoolValue val = (BoolValue) eval(exp);
+    		
     		if(val.getValue()) {
     			((BlockFrame) this.currentFrame).reIterate();
     			return true;
+    		} else {
+    			this.currentFrame = this.currentFrame.getParentFrame();
     		}
+    	} else {
+    		this.currentFrame = this.currentFrame.getParentFrame();
+    		if(this.currentFrame == null) return false;
+    		return this.currentFrame.hasNext();
     	}
-    	return currentFrame.hasNext();
+    	return hasNext();
     }
 
     public void caseAIfInst(
@@ -76,13 +90,16 @@ public class InterpreterEngine
         }
         else {
             // executer le else
-            node.getElsePart().apply(this);
+        	if(node.getElsePart() != null)
+        		node.getElsePart().apply(this);
         }
     }
     
     @Override
     public void caseAWhileInst(AWhileInst node) {
     	this.currentFrame = new BlockFrame(this.currentFrame, node.getExp());
+    	Value val = eval(node.getExp());
+    	if(((BoolValue)val).getValue())
     		visit(node.getWhileBody());
     	this.currentFrame = this.currentFrame.getParentFrame();
     }
@@ -90,18 +107,17 @@ public class InterpreterEngine
     @Override
     public void caseAWhileBody(AWhileBody node) {
     	this.currentFrame.iterate(node.getInsts());
-    	
     		while (currentFrame.hasNext()) {
     			visit((PInst) currentFrame.next());
 			}
-    	
-    	
     }
     
     public void caseAForInst(AForInst node) {
     	this.currentFrame = new BlockFrame(this.currentFrame, node.getCond(), node.getIter());
     	visit(node.getDecl());
-    	visit(node.getWhileBody());
+    	Value val = eval(node.getCond());
+    	if(((BoolValue)val).getValue())
+    		visit(node.getWhileBody());
 		this.currentFrame = this.currentFrame.getParentFrame();
     };
 
@@ -118,6 +134,51 @@ public class InterpreterEngine
 
         Value value = eval(node.getExp());
         System.out.print(value);
+    }
+    
+    @Override
+    public void caseASayInst(ASayInst node) {
+    	Value value = eval(node.getExp());
+        game.say(value.toString());
+    }
+    
+    @Override
+    public void caseAPostAddIncrement(APostAddIncrement node) {
+    	Value value = this.currentFrame.getVariable(node.getIdent());
+    	this.result = value;
+    	int val = ((IntValue) value).getValue();
+    	val++;
+    	this.currentFrame.putVariable(node.getIdent(), new IntValue(val));
+    	
+    }
+    
+    @Override
+    public void caseAPostSubIncrement(APostSubIncrement node) {
+    	Value value = this.currentFrame.getVariable(node.getIdent());
+    	int val = ((IntValue) value).getValue();
+    	this.result = value;
+    	val--;
+    	this.currentFrame.putVariable(node.getIdent(), new IntValue(val));
+    }
+    
+    @Override
+    public void caseAPreAddIncrement(APreAddIncrement node) {
+    	Value value = this.currentFrame.getVariable(node.getIdent());
+    	int val = ((IntValue) value).getValue();
+    	++val;
+    	value = new IntValue(val);
+    	this.currentFrame.putVariable(node.getIdent(), value);
+    	this.result = value;
+    }
+    
+    @Override
+    public void caseAPreSubIncrement(APreSubIncrement node) {
+    	Value value = this.currentFrame.getVariable(node.getIdent());
+    	int val = ((IntValue) value).getValue();
+    	--val;
+    	value = new IntValue(val);
+    	this.currentFrame.putVariable(node.getIdent(), value);
+    	this.result = value;
     }
     
     @Override
@@ -176,6 +237,39 @@ public class InterpreterEngine
         this.result = new BoolValue(((IntValue) leftValue)
                 .getValue() < ((IntValue) rightValue).getValue());
     }
+    
+    @Override
+    public void caseAGtExp(
+            AGtExp node) {
+
+        Value leftValue = eval(node.getLeft());
+        Value rightValue = eval(node.getRight());
+
+        this.result = new BoolValue(((IntValue) leftValue)
+                .getValue() > ((IntValue) rightValue).getValue());
+    }
+    
+    @Override
+    public void caseALeExp(
+            ALeExp node) {
+
+        Value leftValue = eval(node.getLeft());
+        Value rightValue = eval(node.getRight());
+
+        this.result = new BoolValue(((IntValue) leftValue)
+                .getValue() <= ((IntValue) rightValue).getValue());
+    }
+    
+    @Override
+    public void caseAGeExp(
+            AGeExp node) {
+
+        Value leftValue = eval(node.getLeft());
+        Value rightValue = eval(node.getRight());
+
+        this.result = new BoolValue(((IntValue) leftValue)
+                .getValue() >= ((IntValue) rightValue).getValue());
+    }
 
     @Override
     public void caseASubAdditiveExp(
@@ -214,8 +308,17 @@ public class InterpreterEngine
          Value rightValue = eval(node.getRight());
          
          this.result = new IntValue(((IntValue) leftValue).getValue()
-                 + ((IntValue) rightValue).getValue());
-    };
+                 * ((IntValue) rightValue).getValue());
+    }
+    
+    @Override
+    public void caseAModuloMultExp(AModuloMultExp node) {
+    	Value leftValue = eval(node.getLeft());
+        Value rightValue = eval(node.getRight());
+        
+        this.result = new IntValue(((IntValue) leftValue).getValue()
+                % ((IntValue) rightValue).getValue());
+    }
 
     private Value eval(
             Node node) {
@@ -227,10 +330,10 @@ public class InterpreterEngine
     @Override
     public void caseAIntegerTerm(
             AIntegerTerm node) {
-
-        try {
+        Boolean minus = (node.getMinus() != null);
+    	try {
             int number = Integer.parseInt(node.getInteger().getText());
-            this.result = new IntValue(number);
+            this.result = new IntValue(minus ? -number : number);
         }
         catch (NumberFormatException e) {
             throw new InterpreterException(node.getInteger(),
@@ -293,15 +396,54 @@ public class InterpreterEngine
     }
     
     @Override
+    public void caseAMoveCamInst(AMoveCamInst node) {
+    	List<Value> previousArgs = this.currentArgs;
+        this.currentArgs = new LinkedList<>();
+        visit(node.getArgs());
+    	IntValue xVal = (IntValue) this.currentArgs.get(0);
+    	IntValue yVal = (IntValue) this.currentArgs.get(1);
+    	int x = xVal.getValue();
+    	int y = yVal.getValue();
+    	if(x != 0 && y != 0 ) {
+    		x *= Math.sin(Math.PI / 4);
+            y *= Math.sin(Math.PI / 4);
+    	}
+    	cam.translate(x, y);
+    	this.currentArgs = previousArgs;
+    }
+    
+    @Override
     public void caseAArg(AArg node) {
     	this.currentArgs.add(eval(node.getExp()));
     }
     
     @Override
     public void caseAFunCallInst(AFunCallInst node) {
-    	// TODO Auto-generated method stub
-    	System.err.println("function call instruction");
+    	List<Value> previousArgs = this.currentArgs;
+        this.currentArgs = new LinkedList<>();
+        visit(node.getArgs());
+        List<Value> args = this.currentArgs;
+        this.currentArgs = previousArgs;
+        
+        FunctionInfo info = this.semantics.getFunInfo(node.getIdent().getText());
+        Frame frame = new Frame(currentFrame, info, node.getIdent());
     	
+        info.assignArgs(args, frame, node.getLPar());
+        
+     // noter la localisation courante
+        this.currentFrame.setLocation(node.getLPar());
+
+        // Exécuter le corps de la fonction
+        this.currentFrame = frame;
+    	
+    	try {
+    		visit(info.getFunBody());
+    	} catch (ReturnException e) {}
+    	
+
+        this.currentFrame = frame.getParentFrame();
+    	
+    	this.currentFrame.setLocation(null);
     	
     }
     
@@ -327,13 +469,30 @@ public class InterpreterEngine
     	try {
     		visit(info.getFunBody());
     	} catch (ReturnException e) {}
-    	
-    	this.result = frame.getReturnValue();
+    	System.err.println("frame.value:" + frame.getReturnValue());
+    	System.err.println("currentFrame:" + this.currentFrame.getReturnValue());
+    	this.result = this.currentFrame.getReturnValue();
 
         this.currentFrame = frame.getParentFrame();
     	
     	this.currentFrame.setLocation(null);
     	}
+    
+    @Override
+    public void caseAFunBody(AFunBody node) {
+    	this.currentFrame.iterate(node.getInsts());
+		while (currentFrame.hasNext()) {
+			visit((PInst) currentFrame.next());
+		}
+    }
+    
+    private void exitFunction() {
+    	// is only called in void functions, so this is irrelevent
+    	while(this.currentFrame instanceof BlockFrame) // exit loops
+    		this.currentFrame = this.currentFrame.getParentFrame();
+    	this.currentFrame = this.currentFrame.getParentFrame();
+    	this.currentFrame.setLocation(null);
+    }
     
     private class ReturnException
     extends RuntimeException {
