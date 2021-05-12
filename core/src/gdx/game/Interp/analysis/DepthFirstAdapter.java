@@ -650,35 +650,6 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAPrintlnInst(node);
     }
 
-    public void inASayInst(ASayInst node)
-    {
-        defaultIn(node);
-    }
-
-    public void outASayInst(ASayInst node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseASayInst(ASayInst node)
-    {
-        inASayInst(node);
-        if(node.getSay() != null)
-        {
-            node.getSay().apply(this);
-        }
-        if(node.getExp() != null)
-        {
-            node.getExp().apply(this);
-        }
-        if(node.getSc() != null)
-        {
-            node.getSc().apply(this);
-        }
-        outASayInst(node);
-    }
-
     public void inAFrameAdvanceInst(AFrameAdvanceInst node)
     {
         defaultIn(node);

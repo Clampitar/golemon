@@ -59,14 +59,14 @@ public class InterpreterEngine
     
     public boolean hasNext() {
         if(this.currentFrame.hasNext()) return true;
-    	if(this.currentFrame instanceof BlockFrame && !currentFrame.hasNext()) {
-    		PAssigner assigner = ((BlockFrame) this.currentFrame).getEndLoopInst();
+    	if(this.currentFrame instanceof LoopFrame && !currentFrame.hasNext()) {
+    		PAssigner assigner = ((LoopFrame) this.currentFrame).getEndLoopInst();
     		visit(assigner);
-    		PExp exp = ((BlockFrame) this.currentFrame).getLoopExpression();
+    		PExp exp = ((LoopFrame) this.currentFrame).getLoopExpression();
     		BoolValue val = (BoolValue) eval(exp);
     		
     		if(val.getValue()) {
-    			((BlockFrame) this.currentFrame).reIterate();
+    			((LoopFrame) this.currentFrame).reIterate();
     			return true;
     		} else {
     			this.currentFrame = this.currentFrame.getParentFrame();
@@ -97,9 +97,8 @@ public class InterpreterEngine
     
     @Override
     public void caseAWhileInst(AWhileInst node) {
-    	this.currentFrame = new BlockFrame(this.currentFrame, node.getExp());
-    	Value val = eval(node.getExp());
-    	if(((BoolValue)val).getValue())
+    	this.currentFrame = new LoopFrame(this.currentFrame, node.getExp());
+    	while((node.getExp() == null) || ((BoolValue)eval(node.getExp())).getValue())
     		visit(node.getWhileBody());
     	this.currentFrame = this.currentFrame.getParentFrame();
     }
@@ -107,17 +106,16 @@ public class InterpreterEngine
     @Override
     public void caseAWhileBody(AWhileBody node) {
     	this.currentFrame.iterate(node.getInsts());
-    		while (currentFrame.hasNext()) {
-    			visit((PInst) currentFrame.next());
-			}
+    	super.caseAWhileBody(node);
     }
     
     public void caseAForInst(AForInst node) {
-    	this.currentFrame = new BlockFrame(this.currentFrame, node.getCond(), node.getIter());
+    	this.currentFrame = new LoopFrame(this.currentFrame, node.getCond(), node.getIter());
     	visit(node.getDecl());
-    	Value val = eval(node.getCond());
-    	if(((BoolValue)val).getValue())
+    	while((node.getCond() == null) || ((BoolValue)eval(node.getCond())).getValue()) {
     		visit(node.getWhileBody());
+    		visit(node.getIter());
+    	}
 		this.currentFrame = this.currentFrame.getParentFrame();
     };
 
@@ -136,11 +134,13 @@ public class InterpreterEngine
         System.out.print(value);
     }
     
+/*    
     @Override
     public void caseASayInst(ASayInst node) {
     	Value value = eval(node.getExp());
         game.say(value.toString());
     }
+*/ //Avorté par manque de temps
     
     @Override
     public void caseAPostAddIncrement(APostAddIncrement node) {
@@ -380,8 +380,8 @@ public class InterpreterEngine
     		Value value = eval(node.getExp());
     		this.frameDelay = ((IntValue) value).getValue();
     	}
-
-    	throw new frameAdvanceException();
+    	if(frameDelay > 0)
+    		throw new frameAdvanceException();
     }
     
     @Override
@@ -469,8 +469,6 @@ public class InterpreterEngine
     	try {
     		visit(info.getFunBody());
     	} catch (ReturnException e) {}
-    	System.err.println("frame.value:" + frame.getReturnValue());
-    	System.err.println("currentFrame:" + this.currentFrame.getReturnValue());
     	this.result = this.currentFrame.getReturnValue();
 
         this.currentFrame = frame.getParentFrame();
@@ -488,7 +486,7 @@ public class InterpreterEngine
     
     private void exitFunction() {
     	// is only called in void functions, so this is irrelevent
-    	while(this.currentFrame instanceof BlockFrame) // exit loops
+    	while(this.currentFrame instanceof LoopFrame) // exit loops
     		this.currentFrame = this.currentFrame.getParentFrame();
     	this.currentFrame = this.currentFrame.getParentFrame();
     	this.currentFrame.setLocation(null);
