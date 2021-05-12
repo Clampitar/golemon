@@ -32,7 +32,6 @@ public interface Analysis extends Switch
     void caseAFunCallInst(AFunCallInst node);
     void caseAPrintExpInst(APrintExpInst node);
     void caseAPrintlnInst(APrintlnInst node);
-    void caseASayInst(ASayInst node);
     void caseAFrameAdvanceInst(AFrameAdvanceInst node);
     void caseAWalkInst(AWalkInst node);
     void caseAMoveCamInst(AMoveCamInst node);
@@ -95,7 +94,6 @@ public interface Analysis extends Switch
     void caseTBoolType(TBoolType node);
     void caseTStringType(TStringType node);
     void caseTVoidType(TVoidType node);
-    void caseTSay(TSay node);
     void caseTFrameAdvance(TFrameAdvance node);
     void caseTWalk(TWalk node);
     void caseTMoveCam(TMoveCam node);

@@ -7,17 +7,17 @@ import gdx.game.Interp.node.PExp;
 import gdx.game.Interp.node.PInst;
 import gdx.game.Interp.node.TIdent;
 
-public class BlockFrame extends Frame {
+public class LoopFrame extends Frame {
 	
 	private PExp loopExpression;
 	private LinkedList<PInst> insts;
 	private PAssigner endLoopInst;
 
-	public BlockFrame(Frame parentFrame, PExp exp) {
+	public LoopFrame(Frame parentFrame, PExp exp) {
 		this(parentFrame, exp, null);
 	}
 	
-	public BlockFrame(Frame parentFrame, PExp exp, PAssigner endLoopInst) {
+	public LoopFrame(Frame parentFrame, PExp exp, PAssigner endLoopInst) {
 		super(parentFrame);
 		this.loopExpression = exp;
 		this.endLoopInst = endLoopInst;

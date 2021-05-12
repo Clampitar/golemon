@@ -36,7 +36,7 @@ Tokens
   
   /*methodes natives*/
   
-  say = 'say';
+  //say = 'say';
   frame_advance = 'frameAdvance';
   walk = 'walk';
   move_cam = 'moveCam';
@@ -103,9 +103,6 @@ Productions
     [insts]:inst*;
 
   inst =
- //   {decl} var ident assign exp sc |
-  //  {assign} ident assign exp sc |
-   // {field_assign} [left]:unary dot ident assign exp sc |
     {assigner} assigner sc |
     {if} if exp then_part else_part? end |
     {block} do [insts]:inst* end |
@@ -115,7 +112,7 @@ Productions
     {fun_call} ident l_par args? r_par sc |
     {print_exp} print exp sc |
     {println} println sc |
-    {say} say exp sc |
+   // {say} say exp sc |
     {frame_advance} frame_advance exp? sc |
     {walk} walk l_par args r_par sc |
     {move_cam} move_cam l_par args r_par sc;
@@ -123,7 +120,7 @@ Productions
   assigner =
     {decl} var ident assign exp |
     {assign} ident assign exp |
-    {field_assign} [left]:unary dot ident assign exp |
+    {field_assign} [left]:unary dot ident assign exp | // n'est pas utilisé
     {increment} increment;
     
   while_body =

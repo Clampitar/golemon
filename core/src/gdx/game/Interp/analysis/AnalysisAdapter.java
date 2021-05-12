@@ -195,12 +195,6 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseASayInst(ASayInst node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
     public void caseAFrameAdvanceInst(AFrameAdvanceInst node)
     {
         defaultCase(node);
@@ -562,12 +556,6 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTVoidType(TVoidType node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseTSay(TSay node)
     {
         defaultCase(node);
     }

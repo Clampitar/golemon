@@ -209,12 +209,13 @@ public class SemanticVerifierPhase2
     public void caseAWhileInst(
             AWhileInst node) {
 
-        Type type = evalType(node.getExp());
-
-        if (type != Type.BOOL) {
-            throw new SemanticException(node.getWhile(),
+    	if(node.getExp() != null) {
+    		Type type = evalType(node.getExp());
+        	if (type != Type.BOOL) {
+            	throw new SemanticException(node.getWhile(),
                     "expression is not a boolean");
-        }
+        	}
+    	}
         this.currentScope = new Scope(this.currentScope);
         node.getWhileBody().apply(this);
         this.currentScope = this.currentScope.getParent();
@@ -225,11 +226,12 @@ public class SemanticVerifierPhase2
             AForInst node) {
         this.currentScope = new Scope(this.currentScope);
         visit(node.getDecl());
-        Type type = evalType(node.getCond());
-        
-        if (type != Type.BOOL) {
-            throw new SemanticException(node.getFirstSc(),
-                    "expression is not a boolean");
+        if(node.getCond() != null) {
+        	Type type = evalType(node.getCond());
+        	if (type != Type.BOOL) {
+        		throw new SemanticException(node.getFirstSc(),
+        			"expression is not a boolean");
+        	}
         }
         node.getWhileBody().apply(this);
         this.currentScope = this.currentScope.getParent();
