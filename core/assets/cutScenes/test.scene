@@ -12,17 +12,12 @@ void bar( int q) do
       y = -3;
     end 
     walk(x, y);
-    moveCam(x, y);
+    moveCam(0-x, y);
     frameAdvance ;
     end
   end
   return ;
 end
 
-string hello() do
-# print "hello";
-end
 
-print hello();
-frameAdvance 2*10;
-bar(9);
+ bar(20);

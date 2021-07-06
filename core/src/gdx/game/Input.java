@@ -8,7 +8,7 @@ public class Input extends InputAdapter {
     public static boolean[] keys;
     public static boolean[] pKeys;
 
-    public static final int NUM_KEYS = 7;
+    public static final int NUM_KEYS = 8;
 
     public static final int RIGHT = 0;
     public static final int UP = 1;
@@ -18,6 +18,7 @@ public class Input extends InputAdapter {
     public static final int SELECT = 4;
     public static final int START = 5;
     public static final int TEST_ITERPRETER = 6;
+    public static final int TEST_BATTLE = 7;
 
     static {
         keys = new boolean[NUM_KEYS];
@@ -28,7 +29,7 @@ public class Input extends InputAdapter {
         System.arraycopy(keys, 0, pKeys, 0, NUM_KEYS);
     }
 
-    public static void setKey(int i, boolean b){
+    private static void setKey(int i, boolean b){
         keys[i] = b;
     }
 
@@ -50,7 +51,13 @@ public class Input extends InputAdapter {
         return findKey(keycode, false);
     }
 
-    public boolean findKey(int keycode, boolean b){
+    /**
+     * 
+     * @param keycode
+     * @param b
+     * @return Whether the key is detected by the game
+     */
+    private boolean findKey(int keycode, boolean b){
         switch (keycode) {
             case Keys.RIGHT:
                 setKey(RIGHT, b);
@@ -73,6 +80,9 @@ public class Input extends InputAdapter {
             case Keys.M:
                 setKey(TEST_ITERPRETER, b);
                 break;
+            case Keys.B:
+            	setKey(TEST_BATTLE, b);
+            	break;
             default: return false;
         }
         return true;

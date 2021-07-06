@@ -24,6 +24,7 @@ public class Golem extends SpritedObject {
     protected void draw(SpriteBatch batch) {
         super.draw(batch);
         batch.draw(leftArm.img, xOffset, yOffset);
+        batch.draw(rightArm.img, xOffset, yOffset);
     }
 
     /**

@@ -3,10 +3,7 @@ package gdx.game.Interp;
 
 import java.io.*;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
-
-import gdx.game.MyGdxGame;
-import gdx.game.Player;
+import gdx.game.ScenePlayer;
 import gdx.game.Interp.lexer.*;
 import gdx.game.Interp.node.*;
 import gdx.game.Interp.parser.*;
@@ -17,7 +14,7 @@ public class Interpreter {
 	
 	private InterpreterEngine iEngine;
 	private Start tree;
-	MyGdxGame game;
+	ScenePlayer game;
 	
 	public int read() {
 		try {
@@ -29,7 +26,7 @@ public class Interpreter {
 		return iEngine.frameDelay;
 	}
 
-    public Interpreter(String fileName, Player player, OrthographicCamera cam, MyGdxGame game) {
+    public Interpreter(String fileName, ScenePlayer game) {
     	this.game = game;
         fileName = pathChange + fileName;
         try {
@@ -48,7 +45,7 @@ public class Interpreter {
             SemanticInfo semantics = new SemanticInfo();
             tree.apply(new SemanticVerifierPhase1(semantics));
             tree.apply(new SemanticVerifierPhase2(semantics));
-            iEngine = new InterpreterEngine(player, game, cam,  semantics);
+            iEngine = new InterpreterEngine(game, semantics);
             
         }
         catch (FileNotFoundException e) {

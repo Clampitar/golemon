@@ -3,10 +3,7 @@ package gdx.game.Interp;
 
 import java.util.*;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
-
-import gdx.game.MyGdxGame;
-import gdx.game.Player;
+import gdx.game.ScenePlayer;
 import gdx.game.Interp.analysis.*;
 import gdx.game.Interp.node.*;
 
@@ -21,14 +18,10 @@ public class InterpreterEngine
     
     public int frameDelay = 0;
     
-    Player player;
-    OrthographicCamera cam;
-    MyGdxGame game;
+    ScenePlayer game;
 
-    public InterpreterEngine(Player player,MyGdxGame game, OrthographicCamera cam,  SemanticInfo semantics) {
-		this.player = player;
+    public InterpreterEngine(ScenePlayer game,SemanticInfo semantics) {
 		this.game = game;
-		this.cam = cam;
 		this.semantics = semantics;
 		currentFrame = null;
     }
@@ -391,7 +384,7 @@ public class InterpreterEngine
         visit(node.getArgs());
     	IntValue x = (IntValue) this.currentArgs.get(0);
     	IntValue y = (IntValue) this.currentArgs.get(1);
-    	player.walk(x.getValue(), y.getValue());
+    	game.walk(x.getValue(), y.getValue());
     	this.currentArgs = previousArgs;
     }
     
@@ -408,7 +401,7 @@ public class InterpreterEngine
     		x *= Math.sin(Math.PI / 4);
             y *= Math.sin(Math.PI / 4);
     	}
-    	cam.translate(x, y);
+    	game.translateCam(x, y);
     	this.currentArgs = previousArgs;
     }
     
