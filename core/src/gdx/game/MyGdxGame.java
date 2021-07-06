@@ -14,7 +14,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import gdx.game.Interp.Interpreter;
 import gdx.game.Menus.MenuManager;
 
-public class MyGdxGame extends ApplicationAdapter {
+public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
 
     public static final String TITLE = "get a title";
     public static final int V_WIDTH = 400;
@@ -101,7 +101,7 @@ public class MyGdxGame extends ApplicationAdapter {
      * Is called during every frame of the game.
      * Verifies the state of the game, then draws the world and handles input accordingly.
      */
-    public void frame() {
+    private void frame() {
         if(Input.isPressed(Input.SELECT)) {
             dialogueSound.play(0.03f);
         }
@@ -151,7 +151,7 @@ public class MyGdxGame extends ApplicationAdapter {
      * The way that the input is taken if the game is in the overWorld state
      * (The player can walk around and no events are happening.)
      */
-    public void overWorldInput() {
+    private void overWorldInput() {
         int x = 0;
         int y = 0;
         if (Input.isDown(Input.RIGHT)) x += 3;
@@ -169,14 +169,18 @@ public class MyGdxGame extends ApplicationAdapter {
         } else
         if(Input.isPressed(Input.TEST_ITERPRETER)){
         	gameState = GameState.cutScene;
-        	interpreter = new Interpreter("test.scene", player,cam, this);
-        }
+        	interpreter = new Interpreter("test.scene", this);
+        } else
+        	if(Input.isPressed(Input.TEST_BATTLE)){
+        		gameState = GameState.battle;
+        	}
+        
     }
 
     /**
      * What happens in a frame when a meterial is picked up by the player
      */
-    public void pickupInput() {
+    private void pickupInput() {
         if(dialogue.isNew()){
             Material material = player.detectPickup(map.getLayers());
             if(material != null){
@@ -190,14 +194,14 @@ public class MyGdxGame extends ApplicationAdapter {
         }
     }
 
-    public void menuInput() {
+    private void menuInput() {
         if(Input.isPressed(Input.START)){
             gameState = GameState.overWorld;
         }
         menuManager.input();
     }
 
-    public void battleInput(){
+    private void battleInput(){
         if(Input.isPressed(Input.START)){
             gameState = GameState.paused;
         } else if(Input.isPressed(Input.TEST_ITERPRETER)){
@@ -211,7 +215,7 @@ public class MyGdxGame extends ApplicationAdapter {
     /**
      * Draws the overworld, with the player as its center.
      */
-    public void drawOverWorld() {
+    private void drawOverWorld() {
         cam.update();
         batch.setProjectionMatrix(cam.combined);
 
@@ -228,7 +232,7 @@ public class MyGdxGame extends ApplicationAdapter {
      * Draws a battle (INCOMPLETE)
      * Corrently going for a prototype copy of pokemon style
      */
-    public void drawBattle(){
+    private void drawBattle(){
         cam.update();
         defaultGolem.setPosition(cam.position.x, cam.position.y);
         dummy.setPosition(cam.position.x, cam.position.y);
@@ -242,6 +246,16 @@ public class MyGdxGame extends ApplicationAdapter {
     public void say(String message) {
     	gameState = GameState.pickup;
     	dialogue.say(message);
+    }
+    
+    @Override
+    public void walk(int i, int j) {
+    	player.walk(i, j);
+    }
+    
+    @Override
+    public void translateCam(int i, int j) {
+    	cam.translate(i, j);	
     }
 
 
