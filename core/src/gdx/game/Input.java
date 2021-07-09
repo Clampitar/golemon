@@ -60,15 +60,19 @@ public class Input extends InputAdapter {
     private boolean findKey(int keycode, boolean b){
         switch (keycode) {
             case Keys.RIGHT:
+            case Keys.D:
                 setKey(RIGHT, b);
                 break;
             case Keys.UP:
+            case Keys.W:
                 setKey(UP, b);
                 break;
             case Keys.LEFT:
+            case Keys.A:
                 setKey(LEFT, b);
                 break;
             case Keys.DOWN:
+            case Keys.S:
                 setKey(DOWN, b);
                 break;
             case Keys.Z:

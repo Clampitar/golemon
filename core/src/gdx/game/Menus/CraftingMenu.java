@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import gdx.game.Golem;
 import gdx.game.Material;
 
-class CraftingMenu extends Menu{
+public class CraftingMenu extends Menu{
 
     Golem golem;
     static final int NUM_LIMBS = 5;

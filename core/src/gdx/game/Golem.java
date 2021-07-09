@@ -3,8 +3,6 @@ package gdx.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import java.io.FileNotFoundException;
-
 public class Golem extends SpritedObject {
     protected limb leftArm = new limb("leftArm");
     protected limb rightArm = new limb("rightArm");

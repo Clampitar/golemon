@@ -6,7 +6,7 @@ import gdx.game.Material;
 
 import java.util.ArrayList;
 
-class InventoryMenu extends Menu {
+public class InventoryMenu extends Menu {
     private ArrayList<Material> inventory;
 
     public InventoryMenu(String texturePath, SpriteBatch batch, OrthographicCamera cam, float x, float y) {
