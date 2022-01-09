@@ -1,6 +1,7 @@
 
 package gdx.game.Interp;
 
+import java.io.PrintStream;
 import java.util.*;
 
 import gdx.game.ScenePlayer;
@@ -37,15 +38,16 @@ public class InterpreterEngine
     	if(this.currentFrame == null)
     		this.currentFrame = new Frame(node.getInsts());
     	frameDelay = 0;
-    	//Si la lecture est intérompue l'itérateur est conservé 
-    	//et le programme peut continuer à la même ligne si celui-si est ré-appelé
+    	//Si la lecture est intÃ©rompue l'itÃ©rateur est conservÃ©
+    	//et le programme peut continuer Ã  la mÃªme ligne si celui-si est rÃ©-appelÃ©
     	try {
+            System.out.println("beginning result is "+this.result);
     		while (hasNext()) {
     			try {
     				currentInst = (PInst) currentFrame.next();
     				visit(currentInst);
-    			} catch(ReturnException e) {exitFunction();}
-    			
+    			} catch(ReturnException e)
+                {exitFunction();}
 			}
     	} catch(frameAdvanceException e) {}
     }
@@ -133,10 +135,10 @@ public class InterpreterEngine
     	Value value = eval(node.getExp());
         game.say(value.toString());
     }
-*/ //Avorté par manque de temps
+*/ //AvortÃ© par manque de temps
     
     @Override
-    public void caseAPostAddIncrement(APostAddIncrement node) {
+    public void caseAPostAddIncrement(APostAddIncrement node) { //i++
     	Value value = this.currentFrame.getVariable(node.getIdent());
     	this.result = value;
     	int val = ((IntValue) value).getValue();
@@ -146,7 +148,7 @@ public class InterpreterEngine
     }
     
     @Override
-    public void caseAPostSubIncrement(APostSubIncrement node) {
+    public void caseAPostSubIncrement(APostSubIncrement node) { //i--
     	Value value = this.currentFrame.getVariable(node.getIdent());
     	int val = ((IntValue) value).getValue();
     	this.result = value;
@@ -155,7 +157,7 @@ public class InterpreterEngine
     }
     
     @Override
-    public void caseAPreAddIncrement(APreAddIncrement node) {
+    public void caseAPreAddIncrement(APreAddIncrement node) { //++i
     	Value value = this.currentFrame.getVariable(node.getIdent());
     	int val = ((IntValue) value).getValue();
     	++val;
@@ -165,7 +167,7 @@ public class InterpreterEngine
     }
     
     @Override
-    public void caseAPreSubIncrement(APreSubIncrement node) {
+    public void caseAPreSubIncrement(APreSubIncrement node) { //--i
     	Value value = this.currentFrame.getVariable(node.getIdent());
     	int val = ((IntValue) value).getValue();
     	--val;
@@ -190,7 +192,8 @@ public class InterpreterEngine
     	public void caseAReturnInst(AReturnInst node) {
     		if(node.getExp() != null) {
     			Value value = eval(node.getExp());
-    			this.currentFrame.setReturnValue(value);
+    			this.result = value;
+                System.out.println("returning "+this.result);
     		}
     		throw new ReturnException();
     	}
@@ -213,7 +216,7 @@ public class InterpreterEngine
                     .getValue() == ((IntValue) rightValue).getValue());
         }
         else {
-        	//booléen
+        	//boolean
 
             this.result = new BoolValue(((BoolValue) leftValue)
                     .getValue() == ((BoolValue) rightValue).getValue());
@@ -221,7 +224,7 @@ public class InterpreterEngine
     }
 
     @Override
-    public void caseALtExp(
+    public void caseALtExp( //less than
             ALtExp node) {
 
         Value leftValue = eval(node.getLeft());
@@ -232,7 +235,7 @@ public class InterpreterEngine
     }
     
     @Override
-    public void caseAGtExp(
+    public void caseAGtExp( //greater than
             AGtExp node) {
 
         Value leftValue = eval(node.getLeft());
@@ -426,7 +429,7 @@ public class InterpreterEngine
      // noter la localisation courante
         this.currentFrame.setLocation(node.getLPar());
 
-        // Exécuter le corps de la fonction
+        // ExÃ©cuter le corps de la fonction
         this.currentFrame = frame;
     	
     	try {
@@ -456,13 +459,13 @@ public class InterpreterEngine
      // noter la localisation courante
         this.currentFrame.setLocation(node.getLPar());
 
-        // Exécuter le corps de la fonction
+        // ExÃ©cuter le corps de la fonction
         this.currentFrame = frame;
     	
     	try {
     		visit(info.getFunBody());
     	} catch (ReturnException e) {}
-    	this.result = this.currentFrame.getReturnValue();
+    	//this.result = this.currentFrame.getReturnValue();
 
         this.currentFrame = frame.getParentFrame();
     	

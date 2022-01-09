@@ -2,6 +2,7 @@
 package gdx.game.Interp;
 
 import java.io.*;
+import java.rmi.ServerError;
 
 import gdx.game.ScenePlayer;
 import gdx.game.Interp.lexer.*;
@@ -20,8 +21,8 @@ public class Interpreter {
 		try {
 			tree.apply(iEngine);
 		} catch (InterpreterException e) {
-            System.err.println("ERREUR D'INTERPRÉTATION: " + e.getMessage());
-            game.say("ERREUR D'INTERPRÉTATION");
+            System.err.println("ERREUR D'INTERPRETATION: " + e.getMessage());
+            game.say("ERREUR D'INTERPRETATION");
         }
 		return iEngine.frameDelay;
 	}
@@ -34,10 +35,14 @@ public class Interpreter {
             FileReader fileReader = new FileReader(fileName);;
             PushbackReader pushbackReader = new PushbackReader(fileReader);
             try {
+                String userDir = System.getProperty("user.dir");
+              //  System.setProperty("user.dir", "C:\\Git\\golemon\\core\\src");
                 lexer = new Lexer(pushbackReader);
+              //  System.setProperty("user.dir", "C:\\Git\\golemon\\core\\assets");
             } catch (ExceptionInInitializerError e) {
                 System.out.println("CORRUPTION DE FICHIERS: "+e.getCause());
-                return;
+                System.out.println("You are at "+System.getProperty("user.dir")
+                                    +" going for "+fileName);
             }
             Parser parser = new Parser(lexer);
             tree = parser.parse();
@@ -49,8 +54,8 @@ public class Interpreter {
             
         }
         catch (FileNotFoundException e) {
-            System.err.println("Le fichier " + fileName + " n'a pas été trouvé.");
-            System.err.println("Vouz Êtes dans = " + System.getProperty("user.dir"));
+            System.err.println("Le fichier " + fileName + " n'a pas Ã©tÃ© trouvÃ©.");
+            System.err.println("Vouz Ã©tes dans = " + System.getProperty("user.dir"));
             System.exit(1);
         }
         catch (ParserException e) {
@@ -66,8 +71,8 @@ public class Interpreter {
             game.say("ERREUR DE E/S");
         }
         catch (SemanticException e) {
-            System.err.println("ERREUR SÉMANTIQUE: " + e.getMessage());
-            game.say("ERREUR SÉMANTIQUE");
+            System.err.println("ERREUR SEMANTIQUE: " + e.getMessage());
+            game.say("ERREUR SÃ‰MANTIQUE");
         }
 
     }

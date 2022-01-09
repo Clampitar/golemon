@@ -16,9 +16,19 @@ public class SemanticVerifierPhase2
     
     private SemanticInfo semantics;
     
-    private FunctionInfo currentFunctionInfo;
-    
-    private LinkedList<Type> currentArgs;
+    private FunctionInfo currentFunctionInfo = null;
+
+    private class FunctionVerifier{
+        public LinkedList<Type> args;
+        public FunctionVerifier parent;
+
+        public FunctionVerifier(FunctionVerifier parent){
+            this.parent = parent;
+            args = new LinkedList<>();
+        }
+    }
+
+    private FunctionVerifier currentVerifier = null;
     
     public SemanticVerifierPhase2(SemanticInfo semantics) {
 		this.semantics = semantics;
@@ -44,7 +54,6 @@ public class SemanticVerifierPhase2
             AProg node) {
 
         this.currentScope = new Scope();
-        this.currentArgs = new LinkedList<>();
         for (PFunDecl pFunDecl : node.getFunDecls()) {
         	visit(pFunDecl);
         }
@@ -74,7 +83,7 @@ public class SemanticVerifierPhase2
     
     @Override
     public void caseAFunCallInst(AFunCallInst node) {
-    	this.currentArgs = new LinkedList<>();
+        this.currentVerifier = new FunctionVerifier(null);
     	FunctionInfo info = this.semantics.getFunInfo(node.getIdent().getText());
     	if(info == null)
     		throw new SemanticException(node.getLPar(), "function " +node.getIdent().getText() + " is not declared");
@@ -84,7 +93,7 @@ public class SemanticVerifierPhase2
     
     @Override
     public void caseAFunCallTerm(AFunCallTerm node) {
-    	this.currentArgs = new LinkedList<>();
+        this.currentVerifier = new FunctionVerifier(this.currentVerifier);
     	FunctionInfo info = this.semantics.getFunInfo(node.getIdent().getText());
     	if(info == null)
     		throw new SemanticException(node.getLPar(), "function " +node.getIdent().getText() + " is not declared");
@@ -92,15 +101,17 @@ public class SemanticVerifierPhase2
     		throw new SemanticException(node.getLPar(), "void functions cannot be used as a term");
     	visit(node.getArgs());
     	compareArgs(info, node.getRPar());
+        this.currentVerifier = this.currentVerifier.parent;
     }
     
     private void compareArgs(FunctionInfo funcInfo, Token token) {
     	List<ParamInfo> info = funcInfo.getParams();
-    	if(info.size() != this.currentArgs.size())
-    		throw new SemanticException(token, "expected "+info.size()+" arguments, got "+this.currentArgs.size());
+        int nimArgrs = this.currentVerifier.args.size();
+    	if(info.size() != this.currentVerifier.args.size())
+    		throw new SemanticException(token, "expected "+info.size()+" arguments, got "+this.currentVerifier.args.size());
     	for(int i = 0; i < info.size(); i++)
-    		if(info.get(i).getType() != this.currentArgs.get(i))
-    			throw new SemanticException(token, "expected " +info.get(i).getType()+", got "+this.currentArgs.get(i));
+    		if(info.get(i).getType() != this.currentVerifier.args.get(i))
+    			throw new SemanticException(token, "expected " +info.get(i).getType()+", got "+this.currentVerifier.args.get(i));
     }
     
     @Override
@@ -116,26 +127,26 @@ public class SemanticVerifierPhase2
     @Override
     public void caseAArg(AArg node) {
     	
-    	   this.currentArgs.add(evalType(node.getExp()));
+    	   this.currentVerifier.args.add(evalType(node.getExp()));
     }
     
     @Override
     public void caseAWalkInst(AWalkInst node) {
-    	this.currentArgs = new LinkedList<>();
+        this.currentVerifier = new FunctionVerifier(null);
 		visit(node.getArgs());
-		if(this.currentArgs.size() != 2)
+		if(this.currentVerifier.args.size() != 2)
 			throw new SemanticException(node.getWalk(), "native method walk must have exactly 2 arguments");
-		if(this.currentArgs.get(0) != Type.INT || this.currentArgs.get(1) != Type.INT)
+		if(this.currentVerifier.args.get(0) != Type.INT || this.currentVerifier.args.get(1) != Type.INT)
 				throw new SemanticException(node.getWalk(), "both arguments of native method walk must be integers");
     }
     
     @Override
     public void caseAMoveCamInst(AMoveCamInst node) {
-    	this.currentArgs = new LinkedList<>();
+        this.currentVerifier = new FunctionVerifier(null);
 		visit(node.getArgs());
-		if(this.currentArgs.size() != 2)
+		if(this.currentVerifier.args.size() != 2)
 			throw new SemanticException(node.getMoveCam(), "native method moveCam must have exactly 2 arguments");
-		if(this.currentArgs.get(0) != Type.INT || this.currentArgs.get(1) != Type.INT)
+		if(this.currentVerifier.args.get(0) != Type.INT || this.currentVerifier.args.get(1) != Type.INT)
 				throw new SemanticException(node.getMoveCam(), "both arguments of native method moveCam must be integers");
     }
 
@@ -158,8 +169,6 @@ public class SemanticVerifierPhase2
     public void caseAFrameAdvanceInst(AFrameAdvanceInst node) {
     	if(node.getExp() != null && evalType(node.getExp()) != Type.INT)
     		throw new SemanticException(node.getFrameAdvance(), "native method frameAdvance must have a integer argument");
-    	if(this.currentFunctionInfo != null && this.currentFunctionInfo.getReturnType() != Type.VOID)
-    		throw new SemanticException(node.getFrameAdvance(), "cannot call frameAdvance on a non-void function");
     }
 
     @Override
@@ -193,12 +202,12 @@ public class SemanticVerifierPhase2
                     "expression is not a boolean");
         }
 
-        // scope spécifique au then
+        // scope spÃ©cifique au then
         this.currentScope = new Scope(this.currentScope);
         node.getThenPart().apply(this);
         this.currentScope = this.currentScope.getParent();
 
-        // scope spécifique au else
+        // scope spÃ©cifique au else
         this.currentScope = new Scope(this.currentScope);
         if(node.getElsePart() != null)
         	node.getElsePart().apply(this);
