@@ -6,11 +6,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import gdx.game.Input;
 import gdx.game.TextBox;
 
-class Menu{
+public class Menu{
+
+    public static final int SELECT = 0;
+    public static final int EXIT = -1;
+    public static final int IDLE = -2;
 
     protected TextBox textBox;
     protected Cursor cursor;
     protected boolean activeChild = false;
+    protected SpriteBatch batch;
 
     public Menu(String texturePath, SpriteBatch batch, OrthographicCamera cam) {
         textBox = new TextBox(texturePath, batch, cam);
@@ -18,6 +23,7 @@ class Menu{
         textBox.setText(new String[]{"TODO fill the menu"});
 
         cursor = new Cursor();
+        this.batch = batch;
     }
 
     public Menu(String texturePath, SpriteBatch batch, OrthographicCamera cam, float x, float y) {
@@ -37,8 +43,15 @@ class Menu{
     }
 
 
-    public void input(){
+    public int input(){
         upDownInput();
+        if(Input.isPressed(Input.SELECT)){
+            return SELECT;
+        }
+        if(Input.isPressed(Input.START)){
+            return EXIT;
+        }
+        return IDLE;
     }
 
 

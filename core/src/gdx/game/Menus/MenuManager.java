@@ -18,18 +18,25 @@ public class MenuManager {
 		inventoryMenu = new InventoryMenu("menu/menu.png", batch, cam, 150f, 0f);
 	}
 
-	public void input() {
-		if (Input.isPressed(Input.SELECT)) {
-			if (limbSelected) {
-				craftingMenu.receiveMaterial(inventoryMenu.cursorSelect());
-			}
-			limbSelected = !limbSelected;
-		}
+	public int input() {
+		int input;
 		if (limbSelected) {
-			inventoryMenu.input();
+			input = inventoryMenu.input();
+			if (input == Menu.SELECT) {
+				craftingMenu.receiveMaterial(inventoryMenu.cursorSelect());
+				limbSelected = !limbSelected;
+			} else if (input == Menu.EXIT) {
+				limbSelected = false;
+				input = Menu.IDLE;
+			}
 		} else {
-			craftingMenu.input();
+			input = craftingMenu.input();
+			if(input == Menu.SELECT){
+				limbSelected = true;
+			}
 		}
+
+		return input;
 	}
 
 	public void render() {

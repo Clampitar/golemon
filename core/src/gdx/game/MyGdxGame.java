@@ -12,11 +12,12 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import gdx.game.Interp.Interpreter;
+import gdx.game.Menus.Menu;
 import gdx.game.Menus.MenuManager;
 
 public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
 
-    public static final String TITLE = "get a title";
+    public static final String TITLE = "golemon prototype";
     public static final int V_WIDTH = 400;
     public static final int V_HEIGHT = 225;
     public static final int SCALE = 2;
@@ -73,7 +74,6 @@ public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
 
         //setting the menu
         dialogue = new TextBox("dialogueBoxes/green.png", batch, cam);
-     //   dialogue.loadCutScene("cutScenes/tutorial.txt");
 
         menuManager = new MenuManager(batch, cam, defaultGolem);
 
@@ -195,10 +195,10 @@ public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
     }
 
     private void menuInput() {
-        if(Input.isPressed(Input.START)){
+        int menuState = menuManager.input();
+        if(menuState == Menu.EXIT){
             gameState = GameState.overWorld;
         }
-        menuManager.input();
     }
 
     private void battleInput(){

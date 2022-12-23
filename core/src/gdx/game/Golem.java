@@ -1,7 +1,9 @@
 package gdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Golem extends SpritedObject {
     protected limb leftArm = new limb("leftArm");
@@ -19,7 +21,7 @@ public class Golem extends SpritedObject {
     }
 
     @Override
-    protected void draw(SpriteBatch batch) {
+    public void draw(SpriteBatch batch) {
         super.draw(batch);
         batch.draw(leftArm.img, xOffset, yOffset);
         batch.draw(rightArm.img, xOffset, yOffset);
@@ -75,9 +77,14 @@ public class Golem extends SpritedObject {
         }
 
         private void updateTexture(){
-
+            try{
                 img = new Texture(LIMB_PATH + type + jointMaterial + ".png");
                 System.out.println("Path is now "+LIMB_PATH + type + jointMaterial + ".png");
+            } catch(GdxRuntimeException e){
+                System.err.println("image now nothing");
+                img = new Texture(0, 0, Format.Alpha);
+            }
+
         }
     }
 

@@ -7,7 +7,7 @@ import gdx.game.Material;
 
 public class CraftingMenu extends Menu{
 
-    Golem golem;
+    private Golem golem;
     static final int NUM_LIMBS = 5;
 
     public CraftingMenu(String texturePath, SpriteBatch batch, OrthographicCamera cam, Golem golem) {
@@ -19,11 +19,14 @@ public class CraftingMenu extends Menu{
     public void render() {
             textBox.setText(golem.toList());
             textBox.renderList(cursor.img, cursor.position, 0);
+            batch.begin();
+            golem.draw(batch);
+            batch.end();
     }
 
     @Override
-    public void input() {
-        super.input();
+    public int input() {
+        return super.input();
     }
 
     @Override
