@@ -48,13 +48,13 @@ public class Character extends SpritedObject {
             }
             walkCycle += MyGdxGame.STEP;
             walkCycle %= 1;
-        } else {
-            //walkCycle = 0.1f;
         }
         updateSprite();
     }
 
-
+    /**
+     * chooses the direction the sprite faces, and cycles through the walk animation
+     */
     private void updateSprite() {
         int xSprite = 0;
         int ySprite = Y_SCALE * direction;

@@ -1,5 +1,8 @@
 package gdx.game;
 
+/**
+ * Can play a .scene file
+ */
 public interface ScenePlayer {
 
 	public void say(String s);

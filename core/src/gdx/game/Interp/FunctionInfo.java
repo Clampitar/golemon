@@ -70,9 +70,9 @@ public class FunctionInfo {
             Frame frame,
             Token location) {
 
-        // itérateur pour les arguments
+        // iterateur pour les arguments
         Iterator<Value> argsIterator = args.iterator();
-        // boucle sur les paramètres
+        // boucle sur les parametres
         for (ParamInfo param : this.paramList) {
 
             // La verification est faite dans semantingVerifier()

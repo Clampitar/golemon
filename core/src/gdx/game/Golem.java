@@ -41,6 +41,11 @@ public class Golem extends SpritedObject {
         return list;
     }
 
+    /**
+     * exchanges the material at the position with the recieved material
+     * @param material
+     * @param position
+     */
     public void receiveMaterial(Material material, int position){
         switch (position){
             case 1:
@@ -56,7 +61,6 @@ public class Golem extends SpritedObject {
                 rightArm.switchMaterial(material);
                 break;
         }
-        System.out.println("received "+material+" at "+position);
     }
 
     class limb extends  Appendage{
@@ -79,7 +83,6 @@ public class Golem extends SpritedObject {
         private void updateTexture(){
             try{
                 img = new Texture(LIMB_PATH + type + jointMaterial + ".png");
-                System.out.println("Path is now "+LIMB_PATH + type + jointMaterial + ".png");
             } catch(GdxRuntimeException e){
                 System.err.println("image now nothing");
                 img = new Texture(0, 0, Format.Alpha);

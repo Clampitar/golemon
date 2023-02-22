@@ -2,13 +2,14 @@ package gdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
 
+/**
+ * faces the players during the Battle state
+ */
 public class Opponent extends SpritedObject {
     
 
     public Opponent() {
-        super(new Texture("fighters/dummy.png"),
-                MyGdxGame.V_WIDTH * - 64,
-                MyGdxGame.V_HEIGHT * MyGdxGame.SCALE - 64);
+        this(0,0);
     }
 
     public Opponent(float x, float y) {

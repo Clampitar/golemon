@@ -41,7 +41,6 @@ public class InterpreterEngine
     	//Si la lecture est intérompue l'itérateur est conservé
     	//et le programme peut continuer à la même ligne si celui-si est ré-appelé
     	try {
-            System.out.println("beginning result is "+this.result);
     		while (hasNext()) {
     			try {
     				currentInst = (PInst) currentFrame.next();
@@ -193,7 +192,6 @@ public class InterpreterEngine
     		if(node.getExp() != null) {
     			Value value = eval(node.getExp());
     			this.result = value;
-                System.out.println("returning "+this.result);
     		}
     		throw new ReturnException();
     	}

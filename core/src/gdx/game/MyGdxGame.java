@@ -40,8 +40,6 @@ public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
 
     private Interpreter interpreter;
 
-
-    // private boolean paused;
    public enum GameState{
         overWorld,
         paused,
@@ -82,6 +80,7 @@ public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
 
         dialogueSound = Gdx.audio.newSound(Gdx.files.internal("sounds/chirp.wav"));
         battleMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/wrath.wav"));
+        // "the devourer's wrath" be Kevvviiinnn on Famitracker
 
     }
 
@@ -178,7 +177,7 @@ public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
     }
 
     /**
-     * What happens in a frame when a meterial is picked up by the player
+     * What happens in a frame when a material is picked up by the player
      */
     private void pickupInput() {
         if(dialogue.isNew()){
@@ -230,7 +229,6 @@ public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
 
     /**
      * Draws a battle (INCOMPLETE)
-     * Corrently going for a prototype copy of pokemon style
      */
     private void drawBattle(){
         cam.update();
@@ -242,7 +240,8 @@ public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
         dummy.draw(batch);
         batch.end();
     }
-    
+
+    @Override
     public void say(String message) {
     	gameState = GameState.pickup;
     	dialogue.say(message);
