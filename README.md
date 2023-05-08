@@ -10,7 +10,7 @@ sablecc (https://sablecc.org/downloads)
 
 build the project once
 
-copy+paste lexer.dat and parser.dat to build/classes/java/main/gdx/game/interp/lexer and .../parser
+copy+paste lexer.dat and parser.dat to build/classes/java/main/gdx/game/scene/lexer and .../parser
 
 ## controls
 

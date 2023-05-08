@@ -11,9 +11,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import gdx.game.Interp.Interpreter;
+import gdx.game.Scene.SceneReader;
 import gdx.game.Menus.Menu;
 import gdx.game.Menus.MenuManager;
+import gdx.game.Scene.ScenePlayer;
 
 public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
 
@@ -38,7 +39,7 @@ public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
     private Opponent dummy;
     private Golem defaultGolem;//only a placeholder; TODO replace this so the battle still works
 
-    private Interpreter interpreter;
+    private SceneReader interpreter;
 
    public enum GameState{
         overWorld,
@@ -168,7 +169,7 @@ public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
         } else
         if(Input.isPressed(Input.TEST_ITERPRETER)){
         	gameState = GameState.cutScene;
-        	interpreter = new Interpreter("test.scene", this);
+        	interpreter = new SceneReader("test.scene", this);
         } else
         	if(Input.isPressed(Input.TEST_BATTLE)){
         		gameState = GameState.battle;

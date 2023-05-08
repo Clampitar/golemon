@@ -76,7 +76,6 @@ public class Golem extends SpritedObject {
         }
         void switchMaterial(Material material){
             jointMaterial=material;
-            System.out.println( type+" switches to "+jointMaterial);
             updateTexture();
         }
 
@@ -84,7 +83,6 @@ public class Golem extends SpritedObject {
             try{
                 img = new Texture(LIMB_PATH + type + jointMaterial + ".png");
             } catch(GdxRuntimeException e){
-                System.err.println("image now nothing");
                 img = new Texture(0, 0, Format.Alpha);
             }
 

@@ -1,5 +1,5 @@
 
-void bar( int q) do
+int bar( int q) do
   for(;q > 0;) do
     q--;
     for(var i = 0;i < q; i++) do
@@ -16,8 +16,18 @@ void bar( int q) do
     frameAdvance ;
     end
   end
-  return ;
+  return q ;
 end
 
+int three() do
+    return 3;
+end
 
- bar(20);
+int wthree() do
+    frameAdvance;
+    return 3;
+end
+
+var i = 4;
+i = bar(5);
+print(i);
