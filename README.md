@@ -36,5 +36,4 @@ A scripting language for cutscenes. Meant to be used in tandem with a graphical 
 ## known limitations
 
 - cannot read other files than itself
-- use of a method that contains a native method breaks arithmetic
 - fixed amount of assets from the graphical program that can be manipulated

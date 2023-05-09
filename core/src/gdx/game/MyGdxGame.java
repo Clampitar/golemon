@@ -26,7 +26,6 @@ public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
     public static final float STEP = 1 / 60f;
     public static final int FINISHED_CUTSCENE = 0;
     private float timeAccumulator = 0;
-    private int waitCounter = 0;
 
     private SpriteBatch batch;
     private TiledMap map;
@@ -131,16 +130,10 @@ public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
                 menuManager.render();
                 break;
             case cutScene:
-            	if(waitCounter > FINISHED_CUTSCENE) {
-            		waitCounter--;
-                    drawOverWorld();
-            	} else {
-                    waitCounter = interpreter.read();
-                    if(waitCounter <= FINISHED_CUTSCENE)
-                    	gameState = GameState.overWorld;
-                    if(waitCounter == FINISHED_CUTSCENE +1)
-                    	drawOverWorld();
-            	}
+            	drawOverWorld();
+                if(interpreter.spendFrame()){
+                    gameState = GameState.overWorld;
+                }
             	
         }
         Input.update();
@@ -170,6 +163,7 @@ public class MyGdxGame extends ApplicationAdapter implements ScenePlayer {
         if(Input.isPressed(Input.TEST_ITERPRETER)){
         	gameState = GameState.cutScene;
         	interpreter = new SceneReader("test.scene", this);
+            interpreter.start();
         } else
         	if(Input.isPressed(Input.TEST_BATTLE)){
         		gameState = GameState.battle;

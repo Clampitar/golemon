@@ -41,15 +41,14 @@ public class InterpreterEngine
     	frameDelay = 0;
     	//Si la lecture est intérompue l'itérateur est conservé
     	//et le programme peut continuer à la même ligne si celui-si est ré-appelé
-    	try {
-    		while (hasNext()) {
-    			try {
-    				currentInst = (PInst) currentFrame.next();
-    				visit(currentInst);
-    			} catch(ReturnException e)
-                {exitFunction();}
-			}
-    	} catch(frameAdvanceException e) {}
+        while (hasNext()) {
+    		try {
+    			currentInst = (PInst) currentFrame.next();
+    			visit(currentInst);
+    		} catch(ReturnException e) {
+                exitFunction();
+            }
+        }
     }
     
     public boolean hasNext() {
@@ -370,13 +369,17 @@ public class InterpreterEngine
     
     @Override
     public void caseAFrameAdvanceInst(AFrameAdvanceInst node) {
-    	this.frameDelay = 1;
-    	if(node.getExp() != null) {
-    		Value value = eval(node.getExp());
-    		this.frameDelay = ((IntValue) value).getValue();
-    	}
-    	if(frameDelay > 0)
-    		throw new frameAdvanceException();
+        this.frameDelay = 1;
+        if(node.getExp() != null) {
+            Value value = eval(node.getExp());
+            this.frameDelay = ((IntValue) value).getValue();
+        }
+        for(;frameDelay > 0;frameDelay--){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
+        }
     }
     
     @Override
@@ -490,10 +493,6 @@ public class InterpreterEngine
     private class ReturnException
     extends RuntimeException {
 		private static final long serialVersionUID = -6195413933405715175L;
-    }
-    private class frameAdvanceException
-    extends RuntimeException {
-		private static final long serialVersionUID = -3997841407698069347L;
     }
 
  

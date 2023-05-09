@@ -2,7 +2,6 @@
 package gdx.game.Scene;
 
 import java.io.*;
-
 import gdx.game.Scene.Interpreter.*;
 import gdx.game.Scene.Semantics.*;
 import gdx.game.Scene.lexer.*;
@@ -16,20 +15,33 @@ public class SceneReader {
 	private InterpreterEngine iEngine;
 	private Start tree;
 	ScenePlayer game;
+    SceneThread sceneThread;
+
+    public void start(){
+        sceneThread.start();
+    }
 	
-	public int read() {
+	protected void read() {
 		try {
 			tree.apply(iEngine);
 		} catch (InterpreterException e) {
             System.err.println("ERREUR D'INTERPRETATION: " + e.getMessage());
             game.say("ERREUR D'INTERPRETATION");
         }
-		return iEngine.frameDelay;
+		return;
 	}
+
+    public boolean spendFrame(){
+        sceneThread.interrupt();
+        return !sceneThread.isAlive();
+    }
+
+
 
     public SceneReader(String fileName, ScenePlayer game) {
     	this.game = game;
         fileName = pathChange + fileName;
+        sceneThread = new SceneThread(this);
         try {
             Lexer lexer = null;
             FileReader fileReader = new FileReader(fileName);;
