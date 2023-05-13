@@ -363,6 +363,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAFloatTerm(AFloatTerm node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAVarTerm(AVarTerm node)
     {
         defaultCase(node);
@@ -537,6 +543,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseTImport(TImport node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTIntType(TIntType node)
     {
         defaultCase(node);
@@ -652,6 +664,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTDot(TDot node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTQuote(TQuote node)
     {
         defaultCase(node);
     }

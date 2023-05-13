@@ -3,12 +3,12 @@ Package gdx.game.Scene;
 Helpers
 
   letter = ['a'..'z'];
-  string_char = [[32..127] - '"'];
+  string_char = [[32..127] - ['"'+'\']];
+  escape_char = '\' [32..127];
   digit = ['0'..'9'];
   eol = 13 | 10 | 13 10;
   tab = 9;
   not_eol = [[0..0xffff]-[13 + 10]];
-  dot = 'dot';
 
 Tokens
 
@@ -28,6 +28,7 @@ Tokens
   var = 'var';
   while = 'while';
   for = 'for';
+  import = 'import';
   
   int_type = 'int';
   bool_type = 'bool';
@@ -56,15 +57,16 @@ Tokens
   eq = '==';
   comma = ',';
   dot = '.';
+  quote = '"';
 
   l_par = '(';
   r_par = ')';
 
 
   ident = letter (letter | digit | '_')*;
-  string = '"' string_char* '"';
-  integer = digit+;
-  float = digit* dot digit+;
+  string =  '"' (string_char | escape_char)* '"' ;
+  integer = '-'? digit+;
+  float = '-'? digit* '.' digit+;
 
   blank = (' ' | eol | tab)+;
   comment = '#' not_eol*;
@@ -160,6 +162,7 @@ Productions
     {false} false |
     {integer} minus? integer |
     {string} string |
+	{float} float |	
     {var} ident |
     {par} l_par exp r_par |
     {fun_call} ident l_par args? r_par |

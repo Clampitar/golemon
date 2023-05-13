@@ -1432,6 +1432,27 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAStringTerm(node);
     }
 
+    public void inAFloatTerm(AFloatTerm node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFloatTerm(AFloatTerm node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFloatTerm(AFloatTerm node)
+    {
+        inAFloatTerm(node);
+        if(node.getFloat() != null)
+        {
+            node.getFloat().apply(this);
+        }
+        outAFloatTerm(node);
+    }
+
     public void inAVarTerm(AVarTerm node)
     {
         defaultIn(node);

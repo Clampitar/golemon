@@ -60,6 +60,7 @@ public interface Analysis extends Switch
     void caseAFalseTerm(AFalseTerm node);
     void caseAIntegerTerm(AIntegerTerm node);
     void caseAStringTerm(AStringTerm node);
+    void caseAFloatTerm(AFloatTerm node);
     void caseAVarTerm(AVarTerm node);
     void caseAParTerm(AParTerm node);
     void caseAFunCallTerm(AFunCallTerm node);
@@ -90,6 +91,7 @@ public interface Analysis extends Switch
     void caseTVar(TVar node);
     void caseTWhile(TWhile node);
     void caseTFor(TFor node);
+    void caseTImport(TImport node);
     void caseTIntType(TIntType node);
     void caseTBoolType(TBoolType node);
     void caseTStringType(TStringType node);
@@ -110,6 +112,7 @@ public interface Analysis extends Switch
     void caseTEq(TEq node);
     void caseTComma(TComma node);
     void caseTDot(TDot node);
+    void caseTQuote(TQuote node);
     void caseTLPar(TLPar node);
     void caseTRPar(TRPar node);
     void caseTIdent(TIdent node);

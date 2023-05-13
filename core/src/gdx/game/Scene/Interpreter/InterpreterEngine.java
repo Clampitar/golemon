@@ -324,13 +324,24 @@ public class InterpreterEngine
     @Override
     public void caseAIntegerTerm(
             AIntegerTerm node) {
-        Boolean minus = (node.getMinus() != null);
     	try {
             int number = Integer.parseInt(node.getInteger().getText());
-            this.result = new IntValue(minus ? -number : number);
+            this.result = new IntValue(number);
         }
         catch (NumberFormatException e) {
             throw new InterpreterException(node.getInteger(),
+                    this.currentFrame,"Number is invalid");
+        }
+    }
+
+    @Override
+    public void caseAFloatTerm(AFloatTerm node) {
+        try {
+            float number = Float.parseFloat(node.getFloat().getText());
+            this.result = new FloatValue(number);
+        }
+        catch (NumberFormatException e) {
+            throw new InterpreterException(node.getFloat(),
                     this.currentFrame,"Number is invalid");
         }
     }
@@ -363,8 +374,47 @@ public class InterpreterEngine
         String string = node.getString().getText();
         // enlever les double guillemets
         string = string.substring(1, string.length() - 1);
+        String escapeString = "";
+        boolean escape = false;
+        for( char c : string.toCharArray()){
+            if(escape){
+                escape = false;
+                switch (c){
+                    case 't':
+                        c = '\t';
+                        break;
+                    case 'b':
+                        c = '\b';
+                        break;
+                    case 'n':
+                        c = '\n';
+                        break;
+                    case 'r':
+                        c = '\r';
+                        break;
+                    case 'f':
+                        c = '\f';
+                        break;
+                    case '\'':
+                        c = '\'';
+                        break;
+                    case  '"':
+                        c = '"';
+                        break;
+                    case '\\':
+                        c = '\\';
+                        break;
+                    default:
+                        throw new InterpreterException(node.getString(), this.currentFrame, "illegal escape character: "+ c);
 
-        this.result = new StringValue(string);
+                }
+                escapeString += c;
+            } else if(c == '\\')
+                escape = true;
+            else escapeString += c;
+        }
+
+        this.result = new StringValue(escapeString);
     }
     
     @Override
