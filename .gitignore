@@ -114,3 +114,10 @@ Thumbs.db
 /ios/IOSLauncher.app
 /ios/IOSLauncher.app.dSYM
 core/src/com/mygdx/game/Interp/analysis/AnalysisAdapter.java
+
+
+#interpreter
+/core/src/gdx/game/Scene/node/
+/core/src/gdx/game/Scene/parser/
+/core/src/gdx/game/Scene/lexer/
+/core/src/gdx/game/Scene/analysis/
